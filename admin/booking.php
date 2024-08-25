@@ -1,8 +1,8 @@
 <?php
-// logout Automatically
-include '../backend/logout.php';
+session_start();
 // Connection
 include '../backend/dbcon.php';
+
 
 // Active Page
 $directoryURI = $_SERVER['REQUEST_URI'];
@@ -11,8 +11,8 @@ $components = explode('/', $path);
 $page = $components[2];
 
 // Fetch all booking details from the database, joining with the client table using the clientID foreign key
-$sql = "SELECT b.bookingId, b.eventDate, b.eventTime, b.eventLocation, b.type_of_event, b.title_event, b.paymentAmount, b.description, CONCAT(c.firstName, ' ', c.lastName) AS clientName, b.status FROM booking AS b
-        LEFT JOIN client AS c ON b.clientID = c.id";
+$sql = "SELECT b.bookingId, b.clientID, b.eventLocation, b.proof_payment, b.status 
+        FROM booking AS b";
 $result = $conn->query($sql);
 
 // Check if there's a result
@@ -67,11 +67,10 @@ if ($result->num_rows > 0) {
             <table class="header-table">
                 <thead>
                     <tr>
-                        <th>Name</th>
-                        <th>Title Event</th>
-                        <th>Event Address</th>
-                        <th>Date</th>
-                        <th>Time</th>
+                        <th>Booking ID</th>
+                        <th>Client ID</th>
+                        <th>Event Location</th>
+                        <th>Receipt</th>
                         <th>Status</th>
                     </tr>
                 </thead>
@@ -81,24 +80,22 @@ if ($result->num_rows > 0) {
             <div class="data-table-container">
                 <table class="data-table booking">
                     <tbody>
-                    <?php foreach ($bookingData as $booking): ?>
-                <tr>
-                    <td><?php echo $booking['clientName']; ?></td>
-                    <td><?php echo $booking['title_event']; ?></td>
-                    <td><?php echo $booking['eventLocation']; ?></td>
-                    <td><?php echo date('F d Y', strtotime($booking['eventDate'])); ?></td>
-                    <td><?php echo date('g:i A', strtotime($booking['eventTime'])); ?></td>
-                    <td>
-                        <?php if ($booking['status'] == 'Accepted' || $booking['status'] == 'Declined'): ?>
-                            <?php echo $booking['status']; ?>
-                        <?php elseif ($booking['status'] == 'Pending'): ?>
-                                <button class="accept" onclick="openPopup('<?php echo $booking['bookingId']; ?>')">Accept</button>
-                                <button class="decline" onclick="openDeclinePopup('<?php echo $booking['bookingId']; ?>')">Decline</button>
-                        <?php endif; ?>
-                    </td>
-                </tr>
-            <?php endforeach; ?>
-                </tbody>
+                        <?php foreach ($bookingData as $booking): ?>
+                            <tr>
+                                <td><?php echo $booking['bookingId']; ?></td>
+                                <td><?php echo $booking['clientID']; ?></td>
+                                <td><?php echo $booking['eventLocation']; ?></td>
+                                <td>
+                                    <?php if (!empty($booking['proof_payment'])): ?>
+                                        <button onclick="openReceiptPopup('<?php echo $booking['proof_payment']; ?>')">See Receipt</button>
+                                    <?php else: ?>
+                                        No Receipt
+                                    <?php endif; ?>
+                                </td>
+                                <td><?php echo $booking['status']; ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
             </table>
         </div>
         <!-- Popup -->
@@ -112,28 +109,40 @@ if ($result->num_rows > 0) {
         </div>
 
         <div id="declinePopup" class="popup">
-    <span class="close" onclick="closeDeclinePopup()">&times;</span>
-    <div class="form-decline">
-        <label for="declineReason">Reason for declining booking request?</label>
-        <input type="hidden" id="declineBookingId">
-        <!-- Use a select dropdown for the reason -->
-        <select id="declineReason" name="declineReason">
-            <option value="" selected disabled>Select a reason</option>
-            <option value="Transport/Travel Distance Issue">Transport/Travel Distance Issue</option>
-            <option value="Fully booked schedule">Fully booked schedule</option>
-            <option value="Personal Commitment">Personal Commitment</option>
-            <option value="Equipment unavailability">Equipment unavailability</option>
-            <option value="Weather Conditions">Weather Conditions</option>
-        </select>
-        <button class="btn-save-event" onclick="declineBooking()">Submit</button>
-    </div>
-</div>
-    </div>
+            <span class="close" onclick="closeDeclinePopup()">&times;</span>
+            <div class="form-decline">
+                <label for="declineReason">Reason for declining booking request?</label>
+                <input type="hidden" id="declineBookingId">
+                <!-- Use a select dropdown for the reason -->
+                <select id="declineReason" name="declineReason">
+                    <option value="" selected disabled>Select a reason</option>
+                    <option value="Transport/Travel Distance Issue">Transport/Travel Distance Issue</option>
+                    <option value="Fully booked schedule">Fully booked schedule</option>
+                    <option value="Personal Commitment">Personal Commitment</option>
+                    <option value="Equipment unavailability">Equipment unavailability</option>
+                    <option value="Weather Conditions">Weather Conditions</option>
+                </select>
+                <button class="btn-save-event" onclick="declineBooking()">Submit</button>
+            </div>
+        </div>
+        </div>
+        
+        <div id="receiptPopup" class="popup">
+            <div class="popup-content">
+                <span class="close" onclick="closeReceiptPopup()">&times;</span>
+                <img id="receiptImage" src="" alt="Receipt Image">
+                <div>
+                    <a id="openNewTab" href="#" target="_blank">Open in New Tab</a>
+                    <a id="downloadReceipt" href="#" download>Download</a>
+                </div>
+            </div>
+        </div>
+
     </section>
 </body>
 <script>
 
-function openPopup(bookingId) {
+    function openPopup(bookingId) {
         document.getElementById('customPopup').style.display = 'block';
         document.getElementById('bookingId').value = bookingId;
     }
@@ -167,60 +176,104 @@ function openPopup(bookingId) {
 
 
     function openDeclinePopup(bookingId) {
-    document.getElementById('declinePopup').style.display = 'block';
-    document.getElementById('declineBookingId').value = bookingId;
-}
+        document.getElementById('declinePopup').style.display = 'block';
+        document.getElementById('declineBookingId').value = bookingId;
+    }
 
-function closeDeclinePopup() {
-    document.getElementById('declinePopup').style.display = 'none';
-}
+    function closeDeclinePopup() {
+        document.getElementById('declinePopup').style.display = 'none';
+    }
 
-function declineBooking() {
-    var bookingId = document.getElementById('declineBookingId').value;
-    var reasonSelect = document.getElementById('declineReason');
-    var reason = reasonSelect.options[reasonSelect.selectedIndex].value;
+    function declineBooking() {
+        var bookingId = document.getElementById('declineBookingId').value;
+        var reasonSelect = document.getElementById('declineReason');
+        var reason = reasonSelect.options[reasonSelect.selectedIndex].value;
 
-    // Perform the update to the status and reason in the database using AJAX or form submission
-    var xhr = new XMLHttpRequest();
-    xhr.open('POST', '../backend/status.php', true);
-    xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-    xhr.onreadystatechange = function () {
-        if (xhr.readyState == 4 && xhr.status == 200) {
-            // Check the response from the server if needed
-            console.log(xhr.responseText);
-            // Close the popup
-            closeDeclinePopup();
-            // Reload the page to update the displayed data
-            window.location.reload();
+        // Perform the update to the status and reason in the database using AJAX or form submission
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '../backend/status.php', true);
+        xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                // Check the response from the server if needed
+                console.log(xhr.responseText);
+                // Close the popup
+                closeDeclinePopup();
+                // Reload the page to update the displayed data
+                window.location.reload();
+            }
+        };
+
+        // Send the request with the bookingId, action (decline), and reason
+        xhr.send('schedule_id=' + bookingId + '&decline=1&reason=' + encodeURIComponent(reason));
+    }
+
+    function startSSE() {
+        var source = new EventSource("../backend/fetch_booking_updates.php");
+
+        source.onmessage = function(event) {
+            var bookings = JSON.parse(event.data);
+            var tableBody = document.querySelector('.data-table.booking tbody');
+            tableBody.innerHTML = '';  // Clear the table body
+
+            bookings.forEach(function(booking) {
+                var statusButtons = '';
+
+                if (booking.status === 'Pending') {
+                    statusButtons = `
+                        <button class="accept" onclick="openPopup('${booking.bookingId}')">Accept</button>
+                        <button class="decline" onclick="openDeclinePopup('${booking.bookingId}')">Decline</button>`;
+                } else {
+                    statusButtons = booking.status;
+                }
+
+                var receiptLink = booking.proof_payment ? `<a href="javascript:void(0);" onclick="seeReceipt('${booking.bookingId}', '${booking.proof_payment}')">See Receipt</a>` : 'No Receipt';
+
+                var row = `<tr>
+                    <td>${booking.bookingId}</td>
+                    <td>${booking.clientID}</td>
+                    <td>${booking.eventLocation}</td>
+                    <td>${receiptLink}</td>
+                    <td>${statusButtons}</td>
+                </tr>`;
+                tableBody.insertAdjacentHTML('beforeend', row);
+            });
+        };
+
+        source.addEventListener('close', function() {
+            console.log("Connection closed, reconnecting...");
+            setTimeout(startSSE, 100);  
+        });
+    }
+
+    startSSE();
+
+    // Function to open the image in a new tab with a download button
+    function seeReceipt(bookingId, imageBase64) {
+        // Create a new window/tab
+        var newWindow = window.open("", "_blank");
+        if (newWindow) {
+            // Write the image and download link into the new window
+            newWindow.document.write(`
+                <html>
+                    <head><title>Receipt for Booking ID: ${bookingId}</title></head>
+                    <body style="text-align:center;margin:0;padding:20px;">
+                        <img src="data:image/jpeg;base64,${imageBase64}" style="max-width:100%;height:auto;">
+                        <br><br>
+                        <a href="data:image/jpeg;base64,${imageBase64}" download="receipt_booking_${bookingId}.jpg">
+                            <button style="padding:10px 20px;font-size:16px;">Download Receipt</button>
+                        </a>
+                    </body>
+                </html>
+            `);
+            newWindow.document.close();
+        } else {
+            alert("Popup blocked! Please allow popups for this website.");
         }
-    };
+    }
 
-    // Send the request with the bookingId, action (decline), and reason
-    xhr.send('schedule_id=' + bookingId + '&decline=1&reason=' + encodeURIComponent(reason));
-}
-    // Add the following script to periodically check for inactivity and logout
-    var inactivityTimeout = 900; // 15 minutes in seconds
 
-function checkInactivity() {
-    setTimeout(function () {
-        window.location.href = '../login.php'; // Replace 'logout.php' with the actual logout page
-    }, inactivityTimeout * 1000);
-}
+</script>
 
-// Start checking for inactivity when the page loads
-document.addEventListener('DOMContentLoaded', function () {
-    checkInactivity();
-});
-
-// Reset the inactivity timer when there's user activity
-document.addEventListener('mousemove', function () {
-    clearTimeout(checkInactivity);
-    checkInactivity();
-});
-
-document.addEventListener('keypress', function () {
-    clearTimeout(checkInactivity);
-    checkInactivity();
-});
 </script>
 </html>

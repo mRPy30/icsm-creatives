@@ -1,6 +1,5 @@
 <?php
-// logout Automatically
-include '../backend/logout.php';
+session_start();
 // Connection and fetching data
 include '../backend/dbcon.php';
 

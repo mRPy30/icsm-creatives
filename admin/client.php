@@ -1,6 +1,5 @@
 <?php
-// logout Automatically
-include '../backend/logout.php';
+session_start();
 // Connection
 include '../backend/dbcon.php';
 
@@ -11,7 +10,7 @@ $components = explode('/', $path);
 $page = $components[2];
 
 // Fetch client data from the database
-$sql = "SELECT id, profile, firstName, lastName FROM client";
+$sql = "SELECT clientID, profile, name FROM client";
 $result = $conn->query($sql);
 
 // Check if there's a result
@@ -87,8 +86,7 @@ if (isset($_POST['delete'])) {
                     <tr>
                         <th>Client ID</th>
                         <th>Profile</th>
-                        <th>First Name</th>
-                        <th>Last Name</th>
+                        <th>Name</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -101,13 +99,12 @@ if (isset($_POST['delete'])) {
                     <?php
                         foreach ($clientData as $client) {
                             echo '<tr>';
-                            echo '<td onclick="window.location.href=\'../admin/folders.php\';" style="cursor: pointer;">' . $client['id'] . '</td>';
+                            echo '<td onclick="window.location.href=\'../admin/folders.php\';" style="cursor: pointer;">' . $client['clientID'] . '</td>';
                             echo '<td onclick="window.location.href=\'../admin/folders.php\';" style="cursor: pointer;"><img src="data:image/jpeg;base64,' . base64_encode($client['profile']) . '" class="profile-image"></td>';
-                            echo '<td onclick="window.location.href=\'../admin/folders.php\';">' . $client['firstName'] . '</td>';
-                            echo '<td onclick="window.location.href=\'../admin/folders.php\';">' . $client['lastName'] . '</td>';
+                            echo '<td onclick="window.location.href=\'../admin/folders.php\';">' . $client['name'] . '</td>';
                             echo '<td>
                                     <form method="POST" action="../admin/client.php">
-                                        <input type="hidden" name="client_id" value="' . $client['id'] . '">
+                                        <input type="hidden" name="client_id" value="' . $client['clientID'] . '">
                                         <button type="submit" name="delete">Delete</button>
                                     </form>
                                 </td>';

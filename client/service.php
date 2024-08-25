@@ -1,14 +1,7 @@
 <?php
-// Connection
-include '../backend/dbcon.php';
-
-session_start(); // Start the session
-$clientID = $_SESSION['id'];
-
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $_SESSION['booking']['package'] = $_POST['package'];
-    header('Location: payment.php');
-    exit();
+session_start();
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $_SESSION['booking'] = $_POST;
 }
 ?>
 <!DOCTYPE html>
@@ -39,62 +32,96 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <body>
     <!-----Navbar------->
     <?php include '../client/navbar.php'; ?>
-
     <main class="main-content">
-        <section class="booking-feed">
-            <div class="content">
-                <div class="fillup-book">
-                    <div class="form-book">
-                        <div class="top-book">
-                            <div class="title">
-                                <h3>Choose Your Package</h3>
+        <section class="coverpage">
+            <div class="cover-content">
+                <div class="carousel">
+                    <img src="../picture/coverpage1.jpg" alt="coverpage">
+                    <img src="../picture/prenup.jpg" alt="coverpage">
+                    <img src="../picture/girls.jpg" alt="coverpage">
+                    <img src="../picture/self.jpg" alt="coverpage">
+                    <img src="../picture/wedding.jpg" alt="coverpage">
+                </div>
+                <div class="text">
+                    <h2>Capture every precious moment through our lenses </h2>
+                    <p>Get expert photographers and amazing photos, and <br>videos, starting from just PHP 2,500.</p>
+                </div>
+            </div>
+        </section>
+            <section class="booking-feed">
+                <div class="content">
+                    <div class="fillup-book">
+                        <div class="form-book">
+                            <div class="top-book">
+                                <div class="title">
+                                    <h3>Event Services</h3>
+                                </div>
+                                <div class="steps">
+                                    <div class="circle active">
+                                        <h4>1</h4>
+                                    </div>
+                                    <div class="progress-line"></div>
+                                    <div class="circle">
+                                        <h4>2</h4>
+                                    </div>
+                                    <div class="progress-line"></div>
+                                    <div class="circle">
+                                        <h4>3</h4>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="steps">
-                                <div class="circle">
-                                    <h4>1</h4>
-                                </div>
-                                <div class="progress-line"></div>
-                                <div class="circle active">
-                                    <h4>2</h4>
-                                </div>
-                                <div class="progress-line"></div>
-                                <div class="circle">
-                                    <h4>3</h4>
-                                </div>
-                            </div>
-                        </div>
-                        <form id="serviceForm" class="form-fillup needs-validation" method="POST" action="service.php">
-                            <div id="step2" class="form-step">
+                            <form class="form-fillup needs-validation" action="payment.php" method="POST" id="serviceForm">
                                 <div class="form-group">
-                                    <label for="package">Select Package</label>
-                                    <select name="package" id="package" required>
-                                        <!-- Options here -->
-                                    </select>
+                                    <label for="theme">Event Theme:</label>
+                                    <input type="text" id="theme" name="theme" required><br>
+
+                                    <label for="budget">Budget:</label>
+                                    <input type="number" id="budget" name="budget" required><br>
+
+                                    <h3>Additional Services:</h3>
+                                    <label for="photographers">Additional Photographers:</label>
+                                    <input type="checkbox" id="photographers" name="services[]" value="2000" onclick="calculateTotal()"> PHP 2000<br>
+
+                                    <label for="video">Teaser Video:</label>
+                                    <input type="checkbox" id="video" name="services[]" value="1500" onclick="calculateTotal()"> PHP 1500<br>
+
+                                    <label for="invitation">Virtual Invitation:</label>
+                                    <input type="checkbox" id="invitation" name="services[]" value="1000" onclick="calculateTotal()"> PHP 1000<br>
+
+                                    <div id="total-cost">Total Cost: PHP 0</div>
+
+                                    <div class="buttons-book">
+                                        <button id="next" type="submit">Next</button>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="buttons-book">
-                                <button type="button" onclick="history.back()">Prev</button>
-                                <button type="submit">Next</button>
-                            </div>
-                        </form>
+                            </form>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </section>
-        
-        <section class="going-back">
-            <div class="arrow-up-button back-to-top-hidden">
-                <button class="back-to-top" onclick="scrollToTop()"><i class="fas fa-arrow-up"></i></button>
-            </div>
-        </section>
+            </section>
+                <section class="going-back">
+                    <div class="arrow-up-button back-to-top-hidden">
+                        <button class="back-to-top" onclick="scrollToTop()"><i class="fas fa-arrow-up"></i></button>
+                    </div>
+                </section>
 
-        <section class="container-credential">
-            <div class="credit-info">
-                <div class="rights-definition">
-                    <p>© 2023-2024 ICSMCREATIVES.COM ALL RIGHTS RESERVED. TERMS OF USE | PRIVACY POLICY</p>
-                </div>
-            </div>
-        </section>
-    </main>
+                <section class="container-credential">
+                    <div class="credit-info">
+                        <div class="rights-definition">
+                            <p>© 2023-2024 ICSMCREATIVES.COM ALL RIGHTS RESERVED. TERMS OF USE | PRIVACY POLICY</p>
+                        </div>
+                    </div>
+                </section>
+        </main>
 </body>
+<script>
+    function calculateTotal() {
+    let total = 0;
+    document.querySelectorAll('input[name="services[]"]:checked').forEach((service) => {
+        total += parseFloat(service.value);
+    });
+    document.getElementById('total-cost').textContent = "Total Cost: PHP " + total;
+}
+
+</script>
 </html>

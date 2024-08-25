@@ -1,9 +1,51 @@
 <?php
-// Connection
+include '../backend/logout.php';
 include '../backend/dbcon.php';
 
-session_start(); // Start the session
-$clientID = $_SESSION['id'];
+// Check if the client is logged in
+if (!isset($_SESSION['clientID'])) {
+    header("Location: login.php");
+    exit();
+}
+
+$clientID = $_SESSION['clientID'];
+
+// Fetch all bookings
+$sql = "SELECT eventDate, eventTime FROM booking ORDER BY eventDate, eventTime";
+$result = $conn->query($sql);
+$bookings = [];
+$fullyBookedDates = [];
+while ($row = $result->fetch_assoc()) {
+    $date = $row['eventDate'];
+    if (!isset($bookings[$date])) {
+        $bookings[$date] = [];
+    }
+    $bookings[$date][] = $row['eventTime'];
+    if (count($bookings[$date]) >= 2) {
+        $fullyBookedDates[] = $date;
+    }
+}
+
+// Process form submission
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Validate and save booking
+    // Add your validation logic here
+    $_SESSION['booking'] = $_POST;
+    header("Location: service.php");
+    exit();
+}
+
+// Fetch the current user's bookings
+$sql = "SELECT bookingID, title_event, eventDate, eventTime, status FROM booking WHERE clientID = ?";
+$stmt = $conn->prepare($sql);
+if ($stmt) {
+    $stmt->bind_param("i", $clientID);
+    $stmt->execute();
+    $userBookings = $stmt->get_result();
+} else {
+    echo "Error preparing statement: " . $conn->error;
+    exit();
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -27,6 +69,10 @@ $clientID = $_SESSION['id'];
 
     <!--FONT LINKS-->
     <link rel="stylesheet" href="../css/fonts.css">
+
+    <!---Date picker--->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
 </head>
 
@@ -73,42 +119,32 @@ $clientID = $_SESSION['id'];
                                 </div>
                             </div>
                         </div>
-                        <form id="bookingForm" class="form-fillup needs-validation" method="POST" action="../backend/booking.php" onsubmit="return validateForm()">
-                            <div id="step1" class="form-step">
+                        <form id="bookingForm" class="form-fillup needs-validation" method="POST" action="booking.php" onsubmit="return validateForm()">
                                 <div class="form-group">
                                     <div class="left-info">
                                         <label for="bookingDate">Date</label>
-                                        <input type="date" name="bookingDate" id="formattedDateDisplay" class="form-input" onchange="formatDate()" required>
+                                        <input type="text" id="event_date" name="event_date" required>
                                         <br>
                                         <label for="bookingTime">Time</label>
-                                        <input type="time" name="bookingTime" class="form-input" required>
+                                        <select id="event_time" name="event_time" required></select>
                                         <br>
-                                        <label for="eventType">Type of Event</label>
-                                            <select name="eventType" id="eventType">
-
-                                            </select>
-                                            <br>
-                                        <label for="eventTitle">Name of Event</label>
-                                        <input type="text" id="eventTitle" name="eventTitle" required>
+                                        <label for="event_location">Location:</label>
+                                        <input type="text" id="event_location" name="event_location" required>
                                     </div>   
                                     <div class="right-info">
-                                        <label for="eventLocation">Event Location</label>
-                                        <input type="text" id="eventLocation" name="eventLocation" required>
+                                        <label for="title_event">Event Name:</label>
+                                        <input type="text" id="title_event" name="title_event" required>
                                         <br>
-                                        <label for="package">Select Package</label>
-                                        <select name="package" id="package">
-
-                                        </select>
+                                        <label for="type_of_event">Type of Event:</label>
+                                        <input type="text" id="type_of_event" name="type_of_event" required>
                                         <br>
                                         <label for="eventDescription">Booking Description</label>
                                         <input type="text" id="eventDescription" name="eventDescription" style="height: 75px;" required>
-
                                     </div>
                                 </div>
                             </div>
                             <div class="buttons-book">
-                                <button id="prev">Prev</button>
-                                <button id="next">Next</button>
+                                <button id="next" type="submit">Next</button>
                             </div>
                         </form>
                     </div>
@@ -135,7 +171,21 @@ $clientID = $_SESSION['id'];
                             <ul class="days"></ul>
                         </div>
                     </div>
-                    <div class="pf"></div>
+                    <div class="pf">
+                        <table border="1">
+                            <thead>
+                                <tr>
+                                    <th>Booking ID</th>
+                                    <th>Event Name</th>
+                                    <th>Event Date & Time</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="booking-table-body">
+                                
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </section>
@@ -239,83 +289,137 @@ $clientID = $_SESSION['id'];
 
 
     const daysTag = document.querySelector(".days"),
-currentDate = document.querySelector(".current-date"),
-prevNextIcon = document.querySelectorAll(".icons span");
+    currentDate = document.querySelector(".current-date"),
+    prevNextIcon = document.querySelectorAll(".icons span");
 
-// getting new date, current year and month
-let date = new Date(),
-currYear = date.getFullYear(),
-currMonth = date.getMonth();
+    // getting new date, current year and month
+    let date = new Date(),
+    currYear = date.getFullYear(),
+    currMonth = date.getMonth();
 
-// storing full name of all months in array
-const months = ["January", "February", "March", "April", "May", "June", "July",
-              "August", "September", "October", "November", "December"];
+    // storing full name of all months in array
+    const months = ["January", "February", "March", "April", "May", "June", "July",
+                  "August", "September", "October", "November", "December"];
 
-const renderCalendar = () => {
-    let firstDayofMonth = new Date(currYear, currMonth, 1).getDay(), // getting first day of month
-    lastDateofMonth = new Date(currYear, currMonth + 1, 0).getDate(), // getting last date of month
-    lastDayofMonth = new Date(currYear, currMonth, lastDateofMonth).getDay(), // getting last day of month
-    lastDateofLastMonth = new Date(currYear, currMonth, 0).getDate(); // getting last date of previous month
-    let liTag = "";
+    const renderCalendar = () => {
+        let firstDayofMonth = new Date(currYear, currMonth, 1).getDay(), // getting first day of month
+        lastDateofMonth = new Date(currYear, currMonth + 1, 0).getDate(), // getting last date of month
+        lastDayofMonth = new Date(currYear, currMonth, lastDateofMonth).getDay(), // getting last day of month
+        lastDateofLastMonth = new Date(currYear, currMonth, 0).getDate(); // getting last date of previous month
+        let liTag = "";
 
-    for (let i = firstDayofMonth; i > 0; i--) { // creating li of previous month last days
-        liTag += `<li class="inactive">${lastDateofLastMonth - i + 1}</li>`;
-    }
-
-    for (let i = 1; i <= lastDateofMonth; i++) { // creating li of all days of current month
-        // adding active class to li if the current day, month, and year matched
-        let isToday = i === date.getDate() && currMonth === new Date().getMonth() 
-                     && currYear === new Date().getFullYear() ? "active" : "";
-        liTag += `<li class="${isToday}">${i}</li>`;
-    }
-
-    for (let i = lastDayofMonth; i < 6; i++) { // creating li of next month first days
-        liTag += `<li class="inactive">${i - lastDayofMonth + 1}</li>`
-    }
-    currentDate.innerText = `${months[currMonth]} ${currYear}`; // passing current mon and yr as currentDate text
-    daysTag.innerHTML = liTag;
-}
-renderCalendar();
-
-prevNextIcon.forEach(icon => { // getting prev and next icons
-    icon.addEventListener("click", () => { // adding click event on both icons
-        // if clicked icon is previous icon then decrement current month by 1 else increment it by 1
-        currMonth = icon.id === "prev" ? currMonth - 1 : currMonth + 1;
-
-        if(currMonth < 0 || currMonth > 11) { // if current month is less than 0 or greater than 11
-            // creating a new date of current year & month and pass it as date value
-            date = new Date(currYear, currMonth, new Date().getDate());
-            currYear = date.getFullYear(); // updating current year with new date year
-            currMonth = date.getMonth(); // updating current month with new date month
-        } else {
-            date = new Date(); // pass the current date as date value
+        for (let i = firstDayofMonth; i > 0; i--) { // creating li of previous month last days
+            liTag += `<li class="inactive">${lastDateofLastMonth - i + 1}</li>`;
         }
-        renderCalendar(); // calling renderCalendar function
+
+        for (let i = 1; i <= lastDateofMonth; i++) { // creating li of all days of current month
+            // adding active class to li if the current day, month, and year matched
+            let isToday = i === date.getDate() && currMonth === new Date().getMonth() 
+                         && currYear === new Date().getFullYear() ? "active" : "";
+            liTag += `<li class="${isToday}">${i}</li>`;
+        }
+
+        for (let i = lastDayofMonth; i < 6; i++) { // creating li of next month first days
+            liTag += `<li class="inactive">${i - lastDayofMonth + 1}</li>`
+        }
+        currentDate.innerText = `${months[currMonth]} ${currYear}`; // passing current mon and yr as currentDate text
+        daysTag.innerHTML = liTag;
+    }
+    renderCalendar();
+
+    const bookings = <?php echo json_encode($bookings); ?>;
+    const fullyBookedDates = <?php echo json_encode($fullyBookedDates); ?>;
+
+    flatpickr("#event_date", {
+        minDate: "today",
+        disable: fullyBookedDates,
+        onChange: function(selectedDates, dateStr, instance) {
+            updateTimeOptions(dateStr);
+        }
     });
-});
 
-        function formatDate() {
-            const dateInput = document.getElementById('bookingDate');
-            const formattedDateDisplay = document.getElementById('formattedDateDisplay');
-            const dateValue = new Date(dateInput.value);
+    function updateTimeOptions(selectedDate) {
+        const timeSelect = document.getElementById('event_time');
+        timeSelect.innerHTML = '';
+        
+        const bookedTimes = bookings[selectedDate] || [];
+        const startTime = 7 * 60; // 7 AM in minutes
+        const endTime = 20 * 60; // 8 PM in minutes
 
-            const day = dateValue.getDate().toString().padStart(2, '0');
-            const month = (dateValue.getMonth() + 1).toString().padStart(2, '0'); // Adding 1 since getMonth() returns 0-based month
-            const year = dateValue.getFullYear();
-
-            const formattedDate = `${day}-${month}-${year}`;
-
-            formattedDateDisplay.value = formattedDate;
-        }
-
-        function validateForm() {
-            var description = document.getElementById("description").value;
-            if (description.length < 10) {
-                alert("Description must be at least 10 characters long.");
-                return false;
+        for (let i = startTime; i < endTime; i += 15) {
+            const hour = Math.floor(i / 60);
+            const minute = i % 60;
+            const timeString = `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}:00`;
+            
+            const option = document.createElement('option');
+            option.value = timeString;
+            option.textContent = formatTime(hour, minute);
+            
+            if (bookedTimes.includes(timeString)) {
+                option.disabled = true;
             }
-            return true;
+            
+            timeSelect.appendChild(option);
         }
+    }
+
+    function formatTime(hour, minute) {
+        const period = hour >= 12 ? 'PM' : 'AM';
+        const formattedHour = hour % 12 || 12;
+        const formattedMinute = String(minute).padStart(2, '0');
+        return `${formattedHour}:${formattedMinute} ${period}`;
+    }
+
+    function startSSE() {
+    var source = new EventSource("../backend/fetch.php");
+
+    source.onmessage = function(event) {
+        var bookings = JSON.parse(event.data);
+        var tableBody = document.querySelector('tbody');
+        tableBody.innerHTML = '';
+
+        bookings.forEach(function(booking) {
+            var row = `<tr>
+                <td>${booking.bookingID}</td>
+                <td>${booking.title_event}</td>
+                <td>${booking.eventDate} ${booking.eventTime}</td>
+                <td>${booking.status}</td>
+            </tr>`;
+            tableBody.insertAdjacentHTML('beforeend', row);
+        });
+    };
+
+        source.addEventListener('close', function() {
+            console.log("Connection closed, reconnecting...");
+            setTimeout(startSSE, 100);  
+        });
+    }
+
+    startSSE();
+
+    //Inactivity
+    var inactivityTimeout = 900; 
+    function checkInactivity() {
+        setTimeout(function () {
+            window.location.href = '../client/login.php'; 
+        }, inactivityTimeout * 900);
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        checkInactivity();
+    });
+
+    document.addEventListener('mousemove', function () {
+        clearTimeout(checkInactivity);
+        checkInactivity();
+    });
+
+    document.addEventListener('keypress', function () {
+        clearTimeout(checkInactivity);
+        checkInactivity();
+    });
+
+
     </script>
 </body>
 

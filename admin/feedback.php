@@ -1,6 +1,5 @@
 <?php 
-// logout Automatically
-include '../backend/logout.php';
+session_start();
 //Connection
 include '../backend/dbcon.php';
 
@@ -12,9 +11,9 @@ $components = explode('/', $path);
 $page = $components[2];
 
 // Fetch data from the database
-$query = "SELECT feedback.feedbackID AS feedbackID, client.firstname, feedback.feedback_Title, feedback.feedback_description
+$query = "SELECT feedback.feedbackID AS feedbackID, client.name, feedback.feedback_Title, feedback.feedback_description
           FROM feedback
-          INNER JOIN client ON feedback.clientID = client.id"; 
+          INNER JOIN client ON feedback.clientID = client.clientID"; 
 
 $result = mysqli_query($conn, $query);
 
@@ -86,7 +85,7 @@ if (!$result) {
                             while ($row = mysqli_fetch_assoc($result)) {
                                 echo "<tr class='clickable-row' data-feedback-id='" . $row['feedbackID'] . "'>";
                                 echo "<td style='width: 7%;'><input type='checkbox' name='feedbackIDs[]' value='" . $row['feedbackID'] . "'></td>";
-                                echo "<td class='feedback-name' style='padding: 1.5% 0% 1% 3%; width: 15%; text-align: start;' >" . $row['firstname'] . "</td>";
+                                echo "<td class='feedback-name' style='padding: 1.5% 0% 1% 3%; width: 15%; text-align: start;' >" . $row['name'] . "</td>";
                                 echo "<td class='feedback-title'>" . $row['feedback_Title'] . "</td>";
                                 echo "<td class='feedback-description'>" . $row['feedback_description'] . "</td>";
                                 echo "</tr>";

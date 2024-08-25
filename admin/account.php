@@ -1,8 +1,7 @@
 <?php
-// logout Automatically
-include '../backend/logout.php';
 // Connection
 include '../backend/dbcon.php';
+session_start();
 $adminID = $_SESSION['id'];
 
 // Fetch the admin's data from the database

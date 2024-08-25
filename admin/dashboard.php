@@ -1,8 +1,8 @@
 <?php 
-// logout Automatically
-include '../backend/logout.php';
+session_start();
 //Connection
 include '../backend/dbcon.php';
+
 
 // Set the last activity time
 if (isset($_SESSION['LAST_ACTIVITY']) && (time() - $_SESSION['LAST_ACTIVITY'] > 600)) {

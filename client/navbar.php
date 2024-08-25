@@ -1,31 +1,26 @@
 <?php
-//Connection
 include '../backend/dbcon.php';
 
-$clientID = $_SESSION['id'];
+// Check if the client is logged in
+if (isset($_SESSION['clientID'])) {
+    $clientID = $_SESSION['clientID'];
 
-
-$sql = "SELECT firstName , lastName, profile FROM client WHERE id = '$clientID'";
-
-$result = $conn->query($sql);
-
-if ($result->num_rows > 0) {
-    $row = $result->fetch_assoc();
-    $name = $row["firstName"] . " " .$row["lastName"];
+    // Fetch the client's name
+    $sql = "SELECT name FROM client WHERE clientID = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $clientID);
+    $stmt->execute();
+    $result = $stmt->get_result();
     
-    if (!empty($row["profile"])) {
-        // If the profile column is not empty, use the profile image from the database
-        $profile = base64_encode($row["profile"]);
+    if ($result->num_rows > 0) {
+        $row = $result->fetch_assoc();
+        $clientName = $row['name'];
     } else {
-        // If the profile column is empty, use the default profile image
-        $profile = "../picture/default_profile.jpg";
+        $clientName = "Guest";
     }
 } else {
-    // Handle the case where no data is found
-    $name = "Name Not Found";
-    $profile = "../picture/default_profile.jpg"; // Provide a default profile image
+    $clientName = "Guest";
 }
-
 
 $pageTitles = array(
     "booking.php" => "Booking Event",
@@ -441,19 +436,15 @@ $pageTitle = isset($pageTitles[$currentPage]) ? $pageTitles[$currentPage] : "Boo
             </div>
             <div class="divider"></div>
             <div class="profile_info">
-                <h3><?php echo $name; ?></h3>
-                <p>Client</p>
-                <div class="profile_dropdown-content">
-                    <a href="profile.php">Profile</a>
-                    <a href="#" class="btn-logout">Logout</a>        
-                </div>
+            <?php if ($clientName != "Guest") { ?>
+                <span>Welcome, <?php echo htmlspecialchars($clientName); ?></span>
+                <a href="login.php" class="logout-btn">Logout</a>
+            <?php } else { ?>
+                <a href="login.php" class="login-btn">Login</a>
+            <?php } ?>
             </div>
             <div class="profile_pic">
-                <?php if (!empty($profile)): ?>
-                    <img src="data:image/jpeg;base64,<?php echo $profile; ?>" alt="client image">
-                <?php else: ?>
-                    <img src="picture/default_profile.jpg" alt="profile image">
-                <?php endif; ?>
+
             </div>
         </div>
     <div class="hamburger-menu" onclick="toggleMenu()">&#9776;</div>

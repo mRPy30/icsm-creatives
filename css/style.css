@@ -208,13 +208,13 @@ body, html {
 
 .auth-button img{
     margin-right: 10px;
-    width: 15%;
+    width: 8%;
 }
 
 .separator {
     display: flex;
     align-items: center;
-    width: 70%;    
+    width: 100%;    
     margin: 10px 0;
 }
 
