@@ -554,7 +554,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         //register
         document.getElementById("register").addEventListener("click", function() {
-            window.location.href = "../register.php";
+            window.location.href = "../client/register.php";
         });
 
     </script>

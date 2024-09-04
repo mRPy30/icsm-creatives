@@ -18,11 +18,11 @@ function sendVerificationEmail($email, $verification_code) {
 
     try {
         $mail->isSMTP();
-        $mail->Host = 'smtp.gmail.com';                     // Set the SMTP server to send through
-        $mail->SMTPAuth = true;                                   // Enable SMTP authentication
-        $mail->Username = 'icsmcreatives@gmail.com';                     // SMTP username
-        $mail->Password = 'nbtf sqfa zpkf ucng';                               // SMTP password
-        $mail->SMTPSecure = 'ssl';            // Enable implicit TLS encryption
+        $mail->Host = 'smtp.gmail.com';                     
+        $mail->SMTPAuth = true;                                   
+        $mail->Username = 'icsm230510@gmail.com';                     
+        $mail->Password = 'ptls kdfd prcs mngd';                              
+        $mail->SMTPSecure = 'ssl';            
         $mail->Port = 465;
 
         $mail->setFrom('araquejanvier@gmail.com');
@@ -49,16 +49,27 @@ function loginOrRegisterUser($conn, $provider, $id, $email, $name) {
     // Send verification email
     sendVerificationEmail($email, $verification_code);
 
-    // Check if the user already exists in the database
-    $stmt = $conn->prepare("SELECT clientID FROM client WHERE {$provider}_id = ?");
-    $stmt->bind_param("s", $id);
+    // Check if the user already exists by email
+    $stmt = $conn->prepare("SELECT clientID, {$provider}_id FROM client WHERE email = ?");
+    $stmt->bind_param("s", $email);
     $stmt->execute();
     $stmt->store_result();
-
+    
     if ($stmt->num_rows > 0) {
-        // User exists, log them in
-        $stmt->bind_result($clientID);
+        // User exists, fetch their details
+        $stmt->bind_result($clientID, $existing_provider_id);
         $stmt->fetch();
+        
+        if (empty($existing_provider_id)) {
+            // Update the existing record with the provider ID (Google or Facebook ID)
+            $stmt->close();
+            $update_stmt = $conn->prepare("UPDATE client SET {$provider}_id = ? WHERE clientID = ?");
+            $update_stmt->bind_param("si", $id, $clientID);
+            $update_stmt->execute();
+            $update_stmt->close();
+        }
+
+        // Log them in by setting the session
         $_SESSION['clientID'] = $clientID;
     } else {
         // User doesn't exist, insert their data and log them in

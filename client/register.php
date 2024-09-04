@@ -1,10 +1,6 @@
 <?php 
 // Active Page
 
-$directoryURI = $_SERVER['REQUEST_URI'];
-$path = parse_url($directoryURI, PHP_URL_PATH);
-$components = explode('/', $path);
-$page = $components[2];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -20,7 +16,7 @@ $page = $components[2];
 <body>
 <main class="main-container">
         <div class="left-section">
-            <a href="homepage/homepage.php">
+            <a href="../homepage/homepage.php">
                 <img src="../picture/logo.png" alt="Icsm Creatives logo" class="logo">
             </a>
             <div class="welcome-text">
@@ -33,22 +29,10 @@ $page = $components[2];
                 <div class="form_nav">
                     <ul class="nav">
                         <li class="nav-item">
-                            <a href="login.php" class="<?php if ($page == 'login.php') {
-                                echo 'nav-link active';
-                            } else {
-                                echo 'nav-link';
-                            } ?>">
-                                Login
-                            </a>
+                            <a href="../client/login.php" class="nav-link">Login</a>
                         </li>
                         <li class="nav-item">
-                            <a href="register.php" class="<?php if ($page == 'register.php') {
-                                echo 'nav-link active';
-                            } else {
-                                echo 'nav-link';
-                            } ?>">
-                                Register
-                            </a>
+                            <a href="register.php" class="nav-link active">Register</a>
                         </li>
                     </ul>
                 </div>

@@ -11,7 +11,9 @@ $timeout = 5;
 $endTime = time() + $timeout;
 
 while (time() <= $endTime) {
-    $sql = "SELECT bookingId, clientID, eventLocation, proof_payment, status FROM booking";
+    $sql = "SELECT bookingId, clientID, eventLocation, proof_payment, status 
+    FROM booking 
+    ORDER BY bookingId DESC";
     $result = $conn->query($sql);
 
     $bookingData = [];

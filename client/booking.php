@@ -10,8 +10,8 @@ if (!isset($_SESSION['clientID'])) {
 
 $clientID = $_SESSION['clientID'];
 
-// Fetch all bookings
-$sql = "SELECT eventDate, eventTime FROM booking ORDER BY eventDate, eventTime";
+// Fetch all bookings with 'Accepted' status
+$sql = "SELECT eventDate, start_time, end_time FROM booking WHERE status = 'Accepted' ORDER BY eventDate, start_time";
 $result = $conn->query($sql);
 $bookings = [];
 $fullyBookedDates = [];
@@ -20,7 +20,9 @@ while ($row = $result->fetch_assoc()) {
     if (!isset($bookings[$date])) {
         $bookings[$date] = [];
     }
-    $bookings[$date][] = $row['eventTime'];
+    $bookings[$date][] = ['start_time' => $row['start_time'], 'end_time' => $row['end_time']];
+    
+    // If the date has 2 or more 'Accepted' bookings, consider it fully booked
     if (count($bookings[$date]) >= 2) {
         $fullyBookedDates[] = $date;
     }
@@ -28,15 +30,18 @@ while ($row = $result->fetch_assoc()) {
 
 // Process form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Validate and save booking
-    // Add your validation logic here
+    // Capture the start time and end time from the form
+    $startTime = $_POST['start_time'];
+    $endTime = $_POST['end_time'];
+    
+    // Add your validation logic here for start and end times, and then save the data
     $_SESSION['booking'] = $_POST;
     header("Location: service.php");
     exit();
 }
 
 // Fetch the current user's bookings
-$sql = "SELECT bookingID, title_event, eventDate, eventTime, status FROM booking WHERE clientID = ?";
+$sql = "SELECT bookingID, title_event, eventDate, start_time, end_time, status FROM booking WHERE clientID = ? ORDER BY bookingID DESC";
 $stmt = $conn->prepare($sql);
 if ($stmt) {
     $stmt->bind_param("i", $clientID);
@@ -47,6 +52,7 @@ if ($stmt) {
     exit();
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -125,8 +131,11 @@ if ($stmt) {
                                         <label for="bookingDate">Date</label>
                                         <input type="text" id="event_date" name="event_date" required>
                                         <br>
-                                        <label for="bookingTime">Time</label>
-                                        <select id="event_time" name="event_time" required></select>
+                                        <label for="start_time">Start Time</label>
+                                        <select id="start_time" name="start_time" required></select>
+                                        <br>
+                                        <label for="end_time">End Time</label>
+                                        <select id="end_time" name="end_time" required></select>
                                         <br>
                                         <label for="event_location">Location:</label>
                                         <input type="text" id="event_location" name="event_location" required>
@@ -177,7 +186,8 @@ if ($stmt) {
                                 <tr>
                                     <th>Booking ID</th>
                                     <th>Event Name</th>
-                                    <th>Event Date & Time</th>
+                                    <th>Event Date</th>
+                                    <th>Time</th>
                                     <th>Status</th>
                                 </tr>
                             </thead>
@@ -228,69 +238,130 @@ if ($stmt) {
                         <div class="social-meadia-links">
                             <h6>Connect with us</h6>
                             <div class="icons">
-                                <a class="facebook" href="https://www.facebook.com/icsmcreatives" target="_blank"><i
-                                        class="fa-brands fa-facebook"></i>
-                                </a>
-                                <a class="mail" href="https://www.facebook.com/cvsuimusofficialpage" target="_blank"><i
-                                        class="fa-solid fa-envelope"></i>
-                                </a>
-                                <a class="instagram" href="https://www.instagram.com/icsmcreatives">
-                                    <i class=" fa-brands fa-instagram"></i>
-                                </a>
-                                <a class="tiktok" href="https://www.tiktok.com/@icsm.creatives">
-                                    <i class="fa-brands fa-tiktok"></i>
-                                </a>
+                                <a class="link-fb" href="#"><i class="fab fa-facebook-f"></i></a>
+                                <a class="link-twitter" href="#"><i class="fab fa-twitter"></i></a>
+                                <a class="link-linkedin" href="#"><i class="fab fa-linkedin-in"></i></a>
+                                <a class="link-pinterest" href="#"><i class="fab fa-pinterest-p"></i></a>
+                                <a class="link-instagram" href="#"><i class="fab fa-instagram"></i></a>
                             </div>
+                        </div>
+
+                        <div class="copyright-info">
+                            <p>Copyright © 2023 | ICSM Creatives | All Rights Reserved</p>
                         </div>
                     </div>
                 </div>
                 <div class="vertical-line-right"></div>
-                <div class="footer-logo">
-                    <a href="../homepage/homepage.php">
-                        <img src="../picture/logo.png" alt="logo">
-                    </a>
-                </div>
-            </div>
-        </section>
-
-        <section class="going-back">
-            <div class="arrow-up-button back-to-top-hidden">
-                <button class="back-to-top" onclick="scrollToTop()"><i class="fas fa-arrow-up"></i></button>
-            </div>
-        </section>
-
-        <section class="container-credential">
-            <div class="credit-info">
-                <div class="rights-definition">
-                    <p>© 2023-2024 ICSMCREATIVES.COM ALL RIGHTS RESERVED. TERMS OF USE | PRIVACY POLICY</p>
+                <div class="footer-right-content">
+                    <div class="footer-right">
+                        <h6>Subscribe</h6>
+                        <p>Join our mailing list to stay in the loop with our newest feature releases, bridal ideas &
+                            all
+                            things ICSM Creatives </p>
+                        <form class="footer-form">
+                            <input type="email" placeholder="Enter your email address">
+                            <div class="footer-right-button">
+                                <button class="btn-submit" type="submit"><i class="fa fa-send"></i>Submit</button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
         </section>
     </main>
-    <script>
-           document.addEventListener('DOMContentLoaded', function () {
-        const navbar = document.querySelector('.navbar');
-        const coverContent = document.querySelector('.text');
 
-        function handleScroll() {
-            const coverContentRect = coverContent.getBoundingClientRect();
-
-            if (coverContentRect.bottom > 0) {
-                navbar.classList.add('transparent-background');
-            } else {
-                navbar.classList.remove('transparent-background');
-            }
-        }
-
-        handleScroll();
-
-        window.addEventListener('scroll', handleScroll);
-    });
-
-
+    <!-- JavaScript to handle date picker -->
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const eventDateInput = document.getElementById('event_date');
+    const startTimeSelect = document.getElementById('start_time');
+    const endTimeSelect = document.getElementById('end_time');
+    const navbar = document.querySelector('.navbar');
+    const coverContent = document.querySelector('.text');
     const daysTag = document.querySelector(".days"),
     currentDate = document.querySelector(".current-date"),
     prevNextIcon = document.querySelectorAll(".icons span");
+
+    // Populate time options (Assuming events can be booked on the hour from 8am to 8pm)
+    function populateTimeOptions(selectElement) {
+        selectElement.innerHTML = '';
+        for (let hour = 8; hour <= 20; hour++) {
+            const hourString = hour.toString().padStart(2, '0') + ':00';
+            const option = document.createElement('option');
+            option.value = hourString;
+            option.textContent = hourString;
+            selectElement.appendChild(option);
+        }
+    }
+
+    populateTimeOptions(startTimeSelect);
+    populateTimeOptions(endTimeSelect);
+
+
+    const bookings = <?php echo json_encode($bookings); ?>;
+    const fullyBookedDates = <?php echo json_encode($fullyBookedDates); ?>;
+
+    flatpickr(eventDateInput, {
+        dateFormat: "Y-m-d",
+        minDate: "today",
+        disable: fullyBookedDates,
+        onChange: function (selectedDates, dateStr, instance) {
+            const selectedDate = dateStr;
+            const bookedTimes = bookings[selectedDate] || [];
+
+            // Reset the availability of time slots
+            for (let i = 0; i < startTimeSelect.options.length; i++) {
+                startTimeSelect.options[i].disabled = false;
+                endTimeSelect.options[i].disabled = false;
+            }
+
+            // Disable time slots that are already booked
+            bookedTimes.forEach(function (booking) {
+                const bookedStartTime = booking.start_time;
+                const bookedEndTime = booking.end_time;
+
+                for (let i = 0; i < startTimeSelect.options.length; i++) {
+                    const optionValue = startTimeSelect.options[i].value;
+                    if (optionValue >= bookedStartTime && optionValue < bookedEndTime) {
+                        startTimeSelect.options[i].disabled = true;
+                        endTimeSelect.options[i].disabled = true;
+                    }
+                }
+            });
+
+            startTimeSelect.selectedIndex = -1; // Reset the selected index
+            endTimeSelect.selectedIndex = -1;   // Reset the selected index
+        }
+    });
+
+    // Function to start SSE
+    function startSSE() {
+        var source = new EventSource("../backend/fetch.php");
+
+        source.onmessage = function(event) {
+            var bookings = JSON.parse(event.data);
+            var tableBody = document.querySelector('#booking-table-body'); // Ensure you use the correct ID or class
+            tableBody.innerHTML = '';
+
+            bookings.forEach(function(booking) {
+                var row = `<tr>
+                    <td>${booking.bookingID}</td>
+                    <td>${booking.title_event}</td>
+                    <td>${booking.eventDate}</td>
+                    <td>${booking.start_time} - ${booking.end_time}</td>
+                    <td>${booking.status}</td>
+                </tr>`;
+                tableBody.insertAdjacentHTML('beforeend', row);
+            });
+        };
+
+        source.addEventListener('close', function() {
+            console.log("Connection closed, reconnecting...");
+            setTimeout(startSSE, 100);  
+        });
+    }
+
+    startSSE();
 
     // getting new date, current year and month
     let date = new Date(),
@@ -327,100 +398,53 @@ if ($stmt) {
     }
     renderCalendar();
 
-    const bookings = <?php echo json_encode($bookings); ?>;
-    const fullyBookedDates = <?php echo json_encode($fullyBookedDates); ?>;
-
-    flatpickr("#event_date", {
-        minDate: "today",
-        disable: fullyBookedDates,
-        onChange: function(selectedDates, dateStr, instance) {
-            updateTimeOptions(dateStr);
-        }
-    });
-
-    function updateTimeOptions(selectedDate) {
-        const timeSelect = document.getElementById('event_time');
-        timeSelect.innerHTML = '';
-        
-        const bookedTimes = bookings[selectedDate] || [];
-        const startTime = 7 * 60; // 7 AM in minutes
-        const endTime = 20 * 60; // 8 PM in minutes
-
-        for (let i = startTime; i < endTime; i += 15) {
-            const hour = Math.floor(i / 60);
-            const minute = i % 60;
-            const timeString = `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}:00`;
-            
-            const option = document.createElement('option');
-            option.value = timeString;
-            option.textContent = formatTime(hour, minute);
-            
-            if (bookedTimes.includes(timeString)) {
-                option.disabled = true;
-            }
-            
-            timeSelect.appendChild(option);
-        }
-    }
-
-    function formatTime(hour, minute) {
-        const period = hour >= 12 ? 'PM' : 'AM';
-        const formattedHour = hour % 12 || 12;
-        const formattedMinute = String(minute).padStart(2, '0');
-        return `${formattedHour}:${formattedMinute} ${period}`;
-    }
-
-    function startSSE() {
-    var source = new EventSource("../backend/fetch.php");
-
-    source.onmessage = function(event) {
-        var bookings = JSON.parse(event.data);
-        var tableBody = document.querySelector('tbody');
-        tableBody.innerHTML = '';
-
-        bookings.forEach(function(booking) {
-            var row = `<tr>
-                <td>${booking.bookingID}</td>
-                <td>${booking.title_event}</td>
-                <td>${booking.eventDate} ${booking.eventTime}</td>
-                <td>${booking.status}</td>
-            </tr>`;
-            tableBody.insertAdjacentHTML('beforeend', row);
-        });
-    };
-
-        source.addEventListener('close', function() {
-            console.log("Connection closed, reconnecting...");
-            setTimeout(startSSE, 100);  
-        });
-    }
-
-    startSSE();
-
-    //Inactivity
-    var inactivityTimeout = 900; 
+    // Inactivity timeout
+    var inactivityTimeout;
     function checkInactivity() {
-        setTimeout(function () {
+        clearTimeout(inactivityTimeout);
+        inactivityTimeout = setTimeout(function () {
             window.location.href = '../client/login.php'; 
-        }, inactivityTimeout * 900);
+        }, 15 * 60 * 1000); // 15 minutes timeout
     }
 
-    document.addEventListener('DOMContentLoaded', function () {
-        checkInactivity();
-    });
+    document.addEventListener('mousemove', checkInactivity);
+    document.addEventListener('keypress', checkInactivity);
 
-    document.addEventListener('mousemove', function () {
-        clearTimeout(checkInactivity);
-        checkInactivity();
-    });
+    // Start the inactivity timer initially
+    checkInactivity();
 
-    document.addEventListener('keypress', function () {
-        clearTimeout(checkInactivity);
-        checkInactivity();
-    });
+    // Navbar transparency
+    function handleScroll() {
+        const coverContentRect = coverContent.getBoundingClientRect();
+        if (coverContentRect.bottom > 0) {
+            navbar.classList.add('transparent-background');
+        } else {
+            navbar.classList.remove('transparent-background');
+        }
+    }
 
+    handleScroll();
+    window.addEventListener('scroll', handleScroll);
 
-    </script>
+    // Validate form
+    function validateForm() {
+        const startTimeSelect = document.getElementById('start_time');
+        const endTimeSelect = document.getElementById('end_time');
+        const startTime = startTimeSelect.value;
+        const endTime = endTimeSelect.value;
+
+        if (startTime >= endTime) {
+            alert("End time must be later than start time.");
+            return false;
+        }
+
+        return true;
+    }
+});
+</script>
+
+</script>
+
 </body>
 
 </html>

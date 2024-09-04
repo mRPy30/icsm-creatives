@@ -190,7 +190,7 @@
                 <a href="contact.php">Contact</a>
             </li>
         </ul>
-        <a class="register" href="../register.php"><button>Register</button></a>
+        <a class="register" href="../client/register.php"><button>Register</button></a>
         <div class="hamburger-menu" onclick="toggleMenu()">&#9776;</div>
     </header>
 

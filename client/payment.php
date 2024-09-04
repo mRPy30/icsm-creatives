@@ -84,7 +84,8 @@ if (!isset($_SESSION['booking']) || !isset($_SESSION['total_cost'])) {
                                     <h2>Step 3: Payment</h2>
                                     <h3>Event Summary:</h3>
                                     <p>Date: <?php echo htmlspecialchars($_SESSION['booking']['event_date'] ?? 'Not provided'); ?></p>
-                                    <p>Time: <?php echo htmlspecialchars($_SESSION['booking']['event_time'] ?? 'Not provided'); ?></p>
+                                    <p>Start Time: <?php echo htmlspecialchars($_SESSION['booking']['start_time'] ?? 'Not provided'); ?></p>
+                                    <p>End Time: <?php echo htmlspecialchars($_SESSION['booking']['end_time'] ?? 'Not provided'); ?></p>
                                     <p>Type: <?php echo htmlspecialchars($_SESSION['booking']['type_of_event'] ?? 'Not provided'); ?></p>
                                     <p>Name: <?php echo htmlspecialchars($_SESSION['booking']['title_event'] ?? 'Not provided'); ?></p>
                                     <p>Location: <?php echo htmlspecialchars($_SESSION['booking']['event_location'] ?? 'Not provided'); ?></p>

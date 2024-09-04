@@ -12,7 +12,8 @@ $page = $components[2];
 
 // Fetch all booking details from the database, joining with the client table using the clientID foreign key
 $sql = "SELECT b.bookingId, b.clientID, b.eventLocation, b.proof_payment, b.status 
-        FROM booking AS b";
+        FROM booking AS b
+        ORDER BY b.bookingId DESC";  // Add ORDER BY clause here
 $result = $conn->query($sql);
 
 // Check if there's a result

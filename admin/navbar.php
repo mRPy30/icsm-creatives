@@ -349,7 +349,6 @@ $pageTitle = isset($pageTitles[$currentPage]) ? $pageTitles[$currentPage] : "Adm
                 <div class="dark-mode-toggle" onclick="toggleDarkMode()">
                     <i class="fas fa-moon" title="Switch to Darkmode"></i>
                 </div>
-                <i class="fa-regular fa-comment-dots" title="Message"></i>     
                 <div class="notification-dropdown">
                     <i class="far fa-bell" onclick="toggleNotifications()" title="Notification"></i>
                     <div class="notification-dropdown-content">
@@ -389,13 +388,6 @@ $pageTitle = isset($pageTitles[$currentPage]) ? $pageTitles[$currentPage] : "Adm
     </body>
 <script>
 
-document.addEventListener('DOMContentLoaded', function () {
-    const commentDotsIcon = document.querySelector('.fa-comment-dots');
-
-    commentDotsIcon.addEventListener('click', function () {
-        window.location.href = '../admin/message.php';
-    });
-});
 
     function toggleNotifications() {
         const notificationDropdownContent = document.querySelector('.notification-dropdown-content');
@@ -425,7 +417,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function handleLogout() {
         document.getElementById("loadingOverlay").style.display = "flex";
         setTimeout(function() {
-            window.location.href = "../login.php";
+            window.location.href = "../admin/login.php";
         }, 1000); 
     }
 

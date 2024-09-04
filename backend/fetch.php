@@ -15,7 +15,7 @@ $endTime = time() + $timeout;
 
 while (time() <= $endTime) {
     // Fetch the client's bookings
-    $stmt = $conn->prepare("SELECT bookingID, title_event, eventDate, eventTime, status FROM booking WHERE clientID = ?");
+    $stmt = $conn->prepare("SELECT bookingID, title_event, eventDate, start_time, end_time, status FROM booking WHERE clientID = ? ORDER BY eventDate DESC, start_time DESC, end_time DESC");    
     $stmt->bind_param("i", $clientID);
     $stmt->execute();
     $result = $stmt->get_result();

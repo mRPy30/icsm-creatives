@@ -106,7 +106,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     <main class="main-container">
         <div class="left-section">
-            <a href="homepage/homepage.php">
+            <a href="">
                 <img src="../picture/logo.png" alt="Icsm Creatives logo" class="logo">
             </a>
             <div class="welcome-text">
