@@ -3,6 +3,10 @@ session_start();
 include '../backend/dbcon.php';
 include '../backend/client/login.php';
 
+if (isset($_GET['event'])) {
+    $_SESSION['selected_event'] = $_GET['event'];
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -44,14 +48,23 @@ include '../backend/client/login.php';
                 <form class="login-form" action="" method="POST" onsubmit="return validateForm()">
                     <div class="fillup">
                         <label for="email">Email:</label>
-                        <input type="email" placeholder="Enter your Email" id="email" name="email" required><br>
+                        <input type="email" placeholder="Enter your Email"  id="email" name="email" required>
                     </div>
+
                     <div class="fillup">
-                        <label for="password">Password:</label>
-                        <input type="password" placeholder="Enter your Password" id="password" name="password" required>
-                        <span class="eye-toggle" onclick="togglePassword('password')">&#128065;</span><br>
+                        <div class="password-wrapper">
+                            <label for="password">Password:</label>
+                            <input type="password" placeholder="Password" id="password" name="password" required>
+                            <button type="button" id="toggle-password" class="eye-toggle">Show</button><br>
+                        </div>
                     </div>
-                    <p><a href="../forgotpassword.php">Forget Password?</a><p>                
+
+                    <div class="remember-forgot">
+                        <label>
+                            <input type="checkbox" id="remember" name="remember"> Remember me
+                        </label>
+                        <a href="../forgotpassword.php">Forgot Password?</a>
+                    </div>                
 
                     <div id="popup" class="popup">
                         <p id="popup-message"></p>
@@ -64,9 +77,6 @@ include '../backend/client/login.php';
                         <div class="separator-line"></div>
                     </div>
                     <div class="auth-btn-container">
-                        <a href="../backend/oauth.php?provider=facebook" class="auth-button facebook">
-                            <img src="../picture/fb-logo.png"> Login with Facebook
-                        </a>
                         <a href="../backend/oauth.php?provider=google" class="auth-button google">
                             <img src="../picture/google_logo.png" style="width: 5%;"> Login with Google
                         </a>
@@ -78,36 +88,64 @@ include '../backend/client/login.php';
     </main>                
 
     <script>
-        function togglePassword(fieldId) {
-            const field = document.getElementById(fieldId);
-            const type = field.getAttribute("type") === "password" ? "text" : "password";
-            field.setAttribute("type", type);
-        }
-
-        document.addEventListener("DOMContentLoaded", function () {
-            <?php if ($loginError): ?>
-                var popup = document.getElementById("popup");
-                var popupMessage = document.getElementById("popup-message");
-
-                // Set the error message
-                popupMessage.innerText = "Invalid login credentials. Please try again.";
-
-                // Style the popup
-                popup.style.display = "block";
-                popup.style.backgroundColor = '#f8d7da';
-                popup.style.color = '#842029';
-                popup.style.border = '2px solid #f5c2c7';
-                popup.style.padding = '10px';
-                popup.style.font = 'normal 500 13px/normal "Poppins"';
-                popup.style.borderRadius = '5px';
-                popup.style.textAlign = 'center';
-
-                // Close the popup after 3 seconds
-                setTimeout(function () {
-                    popup.style.display = "none";
-                }, 7000);
-            <?php endif; ?>
+        // Toggle Password Visibility
+        document.getElementById('toggle-password').addEventListener('click', function() {
+            const passwordField = document.getElementById('password');
+            const toggleBtn = document.getElementById('toggle-password');
+            
+            if (passwordField.type === 'password') {
+                passwordField.type = 'text';
+                toggleBtn.textContent = 'Hide';
+                passwordField.style.width = '100%';
+                passwordField.style.padding = '10px';
+                passwordField.style.margin = '10px 0';
+                passwordField.style.border = '1px solid #ddd';
+                passwordField.style.borderRadius = '4px';
+                passwordField.style.boxSizing = 'border-box';
+            } else {
+                passwordField.type = 'password';
+                toggleBtn.textContent = 'Show';
+                passwordField.style.width = '100%';
+                passwordField.style.padding = '10px';
+                passwordField.style.margin = '10px 0';
+                passwordField.style.border = '1px solid #ddd';
+                passwordField.style.borderRadius = '4px';
+                passwordField.style.boxSizing = 'border-box';
+            }
         });
+
+        // Pre-fill email if passed in the URL
+        window.onload = function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const email = urlParams.get('email');
+
+            if (email) {
+                document.getElementById('email').value = email !== 'null' ? email : '';
+            }
+
+            // Check if "Remember me" was selected before and pre-fill email and password
+            if (localStorage.getItem('remember') === 'true') {
+                document.getElementById('email').value = localStorage.getItem('email');
+                document.getElementById('password').value = localStorage.getItem('password');
+                document.getElementById('remember').checked = true;
+            }
+        };
+
+        // Store email and password if "Remember me" is checked
+        document.querySelector('form').addEventListener('submit', function() {
+            const remember = document.getElementById('remember').checked;
+            if (remember) {
+                localStorage.setItem('email', document.getElementById('email').value);
+                localStorage.setItem('password', document.getElementById('password').value);
+                localStorage.setItem('remember', 'true');
+            } else {
+                localStorage.removeItem('email');
+                localStorage.removeItem('password');
+                localStorage.removeItem('remember');
+            }
+        });
+
+        
     </script>
 </body>
 </html>

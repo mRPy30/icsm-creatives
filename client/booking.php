@@ -9,6 +9,8 @@ if (!isset($_SESSION['clientID'])) {
 }
 
 $clientID = $_SESSION['clientID'];
+$type_of_event = isset($_SESSION['selected_event']) ? $_SESSION['selected_event'] : '';
+unset($_SESSION['selected_event']);
 
 // Fetch all bookings with 'Accepted' status
 $sql = "SELECT eventDate, start_time, end_time FROM booking WHERE status = 'Accepted' ORDER BY eventDate, start_time";
@@ -26,6 +28,14 @@ while ($row = $result->fetch_assoc()) {
     if (count($bookings[$date]) >= 2) {
         $fullyBookedDates[] = $date;
     }
+}
+
+// Fetch the event names from the event table
+$sql = "SELECT eventID, eventName FROM event";
+$eventResult = $conn->query($sql);
+if ($eventResult === false) {
+    echo "Error fetching events: " . $conn->error;
+    exit();
 }
 
 // Process form submission
@@ -145,7 +155,14 @@ if ($stmt) {
                                         <input type="text" id="title_event" name="title_event" required>
                                         <br>
                                         <label for="type_of_event">Type of Event:</label>
-                                        <input type="text" id="type_of_event" name="type_of_event" required>
+                                        <select id="type_of_event" name="type_of_event">
+                                            <?php while ($row = $eventResult->fetch_assoc()): ?>
+                                                <option value="<?php echo htmlspecialchars($row['eventName']); ?>" 
+                                                    <?php echo ($row['eventName'] == $type_of_event) ? 'selected' : ''; ?>>
+                                                    <?php echo htmlspecialchars($row['eventName']); ?>
+                                                </option>
+                                            <?php endwhile; ?>
+                                        </select>                                        
                                         <br>
                                         <label for="eventDescription">Booking Description</label>
                                         <input type="text" id="eventDescription" name="eventDescription" style="height: 75px;" required>

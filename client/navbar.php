@@ -437,7 +437,7 @@ $pageTitle = isset($pageTitles[$currentPage]) ? $pageTitles[$currentPage] : "Boo
             <div class="divider"></div>
             <div class="profile_info">
             <?php if ($clientName != "Guest") { ?>
-                <span>Welcome, <?php echo htmlspecialchars($clientName); ?></span>
+                <?php echo htmlspecialchars($clientName); ?>
                 <a href="login.php" class="logout-btn">Logout</a>
             <?php } else { ?>
                 <a href="login.php" class="login-btn">Login</a>

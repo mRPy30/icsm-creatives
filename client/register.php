@@ -1,7 +1,13 @@
-<?php 
-// Active Page
+<?php
+include '../backend/dbcon.php';
+include '../backend/client/register.php';
+
+if (isset($_GET['event'])) {
+    $_SESSION['selected_event'] = $_GET['event'];
+}
 
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -14,7 +20,7 @@
     <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
-<main class="main-container">
+    <main class="main-container">
         <div class="left-section">
             <a href="../homepage/homepage.php">
                 <img src="../picture/logo.png" alt="Icsm Creatives logo" class="logo">
@@ -38,24 +44,33 @@
                 </div>
             </div>
             <div class="bottom-con">
-                <form class="login-form" action="../backend/register.php" method="POST">
+                <form class="login-form" action="" method="POST">
                     <div class="fillup">        
                         <label for="email">Email:</label>
                         <input type="email" placeholder="Enter your Email" id="email" name="email" required><br>
                     </div>
                     <div class="fillup">
-                        <label for="password">Password:</label>
-                        <input type="password" placeholder="Enter your Password" id="password" name="password" required>
-                        <span class="eye-toggle" onclick="togglePassword('password')">&#128065;</span><br>
+                        <label for="cellphone">Cellphone Number:</label>
+                        <input type="tel" id="cellphone" name="cellphone" placeholder="+63" value="+63" pattern="\+63[0-9]{10}" maxlength="13" required><br>
+                    </div>
+                    <div class="fillup">
+                        <div class="password-wrapper">
+                            <label for="password">Password:</label>
+                            <input type="password" placeholder="Password" id="password" name="password" required>
+                            <button type="button" id="toggle-password" class="eye-toggle">Show</button><br>
+                        </div>
                     </div>
                     <div id="popup" class="popup">
                         <p id="popup-message"></p>
                     </div>
                     <div class="fillup">
-                        <label for="confirm_password">Confirm Password:</label>
-                        <input type="password" placeholder="Enter your Confirm Password" id="confirm_password" name="confirm_password" required>
-                        <span class="eye-toggle" onclick="togglePassword('confirm_password')">&#128065;</span><br>
+                        <div class="password-wrapper">
+                            <label for="confirm_password">Confirm Password:</label>
+                            <input type="password" placeholder="Enter your Confirm Password" id="confirm_password" name="confirm_password" required>
+                            <button type="button" id="toggle-password" class="eye-toggle">Show</button><br>
+                        </div>
                     </div>
+                    
                     <button class="btn" type="submit">Register</button>
 
                     <div class="separator">
@@ -74,7 +89,15 @@
                 </form>
                 <p>Already have an account? <a href="login.php">Login here</a></p>
                 </div>
-            </div>
+            </div>  
+        </div>
+        <div id="continue" class="continue" style="display: none;">
+            <h2>You already created this account</h2>
+            <img id="profile-image" src="" alt="Profile Image">
+            <button id="continue-button">Continue as</button>
+        </div>
+        <div id="loading-overlay" class="loading-overlay" style="display: none;">
+            <div class="loading-circle"></div>
         </div>
     </main>
     <script>
@@ -83,6 +106,55 @@
             const type = field.getAttribute("type") === "password" ? "text" : "password";
             field.setAttribute("type", type);
         }
+
+            document.addEventListener('DOMContentLoaded', function() {
+            const cellphoneInput = document.getElementById('cellphone');
+
+            // Set initial value to +63
+            cellphoneInput.value = "+63";
+
+            // Prevent removing +63 prefix
+            cellphoneInput.addEventListener('input', function() {
+                if (!cellphoneInput.value.startsWith("+63")) {
+                    cellphoneInput.value = "+63";
+                }
+            });
+
+            // Enforce 10 digits after +63
+            cellphoneInput.addEventListener('keypress', function(e) {
+                const currentLength = cellphoneInput.value.length;
+                if (currentLength >= 13 && e.key !== 'Backspace') { // Max length is 13 (+63 + 10 digits)
+                    e.preventDefault();
+                }
+            });
+
+            // Optional: Prevent copying/pasting invalid numbers
+            cellphoneInput.addEventListener('paste', function(e) {
+                e.preventDefault();
+            });
+        });
+
+        function showPopup(name, profileImage, email) {
+        document.getElementById('profile-image').src = profileImage;
+        document.getElementById('continue-button').textContent = 'Continue as ' + name;
+        document.getElementById('continue').style.display = 'block';
+
+        // Add click event to the "Continue as" button to redirect to login.php with the email
+        document.getElementById('continue-button').onclick = function() {
+            window.location.href = `login.php?email=${email}`; // Pass email in the URL
+        };
+    }
+
+    window.onload = function() {
+        // Check if there's a query parameter for an existing email
+        const urlParams = new URLSearchParams(window.location.search);
+        const name = urlParams.get('name');
+        const profileImage = urlParams.get('profile');
+        const email = urlParams.get('email');  // Get email if passed
+        if (name && profileImage && email) {
+            showPopup(name, profileImage, email);
+        }
+    };
     </script>
 </body>
 </html>

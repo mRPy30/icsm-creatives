@@ -526,30 +526,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         });
 
 
-        // Get the modal
-        const modal = document.getElementById('login_modal');
-
-        // Get the button that opens the modal
-        const btnCover = document.getElementById('book-now-btn');
-
-        // Get the <span> element that closes the modal
-        const closeBtn = modal.querySelector('.fa-xmark');
-
-        // When the user clicks the button, open the modal
-        btnCover.addEventListener('click', function () {
-            modal.style.display = 'block';
-        });
-
-        // When the user clicks on <span> (x), close the modal
-        closeBtn.addEventListener('click', function () {
-            modal.style.display = 'none';
-        });
-
-        // When the user clicks anywhere outside of the modal, close it
-        window.addEventListener('click', function (event) {
-            if (event.target === modal) {
-                modal.style.display = 'none';
-            }
+        //event
+        document.getElementById("book-now-btn").addEventListener("click", function() {
+            window.location.href = "../homepage/event.php";
         });
 
         //register

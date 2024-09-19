@@ -13,14 +13,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $clientID = $_SESSION['clientID'];
     $clientName = $_SESSION['name']; // Assuming client's name is stored in session
     $eventDate = $_SESSION['booking']['event_date'];
-    $startTime = $_SESSION['booking']['start_time']; // Changed from eventTime to start_time
-    $endTime = $_SESSION['booking']['end_time']; // Added end_time
+    $startTime = $_SESSION['booking']['start_time'];
+    $endTime = $_SESSION['booking']['end_time'];
     $eventLocation = $_SESSION['booking']['event_location'];
     $theme = $_SESSION['booking']['theme'];
-    $type_of_event = $_SESSION['booking']['type_of_event'];
     $title_event = $_SESSION['booking']['title_event'];
     $budget = $_SESSION['booking']['budget'];
     $total_cost = $_SESSION['total_cost'];
+
+    // Fetch eventID based on the event name stored in the booking session (type_of_event is eventName)
+    $type_of_event = $_SESSION['booking']['type_of_event']; // This holds the event name from booking step 1
+    $sql = "SELECT eventID FROM event WHERE eventName = ?";
+    $stmt = $conn->prepare($sql);
+    if ($stmt) {
+        $stmt->bind_param("s", $type_of_event);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        if ($result->num_rows > 0) {
+            $row = $result->fetch_assoc();
+            $eventID = $row['eventID']; // Now we have the eventID corresponding to the selected event
+        } else {
+            echo "Error: Event not found.";
+            exit();
+        }
+        $stmt->close();
+    } else {
+        echo "Error preparing statement: " . $conn->error;
+        exit();
+    }
 
     // Handle file upload
     $proof_payment = '';
@@ -33,8 +53,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     // Insert booking data into the database with "pending" status
-    $sql = "INSERT INTO booking (clientID, eventDate, start_time, end_time, eventLocation, theme, type_of_event, title_event, budget, total_cost, proof_payment, status)
-            VALUES ('$clientID', '$eventDate', '$startTime', '$endTime', '$eventLocation', '$theme', '$type_of_event', '$title_event', '$budget', '$total_cost', '$proof_payment', 'Pending')";
+    $sql = "INSERT INTO booking (clientID, eventDate, start_time, end_time, eventLocation, theme, eventID, title_event, budget, total_cost, proof_payment, status)
+            VALUES ('$clientID', '$eventDate', '$startTime', '$endTime', '$eventLocation', '$theme', '$eventID', '$title_event', '$budget', '$total_cost', '$proof_payment', 'Pending')";
 
     if ($conn->query($sql) === TRUE) {
         // Send notification email to admin
@@ -42,13 +62,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $subject = 'New Booking Request';
         $body = "A new booking request has been submitted.\n\n";
         $body .= "Booking Date: $eventDate\n";
-        $body .= "Start Time: $startTime\n"; // Changed from eventTime to start_time
-        $body .= "End Time: $endTime\n"; // Added end_time
-        $body .= "Event Type: $type_of_event\n";
+        $body .= "Start Time: $startTime\n";
+        $body .= "End Time: $endTime\n";
+        $body .= "Event ID: $eventID\n";
         $body .= "Event Name: $title_event\n";
         $body .= "Event Location: $eventLocation\n";
         $body .= "Client ID: $clientID\n";
-        $body .= "Client Name: $clientName\n"; // Adding client name to the body
+        $body .= "Client Name: $clientName\n"; 
         $body .= "Status: Pending\n";
 
         sendEmail($adminEmail, $subject, $body, $clientName);
