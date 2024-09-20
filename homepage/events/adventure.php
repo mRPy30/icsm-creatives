@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,14 +12,14 @@
 <body>
 
 <div class="event-banner">
-    <img src="../../picture/portrait.jpg">
+    <img src="../../picture/birthday.jpg">
 </div>
 
 <div class="event-content">
-    <h1>Family Portraits</h1>
+    <h1>Birthday Event</h1>
     <p>Celebrate your special day with our photography and videography services. We will capture all the fun and precious moments so that you can cherish them forever.</p>
 
-    <button class="book-now-btn" onclick="location.href='../../client/login.php?event=Family Portraits'">Book Now</button>
+    <button class="book-now-btn" onclick="location.href='../../client/login.php?event=Adventure'">Book Now</button>
 
     <!-- Ads content specific to Birthday -->
     <div class="ads-content">

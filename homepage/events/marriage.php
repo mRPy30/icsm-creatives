@@ -18,7 +18,7 @@
     <h1>Marriage</h1>
     <p>Make your wedding day unforgettable with our photography and videography.</p>
 
-    <button class="book-now-btn" onclick="location.href='../../client/login.php?event=marriage'">Book Now</button>
+    <button class="book-now-btn" onclick="location.href='../../client/login.php?event=Wedding'">Book Now</button>
 
     <!-- Ads content specific to Birthday -->
     <div class="ads-content">

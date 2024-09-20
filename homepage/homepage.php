@@ -87,7 +87,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <!---WEB TITLE--->
     <link rel="short icon" href="../picture/shortcut-logo.png" type="x-icon">
     <title>
-        <?php echo "Online Event Booking"; ?>
+        <?php echo "Online Event Booking | ICSM Creatives"; ?>
     </title>
 
     <!---CSS--->

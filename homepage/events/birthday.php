@@ -19,7 +19,7 @@
     <h1>Birthday Event</h1>
     <p>Celebrate your special day with our photography and videography services. We will capture all the fun and precious moments so that you can cherish them forever.</p>
 
-    <button class="book-now-btn" onclick="location.href='../../client/login.php?event=birthday'">Book Now</button>
+    <button class="book-now-btn" onclick="location.href='../../client/login.php?event=Birthday'">Book Now</button>
 
     <!-- Ads content specific to Birthday -->
     <div class="ads-content">

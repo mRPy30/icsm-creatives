@@ -18,7 +18,7 @@
     <h1>Graduation</h1>
     <p>Celebrate your academic achievements with a memorable photoshoot.</p>
 
-    <button class="book-now-btn" onclick="location.href='../../client/login.php?event=graduation'">Book Now</button>
+    <button class="book-now-btn" onclick="location.href='../../client/login.php?event=Graduation'">Book Now</button>
 
     <!-- Ads content specific to Birthday -->
     <div class="ads-content">
