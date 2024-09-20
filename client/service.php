@@ -1,8 +1,37 @@
 <?php
 session_start();
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $_SESSION['booking'] = $_POST;
+include '../backend/dbcon.php'; 
+
+// Fetch the selected event from step 1 (booking.php)
+if (!isset($_SESSION['booking'])) {
+    header("Location: booking.php"); // Redirect to step 1 if no booking data found
+    exit();
 }
+
+$type_of_event = $_SESSION['booking']['type_of_event'];
+
+// Fetch all services included for the selected event type
+$sql = "SELECT s.serviceID, s.service_name, s.price 
+        FROM services s
+        JOIN services es ON s.serviceID = es.serviceID
+        JOIN event e ON es.eventID = e.eventID
+        WHERE e.eventName = ?";
+
+$stmt = $conn->prepare($sql);
+if ($stmt === false) {
+    die("Error preparing statement: " . $conn->error);
+}
+
+$stmt->bind_param("s", $type_of_event);
+$stmt->execute();
+$result = $stmt->get_result();
+$services = [];
+
+while ($row = $result->fetch_assoc()) {
+    $services[] = $row;
+}
+
+$stmt->close();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -70,31 +99,40 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     </div>
                                 </div>
                             </div>
-                            <form class="form-fillup needs-validation" action="payment.php" method="POST" id="serviceForm">
-                                <div class="form-group">
-                                    <label for="theme">Event Theme:</label>
-                                    <input type="text" id="theme" name="theme" required><br>
+                            <h2>Services for <?php echo htmlspecialchars($type_of_event); ?></h2>
 
-                                    <label for="budget">Budget:</label>
-                                    <input type="number" id="budget" name="budget" required><br>
-
-                                    <h3>Additional Services:</h3>
-                                    <label for="photographers">Additional Photographers:</label>
-                                    <input type="checkbox" id="photographers" name="services[]" value="2000" onclick="calculateTotal()"> PHP 2000<br>
-
-                                    <label for="video">Teaser Video:</label>
-                                    <input type="checkbox" id="video" name="services[]" value="1500" onclick="calculateTotal()"> PHP 1500<br>
-
-                                    <label for="invitation">Virtual Invitation:</label>
-                                    <input type="checkbox" id="invitation" name="services[]" value="1000" onclick="calculateTotal()"> PHP 1000<br>
-
-                                    <div id="total-cost">Total Cost: PHP 0</div>
-
-                                    <div class="buttons-book">
-                                        <button id="next" type="submit">Next</button>
+                            <?php if (!empty($services)): ?>
+                                <form action="payment.php" method="POST">
+                                    <div class="services-list">
+                                        <?php foreach ($services as $service): ?>
+                                            <div class="service-item">
+                                                <h3><?php echo htmlspecialchars($service['service_name']); ?></h3>
+                                                <p>Price: PHP <?php echo htmlspecialchars($service['price']); ?></p>
+                                                <label>
+                                                    <input type="checkbox" name="services[]" value="<?php echo htmlspecialchars($service['serviceID']); ?>">
+                                                    Select this service
+                                                </label>
+                                            </div>
+                                        <?php endforeach; ?>
                                     </div>
-                                </div>
-                            </form>
+                            <?php else: ?>
+                                <p>No services available for this event.</p>
+                            <?php endif; ?>
+                            
+                            <h3>Additional Services:</h3>
+                            <label for="photographers">Additional Photographers:</label>
+                            <input type="checkbox" id="photographers" name="services[]" value="2000" onclick="calculateTotal()"> PHP 2000<br>
+                            
+                            <label for="video">Teaser Video:</label>
+                            <input type="checkbox" id="video" name="services[]" value="1500" onclick="calculateTotal()"> PHP 1500<br>
+                            
+                            <label for="invitation">Virtual Invitation:</label>
+                            <input type="checkbox" id="invitation" name="services[]" value="500" onclick="calculateTotal()"> PHP 500<br>
+                            
+                            <div id="total-cost">Total Cost: PHP 0</div>
+                            
+                            <button type="submit" id="next">Next</button>
+                        </form>
                         </div>
                     </div>
                 </div>

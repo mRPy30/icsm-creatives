@@ -12,6 +12,16 @@ $clientID = $_SESSION['clientID'];
 $type_of_event = isset($_SESSION['selected_event']) ? $_SESSION['selected_event'] : '';
 unset($_SESSION['selected_event']);
 
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Store the selected event in the session
+    $_SESSION['selected_event'] = $_POST['type_of_event'];
+
+    // Capture other booking details and redirect to service.php
+    $_SESSION['booking'] = $_POST;
+    header("Location: service.php");
+    exit();
+}
+
 // Fetch all bookings with 'Accepted' status
 $sql = "SELECT eventDate, start_time, end_time FROM booking WHERE status = 'Accepted' ORDER BY eventDate, start_time";
 $result = $conn->query($sql);
