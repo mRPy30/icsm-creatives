@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 19, 2024 at 07:01 PM
+-- Generation Time: Sep 21, 2024 at 02:44 AM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.1.17
 
@@ -59,6 +59,8 @@ CREATE TABLE `booking` (
   `eventID` int(11) DEFAULT NULL,
   `title_event` varchar(250) NOT NULL,
   `budget` decimal(11,0) NOT NULL,
+  `serviceID` int(11) DEFAULT NULL,
+  `additional` varchar(255) NOT NULL,
   `total_cost` decimal(10,0) NOT NULL,
   `description` text NOT NULL,
   `clientID` int(11) DEFAULT NULL,
@@ -71,8 +73,9 @@ CREATE TABLE `booking` (
 -- Dumping data for table `booking`
 --
 
-INSERT INTO `booking` (`bookingId`, `eventDate`, `start_time`, `end_time`, `eventLocation`, `theme`, `eventID`, `title_event`, `budget`, `total_cost`, `description`, `clientID`, `status`, `proof_payment`, `reason`) VALUES
-(158, '2024-09-21', '08:00:00.00000', '13:00:00.00000', 'CVSU-INDANG', 'aesthetic', 5001, 'TEST1', 2000, 2000, '', 38, 'Accepted', 0x726563656970742d74656d706c6174652d75732d6d6f6e6f2d626c61636b2d37353070782e706e67, '');
+INSERT INTO `booking` (`bookingId`, `eventDate`, `start_time`, `end_time`, `eventLocation`, `theme`, `eventID`, `title_event`, `budget`, `serviceID`, `additional`, `total_cost`, `description`, `clientID`, `status`, `proof_payment`, `reason`) VALUES
+(158, '2024-09-21', '08:00:00.00000', '13:00:00.00000', 'CVSU-INDANG', 'aesthetic', 5001, 'TEST1', 2000, NULL, '', 2000, '', 38, 'Accepted', 0x726563656970742d74656d706c6174652d75732d6d6f6e6f2d626c61636b2d37353070782e706e67, ''),
+(159, '2024-09-21', '14:00:00.00000', '18:00:00.00000', 'cvsu', '', 5001, 'TEST1', 0, NULL, '', 4501, '', 38, 'Pending', 0x726563656970742d74656d706c6174652d75732d6d6f6e6f2d626c61636b2d37353070782e706e67, '');
 
 -- --------------------------------------------------------
 
@@ -130,6 +133,7 @@ INSERT INTO `content` (`pictureID`, `datePosted`, `pictureName`, `postedPage`, `
 CREATE TABLE `event` (
   `eventID` int(11) NOT NULL,
   `eventName` varchar(255) NOT NULL,
+  `serviceID` int(11) DEFAULT NULL,
   `description` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -137,11 +141,11 @@ CREATE TABLE `event` (
 -- Dumping data for table `event`
 --
 
-INSERT INTO `event` (`eventID`, `eventName`, `description`) VALUES
-(5001, 'Birthday', ''),
-(5002, 'Wedding\r\n', ''),
-(5003, 'Graduation', ''),
-(5004, 'Christening', '');
+INSERT INTO `event` (`eventID`, `eventName`, `serviceID`, `description`) VALUES
+(5001, 'Birthday', NULL, ''),
+(5002, 'Wedding\r\n', NULL, ''),
+(5003, 'Graduation', NULL, ''),
+(5004, 'Christening', NULL, '');
 
 -- --------------------------------------------------------
 
@@ -252,7 +256,8 @@ CREATE TABLE `services` (
 INSERT INTO `services` (`serviceID`, `eventID`, `service_name`, `price`, `descripition`) VALUES
 (4001, 5001, 'Birthday Photoshoot Only ', 4500.00, 'Includes basic photoshoot'),
 (4002, 5001, 'Birthday Photoshoot & Video', 8500.00, 'Photoshoot with video coverage'),
-(4003, 5002, 'Wedding Photoshoot Only', 5500.00, 'Includes basic photoshoot');
+(4003, 5002, 'Wedding Photoshoot Only', 5500.00, 'Includes basic photoshoot'),
+(4004, 5002, 'Wedding Photoshoot and Video', 9000.00, 'Photoshoot with video coverage');
 
 -- --------------------------------------------------------
 
@@ -293,7 +298,8 @@ ALTER TABLE `administrator`
 ALTER TABLE `booking`
   ADD PRIMARY KEY (`bookingId`),
   ADD KEY `fk_client` (`clientID`),
-  ADD KEY `fk_event` (`eventID`);
+  ADD KEY `fk_event` (`eventID`),
+  ADD KEY `fk_services` (`serviceID`);
 
 --
 -- Indexes for table `client`
@@ -311,7 +317,8 @@ ALTER TABLE `content`
 -- Indexes for table `event`
 --
 ALTER TABLE `event`
-  ADD PRIMARY KEY (`eventID`);
+  ADD PRIMARY KEY (`eventID`),
+  ADD KEY `fk_serviceID` (`serviceID`);
 
 --
 -- Indexes for table `expenses`
@@ -341,6 +348,7 @@ ALTER TABLE `schedule`
 -- Indexes for table `services`
 --
 ALTER TABLE `services`
+  ADD PRIMARY KEY (`serviceID`),
   ADD KEY `fk_eventID` (`eventID`);
 
 --
@@ -364,7 +372,7 @@ ALTER TABLE `administrator`
 -- AUTO_INCREMENT for table `booking`
 --
 ALTER TABLE `booking`
-  MODIFY `bookingId` int(55) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=159;
+  MODIFY `bookingId` int(55) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=160;
 
 --
 -- AUTO_INCREMENT for table `client`
@@ -403,6 +411,12 @@ ALTER TABLE `schedule`
   MODIFY `schedID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
+-- AUTO_INCREMENT for table `services`
+--
+ALTER TABLE `services`
+  MODIFY `serviceID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4005;
+
+--
 -- AUTO_INCREMENT for table `staff`
 --
 ALTER TABLE `staff`
@@ -417,7 +431,14 @@ ALTER TABLE `staff`
 --
 ALTER TABLE `booking`
   ADD CONSTRAINT `fk_clientID` FOREIGN KEY (`clientID`) REFERENCES `client` (`clientID`),
-  ADD CONSTRAINT `fk_event` FOREIGN KEY (`eventID`) REFERENCES `event` (`eventID`) ON DELETE SET NULL ON UPDATE SET NULL;
+  ADD CONSTRAINT `fk_event` FOREIGN KEY (`eventID`) REFERENCES `event` (`eventID`) ON DELETE SET NULL ON UPDATE SET NULL,
+  ADD CONSTRAINT `fk_services` FOREIGN KEY (`serviceID`) REFERENCES `services` (`serviceID`) ON DELETE SET NULL ON UPDATE SET NULL;
+
+--
+-- Constraints for table `event`
+--
+ALTER TABLE `event`
+  ADD CONSTRAINT `fk_serviceID` FOREIGN KEY (`serviceID`) REFERENCES `services` (`serviceID`) ON DELETE SET NULL ON UPDATE SET NULL;
 
 --
 -- Constraints for table `services`
