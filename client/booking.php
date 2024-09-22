@@ -10,7 +10,6 @@ if (!isset($_SESSION['clientID'])) {
 
 $clientID = $_SESSION['clientID'];
 $type_of_event = isset($_SESSION['selected_event']) ? $_SESSION['selected_event'] : '';
-unset($_SESSION['selected_event']);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Store the selected event in the session

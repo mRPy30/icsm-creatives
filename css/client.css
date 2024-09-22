@@ -679,3 +679,45 @@
     grid-column: 1 / -1;
     /* This will make the "Featured Projects" item span across all columns */
 }
+
+
+
+
+
+
+.service-card {
+    border: 2px solid #BCB4B5; /* Light gray border */
+    border-radius: 8px;
+    margin-bottom: 20px;
+    padding: 10px;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.service-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.service-content {
+    background-size: cover;
+    background-position: center;
+    padding: 20px;
+    color: white;
+    text-align: center;
+    border-radius: 6px;
+    min-height: 150px;
+}
+
+.service-content h3 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: bold;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.service-content p {
+    margin-top: 10px;
+    font-size: 18px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}

@@ -1,37 +1,29 @@
 <?php
 session_start();
-include '../backend/dbcon.php'; 
+$selected_event = isset($_SESSION['selected_event']) ? $_SESSION['selected_event'] : '';  // Event from the session
 
-// Fetch the selected event from step 1 (booking.php)
-if (!isset($_SESSION['booking'])) {
-    header("Location: booking.php"); // Redirect to step 1 if no booking data found
-    exit();
+// Ensure the event is set correctly
+if (!$selected_event) {
+    echo "No event selected!";
+    exit;
 }
 
-$type_of_event = $_SESSION['booking']['type_of_event'];
+$additional_services = [
+    'Same Day Editing' => 4000,
+    'Virtual Invitation' => 700,
+    'Throwback Presentation' => 2000,
+    'Props and Background' => 2500
+];
 
-// Fetch all services included for the selected event type
-$sql = "SELECT s.serviceID, s.service_name, s.price 
-        FROM services s
-        JOIN services es ON s.serviceID = es.serviceID
-        JOIN event e ON es.eventID = e.eventID
-        WHERE e.eventName = ?";
+include('../backend/dbcon.php');
 
-$stmt = $conn->prepare($sql);
-if ($stmt === false) {
-    die("Error preparing statement: " . $conn->error);
-}
-
-$stmt->bind_param("s", $type_of_event);
+// Fetch all services related to the selected event
+$query = "SELECT service_name, price FROM services WHERE eventID = (SELECT eventID FROM event WHERE eventName = ?)";
+$stmt = $conn->prepare($query);
+$stmt->bind_param('s', $selected_event);
 $stmt->execute();
 $result = $stmt->get_result();
-$services = [];
-
-while ($row = $result->fetch_assoc()) {
-    $services[] = $row;
-}
-
-$stmt->close();
+$services = $result->fetch_all(MYSQLI_ASSOC);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -40,6 +32,7 @@ $stmt->close();
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <!---WEB TITLE--->
     <link rel="short icon" href="../picture/shortcut-logo.png" type="x-icon">
@@ -65,15 +58,11 @@ $stmt->close();
         <section class="coverpage">
             <div class="cover-content">
                 <div class="carousel">
-                    <img src="../picture/coverpage1.jpg" alt="coverpage">
-                    <img src="../picture/prenup.jpg" alt="coverpage">
-                    <img src="../picture/girls.jpg" alt="coverpage">
-                    <img src="../picture/self.jpg" alt="coverpage">
-                    <img src="../picture/wedding.jpg" alt="coverpage">
+                    
                 </div>
                 <div class="text">
-                    <h2>Capture every precious moment through our lenses </h2>
-                    <p>Get expert photographers and amazing photos, and <br>videos, starting from just PHP 2,500.</p>
+                    <h2>Choose your Ratings</h2>
+                    <p>Make Sure you details is correct before proceeding to the next step</p>
                 </div>
             </div>
         </section>
@@ -99,40 +88,34 @@ $stmt->close();
                                     </div>
                                 </div>
                             </div>
-                            <h2>Services for <?php echo htmlspecialchars($type_of_event); ?></h2>
+                            <form action="payment.php" class="form-fillup needs-validation" method="POST" id="serviceForm">
+                                <div class="form-group">
+                                    <h3>Recommended Services for Your Event: <?php echo htmlspecialchars($selected_event); ?></h3>
 
-                            <?php if (!empty($services)): ?>
-                                <form action="payment.php" method="POST">
-                                    <div class="services-list">
-                                        <?php foreach ($services as $service): ?>
-                                            <div class="service-item">
-                                                <h3><?php echo htmlspecialchars($service['service_name']); ?></h3>
-                                                <p>Price: PHP <?php echo htmlspecialchars($service['price']); ?></p>
-                                                <label>
-                                                    <input type="checkbox" name="services[]" value="<?php echo htmlspecialchars($service['serviceID']); ?>">
-                                                    Select this service
-                                                </label>
-                                            </div>
-                                        <?php endforeach; ?>
+                                    <!-- Budget Input -->
+                                    <label for="budget">Enter your budget: </label>
+                                    <input type="number" id="budget" name="budget" placeholder="Please enter you budget" required>
+
+                                    <!-- Services Section -->
+                                    <div id="servicesSection">
+                                        <h4>Recommended Services:</h4>
+                                        <div id="recommendedServices"></div>
                                     </div>
-                            <?php else: ?>
-                                <p>No services available for this event.</p>
-                            <?php endif; ?>
-                            
-                            <h3>Additional Services:</h3>
-                            <label for="photographers">Additional Photographers:</label>
-                            <input type="checkbox" id="photographers" name="services[]" value="2000" onclick="calculateTotal()"> PHP 2000<br>
-                            
-                            <label for="video">Teaser Video:</label>
-                            <input type="checkbox" id="video" name="services[]" value="1500" onclick="calculateTotal()"> PHP 1500<br>
-                            
-                            <label for="invitation">Virtual Invitation:</label>
-                            <input type="checkbox" id="invitation" name="services[]" value="500" onclick="calculateTotal()"> PHP 500<br>
-                            
-                            <div id="total-cost">Total Cost: PHP 0</div>
-                            
-                            <button type="submit" id="next">Next</button>
-                        </form>
+
+                                    <!-- Additional Services -->
+                                    <h4>Additional Services:</h4>
+                                    <?php foreach ($additional_services as $service => $price): ?>
+                                        <label>
+                                            <input type="checkbox" name="additional_services[]" value="<?php echo $price; ?>">
+                                            <?php echo $service; ?> (PHP <?php echo number_format($price, 2); ?>)
+                                        </label><br>
+                                    <?php endforeach; ?>
+                                    
+                                    <h4>Total Price: PHP <span id="totalPrice">0.00</span></h4>
+                                    
+                                    <button type="submit" id="next">Next</button>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -153,13 +136,79 @@ $stmt->close();
         </main>
 </body>
 <script>
-    function calculateTotal() {
-    let total = 0;
-    document.querySelectorAll('input[name="services[]"]:checked').forEach((service) => {
-        total += parseFloat(service.value);
-    });
-    document.getElementById('total-cost').textContent = "Total Cost: PHP " + total;
-}
+$(document).ready(function() {
+    // Fetch recommended services based on budget input
+    $('#budget').on('input', function() {
+        const budget = $(this).val();
+        if (budget) {
+            $('#recommendedServices').html('<p>Loading...</p>');
 
+            setTimeout(function() {
+                $.ajax({
+                    url: '../backend/fetch_services.php',
+                    method: 'POST',
+                    data: {
+                        budget: budget,
+                        selected_event: '<?php echo $selected_event; ?>'  // Pass the selected event
+                    },
+                    success: function(data) {
+                        $('#recommendedServices').html(data);
+                        updateTotal(); // Update total after services load
+                    }
+                });
+            }, 3000);  // 3-second delay
+        }
+    });
+
+    // Initialize an array to hold selected services and their prices
+    let selectedServices = [];
+
+    // Listen for service card click
+    $(document).on('click', '.service-card', function() {
+        const serviceName = $(this).data('service');
+        const servicePrice = parseFloat($(this).data('price'));
+
+        // Check if the service is already selected
+        const index = selectedServices.findIndex(service => service.name === serviceName);
+
+        if (index === -1) {
+            // Add the selected service to the array if it's not already there
+            selectedServices.push({ name: serviceName, price: servicePrice });
+            $(this).addClass('selected'); // Optionally, highlight the selected service
+        } else {
+            // Remove the service from the array if it's already selected (toggle functionality)
+            selectedServices.splice(index, 1);
+            $(this).removeClass('selected');
+        }
+
+        // Update the total price whenever a service is added or removed
+        updateTotal();
+    });
+
+    // Function to update the total price
+    function updateTotal() {
+        let total = 0;
+
+        // Add up prices of selected services
+        selectedServices.forEach(service => {
+            total += service.price;
+        });
+
+        // Add additional services price
+        $('input[name="additional_services[]"]:checked').each(function() {
+            total += parseFloat($(this).val());
+        });
+
+        // Display the total price
+        $('#totalPrice').text(total.toFixed(2));
+    }
+
+    // Listen for changes in additional services
+    $('input[name="additional_services[]"]').on('change', function() {
+        updateTotal();
+    });
+});
 </script>
+
+
 </html>
