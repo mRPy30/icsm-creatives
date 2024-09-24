@@ -419,21 +419,6 @@ $pageTitle = isset($pageTitles[$currentPage]) ? $pageTitles[$currentPage] : "Boo
         </ul>
     <div class="profile_dropdown">
     <div class="nav-right">
-            <div class="icons">
-                <div class="dark-mode-toggle" onclick="toggleDarkMode()">
-                    <i class="fas fa-moon" title="Switch to Darkmode"></i>
-                </div>                
-                <div class="notification-dropdown">
-                    <i class="far fa-bell" onclick="toggleNotifications()" title="Notification"></i>
-                    <div class="notification-dropdown-content">
-                        <div class="top_notif">
-                            <h4>Notifications</h4>
-                        </div>
-                        <div class="notification">Notification 1</div> 
-                        <div class="notification">Notification 2</div>
-                    </div>
-                </div>
-            </div>
             <div class="divider"></div>
             <div class="profile_info">
             <?php if ($clientName != "Guest") { ?>

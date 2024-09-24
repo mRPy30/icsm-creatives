@@ -88,7 +88,7 @@
     left: 24%;
     text-align: center;
     width: 55%;
-    color: white;
+    color: black;
     z-index: 1;
 }
 
@@ -684,6 +684,11 @@
 
 
 
+/*****Services******/
+#recommendedServices{
+    display: flex;
+    margin: 5px 0;
+}
 
 .service-card {
     border: 2px solid #BCB4B5; /* Light gray border */
@@ -692,6 +697,7 @@
     padding: 10px;
     cursor: pointer;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
+    margin: 0 5px;
 }
 
 .service-card:hover {
@@ -713,11 +719,11 @@
     margin: 0;
     font-size: 24px;
     font-weight: bold;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    color: Black;
 }
 
 .service-content p {
     margin-top: 10px;
     font-size: 18px;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    color: Black;
 }

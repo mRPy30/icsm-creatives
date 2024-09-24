@@ -1209,10 +1209,18 @@ a {
 
 
 /***event***/
+.title_page{
+    position: absolute;
+    top: 15%;
+    left: 24%;
+    
+}
 .events-container {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
+    position: absolute;
+    top: 25%;
 }
 .event-card {
     border: 1px solid #ddd;
@@ -1222,6 +1230,12 @@ a {
     width: 300px;
     text-align: center;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.event-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 .event-card img {

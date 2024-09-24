@@ -11,7 +11,7 @@
 <body>
 
 <div class="event-banner">
-    <img src="../../picture/portrait.jpg">
+    <img src="../../picture/family.jpg">
 </div>
 
 <div class="event-content">

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 21, 2024 at 02:44 AM
+-- Generation Time: Sep 24, 2024 at 05:16 AM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.1.17
 
@@ -60,6 +60,7 @@ CREATE TABLE `booking` (
   `title_event` varchar(250) NOT NULL,
   `budget` decimal(11,0) NOT NULL,
   `serviceID` int(11) DEFAULT NULL,
+  `staffID` int(11) DEFAULT NULL,
   `additional` varchar(255) NOT NULL,
   `total_cost` decimal(10,0) NOT NULL,
   `description` text NOT NULL,
@@ -73,9 +74,11 @@ CREATE TABLE `booking` (
 -- Dumping data for table `booking`
 --
 
-INSERT INTO `booking` (`bookingId`, `eventDate`, `start_time`, `end_time`, `eventLocation`, `theme`, `eventID`, `title_event`, `budget`, `serviceID`, `additional`, `total_cost`, `description`, `clientID`, `status`, `proof_payment`, `reason`) VALUES
-(158, '2024-09-21', '08:00:00.00000', '13:00:00.00000', 'CVSU-INDANG', 'aesthetic', 5001, 'TEST1', 2000, NULL, '', 2000, '', 38, 'Accepted', 0x726563656970742d74656d706c6174652d75732d6d6f6e6f2d626c61636b2d37353070782e706e67, ''),
-(159, '2024-09-21', '14:00:00.00000', '18:00:00.00000', 'cvsu', '', 5001, 'TEST1', 0, NULL, '', 4501, '', 38, 'Pending', 0x726563656970742d74656d706c6174652d75732d6d6f6e6f2d626c61636b2d37353070782e706e67, '');
+INSERT INTO `booking` (`bookingId`, `eventDate`, `start_time`, `end_time`, `eventLocation`, `theme`, `eventID`, `title_event`, `budget`, `serviceID`, `staffID`, `additional`, `total_cost`, `description`, `clientID`, `status`, `proof_payment`, `reason`) VALUES
+(158, '2024-09-21', '08:00:00.00000', '13:00:00.00000', 'CVSU-INDANG', 'aesthetic', 5001, 'TEST1', 2000, NULL, NULL, '', 2000, '', 38, 'Accepted', 0x726563656970742d74656d706c6174652d75732d6d6f6e6f2d626c61636b2d37353070782e706e67, ''),
+(159, '2024-09-21', '14:00:00.00000', '18:00:00.00000', 'cvsu', '', 5001, 'TEST1', 0, NULL, NULL, '', 4501, '', 38, 'Pending', 0x726563656970742d74656d706c6174652d75732d6d6f6e6f2d626c61636b2d37353070782e706e67, ''),
+(160, '2024-09-28', '08:00:00.00000', '14:00:00.00000', 'BUCANDALA', '', 5002, 'TEST1', 15000, NULL, NULL, '', 0, '', 38, 'Pending', 0x726563656970742d74656d706c6174652d75732d6d6f6e6f2d626c61636b2d37353070782e706e67, ''),
+(161, '2024-09-26', '09:00:00.00000', '11:00:00.00000', 'Molino', '', 5004, 'Baby Jrue', 12000, NULL, NULL, '', 0, '', 38, 'Pending', 0x726563656970742d74656d706c6174652d75732d6d6f6e6f2d626c61636b2d37353070782e706e67, '');
 
 -- --------------------------------------------------------
 
@@ -143,9 +146,13 @@ CREATE TABLE `event` (
 
 INSERT INTO `event` (`eventID`, `eventName`, `serviceID`, `description`) VALUES
 (5001, 'Birthday', NULL, ''),
-(5002, 'Wedding\r\n', NULL, ''),
+(5002, 'Wedding', NULL, ''),
 (5003, 'Graduation', NULL, ''),
-(5004, 'Christening', NULL, '');
+(5004, 'Christening', NULL, ''),
+(5005, 'Corporate', NULL, ''),
+(5006, 'Adventure', NULL, ''),
+(5007, 'Family', NULL, ''),
+(5008, 'Maternity', NULL, '');
 
 -- --------------------------------------------------------
 
@@ -254,10 +261,15 @@ CREATE TABLE `services` (
 --
 
 INSERT INTO `services` (`serviceID`, `eventID`, `service_name`, `price`, `descripition`) VALUES
-(4001, 5001, 'Birthday Photoshoot Only ', 4500.00, 'Includes basic photoshoot'),
-(4002, 5001, 'Birthday Photoshoot & Video', 8500.00, 'Photoshoot with video coverage'),
-(4003, 5002, 'Wedding Photoshoot Only', 5500.00, 'Includes basic photoshoot'),
-(4004, 5002, 'Wedding Photoshoot and Video', 9000.00, 'Photoshoot with video coverage');
+(4001, 5001, 'Birthday Photoshoot Only ', 4500.00, 'Scope of works starts 2000\r\nFood 500\r\nTranpo 500\r\nEditing 1000\r\nGears 500'),
+(4002, 5001, 'Birthday Photoshoot & Video', 8500.00, 'Scope of works starts 2500\r\nFood 500\r\nTranpo 500\r\nEditing 1000\r\nGears 1000\r\nVideo Coverage 3000'),
+(4003, 5002, 'Wedding Photoshoot Only', 10000.00, 'qqqqqqqqqq'),
+(4005, 5001, 'Pre-Birthday Photoshoot Only', 6500.00, 'Photoshoot 4000\r\nFood 500\r\nTranpo 500\r\nEditing 1000\r\nGears 500'),
+(4006, 5001, 'Pre-Birthday Photo and Video', 12000.00, 'Photoshoot 4000\r\nFood 500\r\nTranpo 500\r\nEditing 1000\r\nGears 500\r\nVideoshoot 3000\r\nVideo Teaser 1 Minute 2000'),
+(4009, 5004, 'Christening Photography', 4500.00, 'dsfffffffffff'),
+(4010, 5003, 'Graduation Photos', 9000.00, 'qqqqqqqqqqqqqqq'),
+(4011, 5004, 'Christening Videography', 7500.00, ''),
+(4012, 5004, 'Christening Photo and Videography', 12000.00, '');
 
 -- --------------------------------------------------------
 
@@ -299,7 +311,8 @@ ALTER TABLE `booking`
   ADD PRIMARY KEY (`bookingId`),
   ADD KEY `fk_client` (`clientID`),
   ADD KEY `fk_event` (`eventID`),
-  ADD KEY `fk_services` (`serviceID`);
+  ADD KEY `fk_services` (`serviceID`),
+  ADD KEY `fk_staff` (`staffID`);
 
 --
 -- Indexes for table `client`
@@ -372,7 +385,7 @@ ALTER TABLE `administrator`
 -- AUTO_INCREMENT for table `booking`
 --
 ALTER TABLE `booking`
-  MODIFY `bookingId` int(55) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=160;
+  MODIFY `bookingId` int(55) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=162;
 
 --
 -- AUTO_INCREMENT for table `client`
@@ -390,7 +403,7 @@ ALTER TABLE `content`
 -- AUTO_INCREMENT for table `event`
 --
 ALTER TABLE `event`
-  MODIFY `eventID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5005;
+  MODIFY `eventID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5009;
 
 --
 -- AUTO_INCREMENT for table `feedback`
@@ -414,7 +427,7 @@ ALTER TABLE `schedule`
 -- AUTO_INCREMENT for table `services`
 --
 ALTER TABLE `services`
-  MODIFY `serviceID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4005;
+  MODIFY `serviceID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4013;
 
 --
 -- AUTO_INCREMENT for table `staff`
@@ -432,7 +445,8 @@ ALTER TABLE `staff`
 ALTER TABLE `booking`
   ADD CONSTRAINT `fk_clientID` FOREIGN KEY (`clientID`) REFERENCES `client` (`clientID`),
   ADD CONSTRAINT `fk_event` FOREIGN KEY (`eventID`) REFERENCES `event` (`eventID`) ON DELETE SET NULL ON UPDATE SET NULL,
-  ADD CONSTRAINT `fk_services` FOREIGN KEY (`serviceID`) REFERENCES `services` (`serviceID`) ON DELETE SET NULL ON UPDATE SET NULL;
+  ADD CONSTRAINT `fk_services` FOREIGN KEY (`serviceID`) REFERENCES `services` (`serviceID`) ON DELETE SET NULL ON UPDATE SET NULL,
+  ADD CONSTRAINT `fk_staff` FOREIGN KEY (`staffID`) REFERENCES `staff` (`staffID`) ON DELETE SET NULL ON UPDATE SET NULL;
 
 --
 -- Constraints for table `event`

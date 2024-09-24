@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,16 +11,19 @@
 <body>
 
 <div class="event-banner">
-    <img src="../../picture/outdoor.png">
+    <img src="../../picture/maternity.jpg">
 </div>
 
 <div class="event-content">
-    <h1>Outdoor Adventures</h1>
-    <p>Celebrate your special day with our photography and videography services. We will capture all the fun and precious moments so that you can cherish them forever.</p>
+    <h1>Family Portraits</h1>
 
-    <button class="book-now-btn" onclick="location.href='../../client/login.php?event=Adventure'">Book Now</button>
+    <button class="book-now-btn" onclick="location.href='../../client/login.php?event=Maternity'">Book Now</button>
 
     <!-- Ads content specific to Birthday -->
+    <div class="ads-content">
+        <h2>Special Offers!</h2>
+    
+    </div>
 </div>
 
 </body>

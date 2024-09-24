@@ -12,12 +12,13 @@ $additional_services = [
     'Same Day Editing' => 4000,
     'Virtual Invitation' => 700,
     'Throwback Presentation' => 2000,
-    'Props and Background' => 2500
+    'Props and Background' => 2500,
+    'Drone Shot' => 8000
 ];
 
 include('../backend/dbcon.php');
 
-// Fetch all services related to the selected event
+// Fetch all services related to the selected event (initial view)
 $query = "SELECT service_name, price FROM services WHERE eventID = (SELECT eventID FROM event WHERE eventName = ?)";
 $stmt = $conn->prepare($query);
 $stmt->bind_param('s', $selected_event);
@@ -140,24 +141,22 @@ $(document).ready(function() {
     // Fetch recommended services based on budget input
     $('#budget').on('input', function() {
         const budget = $(this).val();
-        if (budget) {
-            $('#recommendedServices').html('<p>Loading...</p>');
+        $('#recommendedServices').html('<p>Loading...</p>');
 
-            setTimeout(function() {
-                $.ajax({
-                    url: '../backend/fetch_services.php',
-                    method: 'POST',
-                    data: {
-                        budget: budget,
-                        selected_event: '<?php echo $selected_event; ?>'  // Pass the selected event
-                    },
-                    success: function(data) {
-                        $('#recommendedServices').html(data);
-                        updateTotal(); // Update total after services load
-                    }
-                });
-            }, 3000);  // 3-second delay
-        }
+        setTimeout(function() {
+            $.ajax({
+                url: '../backend/fetch_services.php',
+                method: 'POST',
+                data: {
+                    budget: budget, // Pass the budget (it could be empty)
+                    selected_event: '<?php echo $selected_event; ?>'  // Pass the selected event
+                },
+                success: function(data) {
+                    $('#recommendedServices').html(data);
+                    updateTotal(); // Update total after services load
+                }
+            });
+        }, 2000);  // 1-second delay for smoother UX
     });
 
     // Initialize an array to hold selected services and their prices
