@@ -110,14 +110,10 @@ if ($stmt) {
             <div class="cover-content">
                 <div class="carousel">
                     <img src="../picture/coverpage1.jpg" alt="coverpage">
-                    <img src="../picture/prenup.jpg" alt="coverpage">
-                    <img src="../picture/girls.jpg" alt="coverpage">
-                    <img src="../picture/self.jpg" alt="coverpage">
-                    <img src="../picture/wedding.jpg" alt="coverpage">
                 </div>
                 <div class="text">
                     <h2>Capture every precious moment through our lenses </h2>
-                    <p>Get expert photographers and amazing photos, and <br>videos, starting from just PHP 2,500.</p>
+                    <p>Customize Your Package with Flexible Options and Budget-Friendly Add-Ons That Fits Your Unique Style and Budget.</p>
                 </div>
             </div>
         </section>
@@ -131,16 +127,26 @@ if ($stmt) {
                                 <h3>Start an Event with us!</h3>
                             </div>
                             <div class="steps">
-                                <div class="circle active">
-                                    <h4>1</h4>
-                                </div>
+                                <div class="step1">
                                 <div class="progress-line"></div>
-                                <div class="circle">
-                                    <h4>2</h4>
+                                    <div class="circle active">
+                                        <h4>1</h4>
+                                    </div>
+                                    <p>Fillup Booking</p>
                                 </div>
+                                <div class="step2">
+                                    <div class="progress-line"></div>
+                                        <div class="circle">
+                                            <h4>2</h4>
+                                        </div>
+                                    <p>Choose Package</p>
+                                </div>
+                                <div class="step3">
                                 <div class="progress-line"></div>
-                                <div class="circle">
-                                    <h4>3</h4>
+                                    <div class="circle">
+                                        <h4>3</h4>
+                                    </div>
+                                    <p>Payment</p>
                                 </div>
                             </div>
                         </div>
@@ -173,8 +179,8 @@ if ($stmt) {
                                             <?php endwhile; ?>
                                         </select>                                        
                                         <br>
-                                        <label for="eventDescription">Booking Description</label>
-                                        <input type="text" id="eventDescription" name="eventDescription" style="height: 75px;" required>
+                                        <label for="eventDescription" placeholder="(Optional)">Booking Description</label>
+                                        <input type="text" id="eventDescription" name="eventDescription" style="height: 75px;">
                                     </div>
                                 </div>
                             </div>
@@ -207,90 +213,38 @@ if ($stmt) {
                         </div>
                     </div>
                     <div class="pf">
-                        <table border="1">
-                            <thead>
-                                <tr>
-                                    <th>Booking ID</th>
-                                    <th>Event Name</th>
-                                    <th>Event Date</th>
-                                    <th>Time</th>
-                                    <th>Status</th>
-                                </tr>
-                            </thead>
-                            <tbody id="booking-table-body">
-                                
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section class="call-to-attention">
-            <div class="banner-homepage">
-                <div class="banner-image">
-                    <img src="../picture/CTAcover.jpg" alt="coverpage">
-                </div>
-                <div class="banner-content">
-                    <div class="banner-inner-content">
-                        <h1>Let's make something incredible together</h1>
-                        <div class="CTA-button">
-                            <a href="../homepage/booking.php"><button>Inquire about your date </button></a>
+                        <div class="table-booking">
+                            <div class="title-bar">
+                                <h4>Upcoming Events</h4>
+                            </div>
+                            <table class="header-table">
+                                <thead>
+                                    <tr>
+                                        <th>Booking ID</th>
+                                        <th>Event Name</th>
+                                        <th>Event Date</th>
+                                        <th>Time</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                            <div class="data-table-container">
+                                <table class="data-table booking">
+                                    <tbody id="booking-table-body">
+                                        
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <section class="footer-page">
-            <div class="footer">
-                <div class="footer-row">
-                    <ul class="footer-left-link">
-                        <li><a href="../login.php">Login</a></li>
-                        <li><a href="../about.php">About</a></li>
-                        <li><a href="../portfolio.php">Portfolio</a></li>
-                        <li><a href="../review.php">Testimonial</a></li>
-                        <li><a href="../contact.php">Contact</a></li>
-                    </ul>
-                </div>
-                <div class="vertical-line-left"></div>
-                <div class="footer-center-content">
-                    <div class="footer-center">
-                        <h6>About ICSM Creatives</h6>
-                        <p>We are dedicated to serving women of color in an underrepresented bridal market. All brides
-                            will find inspiration on our blog, in our digital publication, on our social circuit and at
-                            our national bridal events.</p>
-
-                        <div class="social-meadia-links">
-                            <h6>Connect with us</h6>
-                            <div class="icons">
-                                <a class="link-fb" href="#"><i class="fab fa-facebook-f"></i></a>
-                                <a class="link-twitter" href="#"><i class="fab fa-twitter"></i></a>
-                                <a class="link-linkedin" href="#"><i class="fab fa-linkedin-in"></i></a>
-                                <a class="link-pinterest" href="#"><i class="fab fa-pinterest-p"></i></a>
-                                <a class="link-instagram" href="#"><i class="fab fa-instagram"></i></a>
-                            </div>
-                        </div>
-
-                        <div class="copyright-info">
-                            <p>Copyright © 2023 | ICSM Creatives | All Rights Reserved</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="vertical-line-right"></div>
-                <div class="footer-right-content">
-                    <div class="footer-right">
-                        <h6>Subscribe</h6>
-                        <p>Join our mailing list to stay in the loop with our newest feature releases, bridal ideas &
-                            all
-                            things ICSM Creatives </p>
-                        <form class="footer-form">
-                            <input type="email" placeholder="Enter your email address">
-                            <div class="footer-right-button">
-                                <button class="btn-submit" type="submit"><i class="fa fa-send"></i>Submit</button>
-                            </div>
-                        </form>
-                    </div>
+        <section class="container-credential">
+            <div class="credit-info">
+                <div class="rights-definition">
+                    <p>© 2023-2024 ICSMCREATIVES.COM ALL RIGHTS RESERVED. TERMS OF USE | PRIVACY POLICY</p>
                 </div>
             </div>
         </section>

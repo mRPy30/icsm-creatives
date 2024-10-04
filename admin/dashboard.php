@@ -33,21 +33,18 @@ if ($resultRevenue->num_rows > 0) {
     $totalRevenue = 0;
 }
 
-$sqlRatings = "SELECT SUM(rating) AS totalRatings FROM feedback";
-$resultRatings = $conn->query($sqlRatings);
+$sqlBookings = "SELECT COUNT(*) AS totalBookings FROM booking";
+$resultBookings = $conn->query($sqlBookings);
 
-if ($resultRatings->num_rows > 0) {
-    $rowRatings = $resultRatings->fetch_assoc();
-    $totalRatings = $rowRatings['totalRatings']; 
+if ($resultBookings->num_rows > 0) {
+    $rowBookings = $resultBookings->fetch_assoc();
+    $totalBookings = $rowBookings['totalBookings']; 
 } else {
-    $totalRatings = 0;
+    $totalBookings = 0;
 }
 
-$averageRating = ($totalRatings > 0) ? $totalRatings / $totalClients : 0; // Calculate average rating
 
-$ratingPercentage = ($averageRating / 5) * 100;
-
-$sql = "SELECT staffID, name, profile, email, role FROM staff";
+$sql = "SELECT staff_ID, name, profile, email, role FROM staff";
 $result = $conn->query($sql);
 
 
@@ -115,7 +112,7 @@ $page = $components[2];
                     <h2><?php echo $totalClients; ?></h2>
                 </div>
                 <div class="icon-container-client">
-                    <i class="fas fa-user" style="font-size: 36px; color: #D25A5A;"></i>
+                    <i class="fas fa-user" style="font-size: 36px; color: #FCF6F6;"></i>
                 </div>
             </div>
             <div class="dashboard-item" id="finance">
@@ -124,24 +121,34 @@ $page = $components[2];
                     <h2>₱ <?php echo number_format($totalRevenue)?></h2>
                 </div>
                 <div class="icon-container-chart">
-                    <i class="fas fa-chart-line" style="font-size: 36px; color: #00008B;"></i>
+                    <i class="fas fa-chart-line" style="font-size: 36px; color: #FCF6F6;"></i>
                 </div>
             </div>
             <div class="dashboard-item" id="ratings">
                 <div class="dashboard-item-content">
-                    <p>Rating</p>
-                    <h2><?php echo number_format($averageRating, 1, '.', ''); ?> %</h2>
+                    <p>Total Booking</p>
+                    <h2><?php echo number_format($totalBookings); ?></h2>
                 </div>
                 <div class="icon-container-rate">
-                <i class="fas fa-star" style="font-size: 36px; color: #FFF500;"></i>
+                <i class="fa-solid fa-book-open" style="font-size: 36px; color: #FCF6F6;"></i>
                 </div>
             </div>
         </div>
 
         <div class="dashboard-bottom">
-            <div class="total-revenue">
-                <h4>Total Revenue</h4>
-                <canvas id="revenueChart"></canvas>
+            <div class="pendings">
+                <div class="title-bar">
+                    <h4>Pending Bookings</h4>
+                </div>
+                <table class="prod-table">
+                    <thead>
+                        <tr>
+                            <th class="header">Booked By</th>
+                            <th class="header">Date</th>
+                            <th class="header">Time</th>
+                        </tr>
+                    </thead>
+                </table>
             </div>
             <div class="tbl-prod">
                 <div class="title-bar">
@@ -178,65 +185,7 @@ $page = $components[2];
         </div>
     <main>
     
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-        const revenueData = [0, 0, 4500, 6000, 2250, 9000, 2250];
-        const darkMode = localStorage.getItem('darkMode') === 'true';
-
-        const ctx = document.getElementById('revenueChart').getContext('2d');
-
-        const revenueChart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: ['May', 'June', 'July', 'Aug', 'Sept', 'Nov', 'Dec'],
-                datasets: [{
-                    label: 'Monthly Revenue',
-                    data: revenueData,
-                    borderColor: '#5B5A5A',
-                    borderWidth: 3,
-                    pointBackgroundColor: '#FCF6F6',
-                    pointRadius: 5,
-                    fill: false
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        color: darkMode ? '#fcf6f6' : '#1C1C1D' 
-                    },
-                    x: {
-                        color: darkMode ? '#fcf6f6' : '#1C1C1D' 
-                    }
-                },
-                plugins: {
-                    legend: {
-                        labels: {
-                            color: darkMode ? '#fcf6f6' : '#1C1C1D'
-                        }
-                    }
-                }
-            }
-        });
-
-    // Add or remove the dark-mode class based on the state
-    if (darkMode) {
-        document.getElementById('revenueChartContainer').classList.add('dark-mode');
-    } else {
-        document.getElementById('revenueChartContainer').classList.remove('dark-mode');
-    }
-
-    // Set text color for labels and dataset
-    const dataset = revenueChart.data.datasets[0];
-    const textColor = darkMode ? '#FCF6F6' : '#1C1C1D';
-    
-    dataset.borderColor = textColor;
-    dataset.pointBackgroundColor = textColor;
-    revenueChart.update();
-});
-        
+    <script>        
         document.addEventListener('DOMContentLoaded', function() {
             const firstDashboardItemContent = document.getElementById('client');
 
@@ -252,7 +201,7 @@ $page = $components[2];
 
             if (secondDashboardItemContent) {
                 secondDashboardItemContent.addEventListener('click', function() {
-                    window.location.href = '../admin/finance.php';
+                    window.location.href = '../admin/analytics.php';
                 });
             }
         });
@@ -262,31 +211,14 @@ $page = $components[2];
 
             if (thirdDashboardItemContent) {
                 thirdDashboardItemContent.addEventListener('click', function() {
-                    window.location.href = '../admin/feedback.php';
+                    window.location.href = '../admin/booking.php';
                 });
             }
         });
 
-        var inactivityTimeout = 1000; 
-
-        function checkInactivity() {
-            setTimeout(function () {
-                window.location.href = '../login.php'; 
-            }, inactivityTimeout * 1100);
-        }
-
-        // Start checking for inactivity when the page loads
-        document.addEventListener('DOMContentLoaded', function () {
-            checkInactivity();
-        });
 
         // Reset the inactivity timer when there's user activity
         document.addEventListener('mousemove', function () {
-            clearTimeout(checkInactivity);
-            checkInactivity();
-        });
-
-        document.addEventListener('keypress', function () {
             clearTimeout(checkInactivity);
             checkInactivity();
         });
@@ -306,44 +238,6 @@ $page = $components[2];
             });
         });
 
-        //Dark Mode
-        function toggleDarkMode() {
-        const body = document.body;
-        const isDarkMode = body.classList.toggle('dark-mode');
-        const moonIcon = document.querySelector('.dark-mode-toggle i');
-
-        const dashboardItems = document.querySelectorAll('.dashboard-item');
-
-        if (isDarkMode) {
-            moonIcon.className = 'fas fa-sun';
-
-            moonIcon.classList.add('sun-transition');
-            setTimeout(() => {
-                moonIcon.classList.remove('sun-transition');
-            }, 1000);
-
-            dashboardItems.forEach(item => {
-                item.classList.add('dark-mode');
-            });
-        } else {
-            moonIcon.className = 'fas fa-moon';
-
-            moonIcon.classList.add('moon-transition');
-            setTimeout(() => {
-                moonIcon.classList.remove('moon-transition');
-            }, 1000);
-
-            dashboardItems.forEach(item => {
-                item.classList.remove('dark-mode');
-            });
-        }
-
-        revenueChart.data.datasets[0].borderColor = isDarkMode ? '#FCF6F6' : '#1C1C1D';
-        revenueChart.data.datasets[0].pointBackgroundColor = isDarkMode ? '#FCF6F6' : '#7a7adb';
-        revenueChart.update();
-
-        localStorage.setItem('darkMode', isDarkMode);
-    }
     </script>
 </body>
 </html>

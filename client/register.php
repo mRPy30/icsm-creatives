@@ -79,9 +79,6 @@ if (isset($_GET['event'])) {
                         <div class="separator-line"></div>
                     </div>
                     <div class="auth-btn-container">
-                        <a href="../backend/oauth.php?provider=facebook" class="auth-button facebook">
-                            <img src="../picture/fb-logo.png"> Register with Facebook
-                        </a>
                         <a href="../backend/oauth.php?provider=google" class="auth-button google">
                             <img src="../picture/google_logo.png" style="width: 5%;"> Register with Google
                         </a>

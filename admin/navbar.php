@@ -40,27 +40,10 @@ $currentPage = basename($_SERVER['SCRIPT_NAME']);
 $pageTitle = isset($pageTitles[$currentPage]) ? $pageTitles[$currentPage] : "Admin Dashboard";
 ?>
 <style>
-    /***dark Mode */
-    body.dark-mode .navbar {
-        background-color: #444444; 
-        color: #fff; 
-    }
-    body.dark-mode .navbar .nav-right i{
-        color: #FCF6F6;
-    }
-    body.dark-mode .navbar .nav-left i{
-        color: #FCF6F6;
-    }
-    body.dark-mode .navbar .nav-left h3{
-        color: #FCF6F6;
-    }
-    body.dark-mode .navbar .profile_info {
-        color: #FCF6F6;
-    }
 
     .navbar {
         width: 100%;
-        height: 10%;
+        height: 8.5%;
         background-color: #EEEEEE;
         display: flex;
         justify-content: space-between;
@@ -75,7 +58,7 @@ $pageTitle = isset($pageTitles[$currentPage]) ? $pageTitles[$currentPage] : "Adm
     }
 
     .nav-left {
-        margin: 0% 0% 0% 15%;
+        margin: 0% 0% 0% 8%;
     }
 
     .nav-left h3 {
@@ -345,33 +328,17 @@ $pageTitle = isset($pageTitles[$currentPage]) ? $pageTitles[$currentPage] : "Adm
     </div>
     <div class="profile_dropdown">
         <div class="nav-right">
-            <div class="icons">
-                <div class="dark-mode-toggle" onclick="toggleDarkMode()">
-                    <i class="fas fa-moon" title="Switch to Darkmode"></i>
-                </div>
-                <div class="notification-dropdown">
-                    <i class="far fa-bell" onclick="toggleNotifications()" title="Notification"></i>
-                    <div class="notification-dropdown-content">
-                        <div class="top_notif">
-                            <h4>Notifications</h4>
-                        </div>
-                        <div class="notification">Notification 1</div> 
-                        <div class="notification">Notification 2</div>
-                    </div>
-                </div>
-            </div>
-            <div class="divider"></div>
             <div class="profile_info">
                 <h3><?php echo $name; ?></h3>
-                <p>Admin</p>
-                <div class="profile_dropdown-content">
-                    <a href="account.php">Profile</a>
-                    <a type="text" id="logoutPopup" class="btn-logout" onclick="goBack()">Logout</a>
-                </div>
+                <p>Admin Manager</p>
             </div>
             <div class="profile_pic">
                 <img src="data:image/jpeg;base64,<?php echo $profile; ?>" alt="admin image">
             </div>
+            <div class="divider"></div>
+                <div class="icons">
+                    <i class="fa-solid fa-power-off" id="logoutPopup" title="Logout" ></i>
+                </div>
         </div>
     </div>
 </header>
@@ -422,7 +389,7 @@ $pageTitle = isset($pageTitles[$currentPage]) ? $pageTitles[$currentPage] : "Adm
     }
 
     document.addEventListener("DOMContentLoaded", function() {
-        document.querySelectorAll(".btn-logout").forEach(function(btn) {
+        document.querySelectorAll(".fa-power-off").forEach(function(btn) {
             btn.addEventListener("click", openPopup);
         });
 

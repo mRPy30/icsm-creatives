@@ -3,64 +3,38 @@
 <style>
     /*****Sidebar*****/
 
-    /**Dark Mode**/
-    body.dark-mode .side_bar {
-        background-color: #444444; 
-        color: #fff; 
-    }
-    body.dark-mode .side_bar_bottom{
-        background-color: #444444;
-        color: #fff; 
-    } 
-    body.dark-mode .wrapper{
-        background-color: #f6f6f6;
-        background-image: linear-gradient(315deg, #f6f6f6 0%, #e9e9e9 74%);
-    }
-    body.dark-mode .side_bar .side_bar_bottom ul .nav-link.active a{
-        background-color: #f6f6f6;
-        background-image: linear-gradient(315deg, #f6f6f6 0%, #e9e9e9 74%);
-        color: #1c1c1c;
-    }
-    body.dark-mode .side_bar .side_bar_bottom ul .nav-link a{
-        color: #FCF6F6;
-    }
-    body.dark-mode .side_bar .side_bar_bottom ul .nav-link:not(.active) a:hover {
-        background: #5B5A5A;
-        color: #fcfcfc;
-        border-radius: 30px 0px 0px 30px;
-    }
-    body.dark-mode .logo-sidebar img.logo-image {
-    content: url('../picture/logoDark.png');
-}
     .wrapper {
         height: 100%;
         display: flex;
         position: fixed;
         top: 0;
         left: 0;
-        width: 14%;
+        width: 7%;
         background-color: #000000;
         background-image: linear-gradient(147deg, #000000 0%, #434343 74%);
         z-index: 1001; 
+        text-align: center;
     }
     
     .side_bar {
-        width: 98%;
+        width: 96%;
         height: 100vh;
         background: #EEEEEE;
     }
 
     .side_bar .logo-sidebar img{
-        width: 50%;
-        margin: 15% 0% 0% 27%;
+        width: 70%;
+        margin-top: 18%;
     }
 
     .side_bar .side_bar_bottom{
         background: #EEEEEE;
         height: calc(100% - 200px);
-        padding: 15% 0% 0% 10%;
+        padding: 15% 0% 0% 8%;
         text-decoration: none;
-        list-style: none;	
+        list-style: none;
+        text-align: center;	
+        font: 50%;
     }
 
     .side_bar .side_bar_bottom ul li{
@@ -70,10 +44,10 @@
 
     .side_bar .side_bar_bottom ul .nav-link a{
         display: block;
-        padding: 13px 15px 13px 50px;		
+        padding: 15px 0;		
         color: #1c1c1c;
-        font: normal 500 14px/20px 'Poppins';
-        margin-bottom: 8px;		
+        font: 100%;
+        margin-bottom: 5px;		
         text-decoration: none;	
     }
 
@@ -83,13 +57,12 @@
         color: #fbf4fb;
         border-top-left-radius: 30px;
         border-bottom-left-radius: 30px;
-        font: normal 500 14px/20px 'Poppins';
     }
 
     .side_bar .side_bar_bottom ul .nav-link.active .top_curve,
     .side_bar .side_bar_bottom ul .nav-link.active .bottom_curve{
         position: absolute;
-        left: 0;
+        margin-left: 20px;
         width: 100%;
         height: 20px;
         background: #EEEEEE;
@@ -97,11 +70,11 @@
     }
 
     .side_bar .side_bar_bottom ul .nav-link.active .top_curve{
-        top: -20px;
+        top: 0px;
     }
 
     .side_bar .side_bar_bottom ul .nav-link.active .bottom_curve{
-        bottom: -20px;	
+        bottom: 0px;	
     }
 
     .side_bar .side_bar_bottom ul .nav-link.active .top_curve:before,
@@ -111,7 +84,7 @@
         top: 0;
         left: 0;
         width: 100%;
-        height: 90%;
+        height: 100%;
         background: #EEEEEE;	
     }
 
@@ -181,92 +154,83 @@
             <ul>
                 <li class="nav-link">
                     <span class="top_curve"></span>
-                    <a href="dashboard.php" class="<?php if ($page == "dashboard.php") {
+                    <a href="dashboard.php" title="Dashboard" class="<?php if ($page == "dashboard.php") {
                         echo "nav-link active";
                     } else {
                         echo "nav-link";
-                    } ?> "><span class="item">Dashboard</span></a>
+                    } ?> "><i class="fa-solid fa-table-columns"></i></a>
                     <span class="bottom_curve"></span>
                 </li>
                 <li class="nav-link">
                     <span class="top_curve"></span>
-                    <a href="booking.php" class="<?php if ($page == "..admin/booking.php") {
+                    <a href="booking.php" title="Booking Management" class="<?php if ($page == "..admin/booking.php") {
                         echo "nav-link active";
                     } else {
                         echo "nav-link";
-                    } ?> "><span class="item">Booking</span></a>
+                    } ?> "><i class="fa-solid fa-calendar-check" ></i></a>
                     <span class="bottom_curve"></span>
                 </li>
                 <li class="nav-link">
                     <span class="top_curve"></span>
-                    <a href="calendar.php" class="<?php if ($page == "..admin/calendar.php") {
+                    <a href="client.php" title="Client Management" class="<?php if ($page == "..admin/client.php") {
                         echo "nav-link active";
                     } else {
                         echo "nav-link";
-                    } ?> "><span class="item">Calendar</span></a>
+                    } ?> "><i class="fa-solid fa-user-large"></i></a>
                     <span class="bottom_curve"></span>
                 </li>
                 <li class="nav-link">
                     <span class="top_curve"></span>
-                    <a href="client.php" class="<?php if ($page == "..admin/client.php") {
+                    <a href="feedback.php" title="Feedback Management" class="<?php if ($page == "..admin/feedback.php") {
                         echo "nav-link active";
                     } else {
                         echo "nav-link";
-                    } ?> "><span class="item">Client</span></a>
+                    } ?> "><i class="fa-solid fa-message"></i></a>
                     <span class="bottom_curve"></span>
                 </li>
                 <li class="nav-link">
                     <span class="top_curve"></span>
-                    <a href="feedback.php" class="<?php if ($page == "..admin/feedback.php") {
+                    <a href="analytics.php" title="Analytics and Revenue" class="<?php if ($page == "..admin/analytics.php") {
                         echo "nav-link active";
                     } else {
                         echo "nav-link";
-                    } ?> "><span class="item">Feedback</span></a>
+                    } ?> "><i class="fa-solid fa-chart-line"></i></a>
                     <span class="bottom_curve"></span>
                 </li>
-                <li class="nav-link">
-                    <span class="top_curve"></span>
-                    <a href="analytics.php" class="<?php if ($page == "..admin/analytics.php") {
-                        echo "nav-link active";
-                    } else {
-                        echo "nav-link";
-                    } ?> "><span class="item">Analytics</span></a>
-                    <span class="bottom_curve"></span>
-                </li>
-                <li class="nav-link">
+                <!--<li class="nav-link">
                     <span class="top_curve"></span>
                     <a href="finance.php" class="<?php if ($page == "..admin/finance.php") {
                         echo "nav-link active";
                     } else {
                         echo "nav-link";
-                    } ?> "><span class="item">Finance</span></a>
+                    } ?> "><i class="fa-solid fa-money-bill-trend-up"></i></a>
+                    <span class="bottom_curve"></span>
+                </li>-->
+                <li class="nav-link">
+                    <span class="top_curve"></span>
+                    <a href="folders.php" title="Uploading Gallery" class="<?php if ($page == "..admin/folders.php") {
+                        echo "nav-link active";
+                    } else {
+                        echo "nav-link";
+                    } ?> "><i class="fa-solid fa-image"></i></a>
                     <span class="bottom_curve"></span>
                 </li>
                 <li class="nav-link">
                     <span class="top_curve"></span>
-                    <a href="content.php" class="<?php if ($page == "..admin/content.php") {
+                    <a href="account.php" title="Admin Account" class="<?php if ($page == "..admin/account.php") {
                         echo "nav-link active";
                     } else {
                         echo "nav-link";
-                    } ?> "><span class="item">Content</span></a>
+                    } ?> "><i class="fa-solid fa-user-tie"></i></a>
                     <span class="bottom_curve"></span>
                 </li>
                 <li class="nav-link">
                     <span class="top_curve"></span>
-                    <a href="account.php" class="<?php if ($page == "..admin/account.php") {
+                    <a href="production.php" title="Production Team" class="<?php if ($page == "..admin/production.php") {
                         echo "nav-link active";
                     } else {
                         echo "nav-link";
-                    } ?> "><span class="item">Profile</span></a>
-                    <span class="bottom_curve"></span>
-                </li>
-                <li class="nav-link">
-                    <span class="top_curve"></span>
-                    <a href="production.php" class="<?php if ($page == "..admin/production.php") {
-                        echo "nav-link active";
-                    } else {
-                        echo "nav-link";
-                    } ?> "><span class="item">Production</span></a>
+                    } ?> "><i class="fa-solid fa-users-gear"></i></a>
                     <span class="bottom_curve"></span>
                 </li>
             </ul>

@@ -5,7 +5,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Ensure that booking data and total cost are set
     $_SESSION['booking'] = array_merge($_SESSION['booking'] ?? [], $_POST); // Merge new data with existing
     $total_cost = array_sum($_POST['services'] ?? []);
-    $_SESSION['total_cost'] = $total_cost;
+    $_SESSION['total_cost'] = $_POST['total_price'];
 }
 
 if (!isset($_SESSION['booking']) || !isset($_SESSION['total_cost'])) {
@@ -66,16 +66,25 @@ if (!isset($_SESSION['booking']) || !isset($_SESSION['total_cost'])) {
                                     <h3>Event Services</h3>
                                 </div>
                                 <div class="steps">
-                                    <div class="circle active">
-                                        <h4>1</h4>
+                                    <div class="step1">
+                                        <div class="circle active">
+                                            <h4>1</h4>
+                                        </div>
+                                        <p>Fillup Booking</p>
                                     </div>
-                                    <div class="progress-line"></div>
-                                    <div class="circle">
-                                        <h4>2</h4>
+                                    <div class="step1">
+                                        <div class="progress-line active"></div>
+                                            <div class="circle active">
+                                                <h4>2</h4>
+                                            </div>
+                                        <p>Choose Package</p>
                                     </div>
-                                    <div class="progress-line"></div>
-                                    <div class="circle">
-                                        <h4>3</h4>
+                                    <div class="step1">
+                                        <div class="progress-line active"></div>
+                                            <div class="circle active">
+                                                <h4>3</h4>
+                                            </div>
+                                        <p>Payment</p>
                                     </div>
                                 </div>
                             </div>
@@ -90,7 +99,7 @@ if (!isset($_SESSION['booking']) || !isset($_SESSION['total_cost'])) {
                                     <p>Name: <?php echo htmlspecialchars($_SESSION['booking']['title_event'] ?? 'Not provided'); ?></p>
                                     <p>Location: <?php echo htmlspecialchars($_SESSION['booking']['event_location'] ?? 'Not provided'); ?></p>
                                     <h3>Breakdown of Costs:</h3>
-                                    <div id="total-cost">Total Cost: PHP <?php echo htmlspecialchars($_SESSION['total_cost'] ?? 0); ?></div>
+                                    <div id="total-cost">Total Cost: PHP <?php echo htmlspecialchars($_SESSION['total_cost']); ?></div>
                                     <label for="paymentProof">Upload Payment Proof:</label>
                                     <input type="file" id="paymentProof" name="payment_proof" required><br>
                                     <div class="buttons-book">

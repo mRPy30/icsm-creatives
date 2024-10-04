@@ -65,40 +65,39 @@ if ($result->num_rows > 0) {
     <section class="booking-box">
         <div class="table-booking">
             <h4>Booking Details</h4>
+            <div class="search-bar">
+                <input type="text" placeholder="Search Booking" id="client-search">
+                <i class="fa-solid fa-magnifying-glass" type="button" onclick="searchClient()" title="Search Booking"></i>
+            </div>
+            <div class="tabs">
+                <button class="tab active" data-filter="all">All</button>
+                <button class="tab" data-filter="pending">Pending</button>
+                <button class="tab" data-filter="accepted">Accepted</button>
+                <button class="tab" data-filter="declined">Declined</button>
+                <button class="tab" data-filter="completed">Completed</button>
+                <button class="tab" data-filter="cancelled">Cancelled</button>
+                <button id="unavailability-btn">Unavailability</button>
+            </div>
+            
             <table class="header-table">
                 <thead>
                     <tr>
-                        <th>Booking ID</th>
-                        <th>Client ID</th>
-                        <th>Event Location</th>
-                        <th>Receipt</th>
+                        <th>Booking Id</th>
                         <th>Status</th>
+                        <th>Service Package</th>
+                        <th>Assigned Staff</th>
+                        <th>Booked by</th>
+                        <th>Date & Time</th>
+                        <th>Location</th>
+                        <th>Payment Receipt</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
+                <tbody>
+                        
+                </tbody>
             </table>
 
-            <!-- Data Table -->
-            <div class="data-table-container">
-                <table class="data-table booking">
-                    <tbody>
-                        <?php foreach ($bookingData as $booking): ?>
-                            <tr>
-                                <td><?php echo $booking['bookingId']; ?></td>
-                                <td><?php echo $booking['clientID']; ?></td>
-                                <td><?php echo $booking['eventLocation']; ?></td>
-                                <td>
-                                    <?php if (!empty($booking['proof_payment'])): ?>
-                                        <button onclick="openReceiptPopup('<?php echo $booking['proof_payment']; ?>')">See Receipt</button>
-                                    <?php else: ?>
-                                        No Receipt
-                                    <?php endif; ?>
-                                </td>
-                                <td><?php echo $booking['status']; ?></td>
-                            </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-            </table>
-        </div>
         <!-- Popup -->
         <div id="customPopup" class="popup">
             <div class="popup-content">
@@ -128,16 +127,89 @@ if ($result->num_rows > 0) {
         </div>
         </div>
         
-        <div id="receiptPopup" class="popup">
-            <div class="popup-content">
-                <span class="close" onclick="closeReceiptPopup()">&times;</span>
-                <img id="receiptImage" src="" alt="Receipt Image">
-                <div>
-                    <a id="openNewTab" href="#" target="_blank">Open in New Tab</a>
-                    <a id="downloadReceipt" href="#" download>Download</a>
-                </div>
-            </div>
+    <!-- See Receipt Modal -->
+    <div id="receipt-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <p class="date-sent">Receipt sent on: <span id="receipt-date"></span></p>
+            <img id="receipt-img" src="#" alt="Receipt">
         </div>
+    </div>
+
+    <!-- Unavailability Modal -->
+    <div id="unavailability-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeUnavailabilityModal()">&times;</span> <!-- Close Button -->
+            <h2>Add Unavailability</h2>
+            <label for="unavailable-title">Title:</label>
+            <input type="text" id="unavailable-title" placeholder="Add title">
+
+            <label for="unavailable-date">Date:</label>
+            <input type="date" id="unavailable-date">
+
+            <label for="unavailable-description">Description:</label>
+            <textarea id="unavailable-description" rows="4"></textarea>
+
+            <button id="save-unavailability">Save</button>
+        </div>
+    </div>
+
+    <div id="assign-staff-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeAssignStaffModal()">&times;</span>
+            <h2>Assign Staff for Booking #<span id="booking-id"></span></h2>
+                                        
+            <label for="photographer-select">Photographer:</label>
+            <select id="photographer-select">
+                <option value="">Select Photographer</option>
+                <?php
+                $photographerQuery = "SELECT * FROM staff WHERE role='photographer'";
+                $photographerResult = mysqli_query($conn, $photographerQuery);
+                while ($photographer = mysqli_fetch_assoc($photographerResult)) {
+                    echo "<option value='{$photographer['staffID']}'>{$photographer['name']}</option>";
+                }
+                ?>
+            </select>
+            
+            <label for="videographer-select">Videographer:</label>
+            <select id="videographer-select">
+                <option value="">Select Videographer</option>
+                <?php
+                $videographerQuery = "SELECT * FROM staff WHERE role='videographer'";
+                $videographerResult = mysqli_query($conn, $videographerQuery);
+                while ($videographer = mysqli_fetch_assoc($videographerResult)) {
+                    echo "<option value='{$videographer['staffID']}'>{$videographer['name']}</option>";
+                }
+                ?>
+            </select>
+            
+            <label for="editor-select">Editor:</label>
+            <select id="editor-select">
+                <option value="">Select Editor</option>
+                <?php
+                $editorQuery = "SELECT * FROM staff WHERE role='editor'";
+                $editorResult = mysqli_query($conn, $editorQuery);
+                while ($editor = mysqli_fetch_assoc($editorResult)) {
+                    echo "<option value='{$editor['staffID']}'>{$editor['name']}</option>";
+                }
+                ?>
+            </select>
+            
+            <label for="outsources-select">Outsources:</label>
+            <select id="outsources-select">
+                <option value="">Select Outsource</option>
+                <?php
+                $outsourcesQuery = "SELECT * FROM staff WHERE role='outsources'";
+                $outsourcesResult = mysqli_query($conn, $outsourcesQuery);
+                while ($outsources = mysqli_fetch_assoc($outsourcesResult)) {
+                    echo "<option value='{$outsources['staffID']}'>{$outsources['name']}</option>";
+                }
+                ?>
+            </select>
+            
+            <button id="save-staff-btn">Save Assignment</button>
+        </div>
+    </div>
 
     </section>
 </body>
@@ -214,40 +286,84 @@ if ($result->num_rows > 0) {
 
         source.onmessage = function(event) {
             var bookings = JSON.parse(event.data);
-            var tableBody = document.querySelector('.data-table.booking tbody');
+            var tableBody = document.querySelector('.header-table tbody');
             tableBody.innerHTML = '';  // Clear the table body
 
             bookings.forEach(function(booking) {
+                var statusCircle = ''; 
                 var statusButtons = '';
 
+                // Assign circle color based on booking status
                 if (booking.status === 'Pending') {
+                    statusCircle = '<span class="status-circle pending-circle"></span>';
                     statusButtons = `
                         <button class="accept" onclick="openPopup('${booking.bookingId}')">Accept</button>
                         <button class="decline" onclick="openDeclinePopup('${booking.bookingId}')">Decline</button>`;
-                } else {
-                    statusButtons = booking.status;
+                } else if (booking.status === 'Accepted') {
+                    statusCircle = '<span class="status-circle accepted-circle"></span>';
+                    statusButtons = ''; // Hide buttons when accepted
+                } else if (booking.status === 'Declined') {
+                    statusCircle = '<span class="status-circle declined-circle"></span>';
+                    statusButtons = ''; // Hide buttons when declined
                 }
 
-                var receiptLink = booking.proof_payment ? `<a href="javascript:void(0);" onclick="seeReceipt('${booking.bookingId}', '${booking.proof_payment}')">See Receipt</a>` : 'No Receipt';
+                // Check if proof of payment exists, create a clickable link to view the receipt
+                var receiptLink = booking.proof_payment ? 
+                    `<a href="javascript:void(0);" onclick="seeReceipt('${booking.bookingId}', '${booking.proof_payment}')">See Receipt</a>` : 
+                    'No Receipt';
 
-                var row = `<tr>
-                    <td>${booking.bookingId}</td>
-                    <td>${booking.clientID}</td>
-                    <td>${booking.eventLocation}</td>
-                    <td>${receiptLink}</td>
-                    <td>${statusButtons}</td>
-                </tr>`;
+                // Assign Staff button with "+" symbol
+                var assignStaffButton = `
+                    <button class="assign-btn" onclick="openAssignStaffModal('${booking.bookingId}')">+</button>
+                `;
+
+                // Create the row and insert it into the table body
+                var row = `
+                    <tr>
+                        <td>${booking.bookingId}</td>
+                        <td>${statusCircle}</td>
+                        <td>${booking.service_name}</td>
+                        <td>${assignStaffButton}</td>
+                        <td>${booking.name}</td>
+                        <td>${booking.formattedEventDate} ${booking.formattedTimeRange}</td>
+                        <td>${booking.eventLocation}</td>
+                        <td>${receiptLink}</td>
+                        <td>${statusButtons}</td>
+                    </tr>`;
                 tableBody.insertAdjacentHTML('beforeend', row);
             });
         };
 
         source.addEventListener('close', function() {
             console.log("Connection closed, reconnecting...");
-            setTimeout(startSSE, 100);  
+            setTimeout(startSSE, 100);
         });
     }
 
     startSSE();
+
+    // Function to open the Assign Staff modal
+    function openAssignStaffModal(bookingId) {
+        var modal = document.getElementById('assign-staff-modal');
+        modal.style.display = 'block';
+        document.getElementById('booking-id').textContent = bookingId; // Update modal with booking ID
+    }
+
+    // Function to close the Assign Staff modal
+    function closeAssignStaffModal() {
+        var modal = document.getElementById('assign-staff-modal');
+        modal.style.display = 'none';
+    }
+
+    // Close the modal when clicking outside the modal content
+    window.onclick = function(event) {
+        var modal = document.getElementById('assign-staff-modal');
+        if (event.target === modal) {
+            modal.style.display = 'none';
+        }
+    }
+
+
 
     // Function to open the image in a new tab with a download button
     function seeReceipt(bookingId, imageBase64) {
@@ -273,6 +389,31 @@ if ($result->num_rows > 0) {
         }
     }
 
+    // Get modal and button elements
+    const unavailabilityBtn = document.getElementById('unavailability-btn');
+    const unavailabilityModal = document.getElementById('unavailability-modal');
+
+    // Show modal when the button is clicked
+    unavailabilityBtn.addEventListener('click', function() {
+        unavailabilityModal.style.display = 'block';
+    });
+
+    // Hide modal when clicking outside of the modal content
+    window.addEventListener('click', function(event) {
+        if (event.target == unavailabilityModal) {
+            unavailabilityModal.style.display = 'none';
+        }
+    });
+
+    // Hide modal when clicking the save button or close button (if any added)
+    document.getElementById('save-unavailability').addEventListener('click', function() {
+        // Add your save logic here if needed
+        unavailabilityModal.style.display = 'none';
+    });
+
+    function closeUnavailabilityModal() {
+        unavailabilityModal.style.display = 'none';
+    }
 
 </script>
 

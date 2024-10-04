@@ -107,22 +107,18 @@
 
 .booking-feed {
     position: relative; 
-    height: 80vh;
+    height: 95vh;
 }
 
 .fillup-book { 
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
     border-radius: 15px;
-    z-index: 1; 
-    position: absolute; 
-    top: -9%; 
-    left: 50%;
+    z-index: 1;
     background-color: #fbfbfb;
-    transform: translate(-50%, -50%); 
+    transform: translate(0%, -30%);
     display: flex;
     border-radius: 10px;
     width: 80vw;
-    height: 75%;
 }
 
 .fillup-book h2 {
@@ -162,8 +158,6 @@
     height: 30px;
     width: 30px;
     color: #999;
-    font-size: 14px;
-    font-weight: 500;
     border-radius: 50%;
     background: #fff;
     border: 4px solid #e0e0e0;
@@ -185,16 +179,20 @@
     font: normal 600 18px/normal 'Poppins';
 }
 
-.steps .progress-line {
+.progress-line {
     height: 4px;
-    background-color: #1c1c1c;
-    z-index: 1;
-    position: absolute;
+    background: #e0e0e0;
     border-radius: 2px;
-    margin: 0 10px;
-    left: 20%;
+    
+}
+.progress-line.active {
+    background-color: #1c1c1c;
 }
 
+.step1 p,.step2 p,.step3 p{
+    font: normal 400 12px/normal 'Poppins';
+    margin: 0 5px;
+}
 .forms,
 .form-fillup {
     display: flex;
@@ -313,7 +311,7 @@
     transform: translateX(-50%);
     display: flex;
     width: 80vw;
-    height: 60%;
+    height: 50%;
     flex-direction: row;
     gap: 20px;
 }
@@ -427,6 +425,93 @@
     width: 70%;
     height: 100%;
     flex: 2;
+}
+
+/***Table Style***/ 
+.header-table {
+    border-collapse: collapse;
+    width: 90%;
+    table-layout: fixed;
+    font: normal 13px/normal 'Poppins';
+}
+
+.data-table-container {
+    overflow-y: scroll;
+    overflow-x: hidden;
+    height: 35vh;
+}
+.data-table-container::-webkit-scrollbar {
+    width: 8px;
+}
+
+.data-table-container::-webkit-scrollbar-thumb {
+    background-color: #CCCCCC;
+}
+
+.data-table-container::-webkit-scrollbar-track {
+    background-color: #FCF6F6;
+}
+
+.data-table {
+    border-collapse: collapse;
+    width: 100%;
+    table-layout: fixed;
+}
+
+ th, td {
+    text-align: center;
+    padding: 10px;
+    border-bottom: 1px solid #CCCCCC;
+}
+
+ th {
+    position: sticky;
+    top: 0;
+    background-color: #f2f2f2;
+    z-index: 2;
+}
+
+ td {
+    font: normal 13px/normal 'Poppins';
+}
+
+.table-booking .title-bar {
+    background-color: #444444;
+    color: #FCF6F6;
+    padding: 10px;
+    border-radius: 10px 10px 0 0;
+    font: normal 600 15px/normal 'Poppins';
+}
+
+.search-bar {
+    margin: -3.4% 0px 0px 80%; 
+    position: absolute;
+}
+
+.search-bar #client-search {
+    width: 70%;
+    border: none;
+    border-bottom: 2px solid #9b9b9b;
+    outline: 0;
+    font-size: 17px;
+    color: #1C1C1D;
+    background: transparent;
+    transition: border-color 0.2s;
+}
+.search-bar #client-search::placeholder {
+    color: #9b9b9b;
+    font: normal 13px/normal 'Poppins';
+}
+
+.search-bar #client-search:focus{
+  font-weight: 700;
+  border-width: 3px;
+  border-image: linear-gradient(to right, #C2BE63, #c0b71a);
+  border-image-slice: 1;
+  font: normal 15px/normal 'Poppins';
+}
+.search-bar button{
+    margin-top: 7%;
 }
 
 /***CTA banner homepage****/

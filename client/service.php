@@ -76,16 +76,25 @@ $services = $result->fetch_all(MYSQLI_ASSOC);
                                     <h3>Event Services</h3>
                                 </div>
                                 <div class="steps">
-                                    <div class="circle active">
-                                        <h4>1</h4>
+                                    <div class="step1">
+                                        <div class="circle active">
+                                            <h4>1</h4>
+                                        </div>
+                                        <p>Fillup Booking</p>
                                     </div>
-                                    <div class="progress-line"></div>
-                                    <div class="circle">
-                                        <h4>2</h4>
+                                    <div class="step2">
+                                        <div class="progress-line active"></div>
+                                        <div class="circle active">
+                                            <h4>2</h4>
+                                        </div>
+                                        <p>Choose Package</p>
                                     </div>
-                                    <div class="progress-line"></div>
-                                    <div class="circle">
-                                        <h4>3</h4>
+                                    <div class="step3">
+                                        <div class="progress-line"></div>
+                                        <div class="circle">
+                                            <h4>3</h4>
+                                        </div>
+                                        <p>Payment</p>
                                     </div>
                                 </div>
                             </div>
@@ -95,7 +104,7 @@ $services = $result->fetch_all(MYSQLI_ASSOC);
 
                                     <!-- Budget Input -->
                                     <label for="budget">Enter your budget: </label>
-                                    <input type="number" id="budget" name="budget" placeholder="Please enter you budget" required>
+                                    <input type="number" id="budget" name="budget" placeholder="Please enter you budget" >
 
                                     <!-- Services Section -->
                                     <div id="servicesSection">
@@ -113,6 +122,7 @@ $services = $result->fetch_all(MYSQLI_ASSOC);
                                     <?php endforeach; ?>
                                     
                                     <h4>Total Price: PHP <span id="totalPrice">0.00</span></h4>
+                                    <input type="hidden" name="total_price" id="totalPriceInput" value="0"> 
                                     
                                     <button type="submit" id="next">Next</button>
                                 </div>
@@ -186,20 +196,21 @@ $(document).ready(function() {
 
     // Function to update the total price
     function updateTotal() {
-        let total = 0;
-
-        // Add up prices of selected services
-        selectedServices.forEach(service => {
-            total += service.price;
-        });
-
-        // Add additional services price
-        $('input[name="additional_services[]"]:checked').each(function() {
-            total += parseFloat($(this).val());
-        });
-
-        // Display the total price
-        $('#totalPrice').text(total.toFixed(2));
+       let total = 0;
+        
+       // Add up prices of selected services
+       selectedServices.forEach(service => {
+           total += service.price;
+       });
+    
+       // Add additional services price
+       $('input[name="additional_services[]"]:checked').each(function() {
+           total += parseFloat($(this).val());
+       });
+    
+       // Display the total price
+       $('#totalPrice').text(total.toFixed(2));
+       $('#totalPriceInput').val(total.toFixed(2));  // Update hidden input value
     }
 
     // Listen for changes in additional services

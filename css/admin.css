@@ -3,22 +3,15 @@
     padding: 0;
     margin: 0;
 }
-
 body {
-    background-color: #dfdfdf;
+    background-color: #EEEEEE;
     overflow-x: hidden;
 }
-body.dark-mode {
-    background-color: #1c1c1c;
-    color: #ffffff;
-}
-
-
 
 /****Dashboard*****/
 
 .dashboard {
-    margin: 6% 0 0 14%;
+    margin: 6% 0 0 7%;
     padding: 1.5%; 
     display: flex;
     justify-content: space-between;
@@ -27,7 +20,7 @@ body.dark-mode {
 .dashboard-item {
     flex: 1;
     background-color: #FCF6F6;
-    padding: 35px;
+    padding: 20px;
     border-radius: 10px;
     box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.2);
     margin: 10px;
@@ -68,19 +61,19 @@ body.dark-mode {
 }
 
 .icon-container-client{
-    background-color: #FBD0D0;
+    background-image: linear-gradient(147deg, #BC8759 0%, #77563D 100%);
     border-radius: 5%;
     padding: 15px;
 }
 
 .icon-container-chart{
-    background-color: #C0D6FB;
+    background-image: linear-gradient(147deg, #BC8759 0%, #77563D 100%);
     border-radius: 5%;
     padding: 15px;
 }
 
 .icon-container-rate{
-    background-color: #C3C07B;
+    background-image: linear-gradient(147deg, #BC8759 0%, #77563D 100%);
     border-radius: 5%;
     padding: 15px;
 }
@@ -90,25 +83,24 @@ body.dark-mode {
 }
 
 .dashboard-bottom {
-    margin: 0% 0 0 14%;
+    margin: 0% 0 0 7%;
     padding: 1% 2% 0% 1.8%; 
     display: flex;
     justify-content: space-between;
 }
 
-.total-revenue {
+.pendings{
     flex: 1 1 calc(47.666% - 10px);
     background-color: #FCF6F6;
-    padding: 20px 20px 50px 20px;
     border-radius: 10px;
     height: 47vh;
     box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
     margin: 0px 20px 0px 5px;
 }
 
-.total-revenue h4{
-    font: normal 700 15px/normal 'Poppins';
-    color: #1c1c1c;
+.pendings h4 {
+    font: normal 600 15px/normal 'Poppins';
+    margin: 10px; 
 }
 
 .tbl-prod {
@@ -120,7 +112,7 @@ body.dark-mode {
     box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
 }
 
-.tbl-prod .title-bar {
+.title-bar {
     background-color: #444444;
     color: #FCF6F6;
     padding: 5px;
@@ -175,90 +167,20 @@ body.dark-mode {
 .table-container::-webkit-scrollbar-track {
     background-color: #FCF6F6;
 }
-/****Dark-mode dashboard*****/
-body.dark-mode .dashboard-item {
-    background-color: #444444;
-}
-body.dark-mode .dashboard-item h2{
-    color: #FCF6F6;
-}
-body.dark-mode .dashboard-item p{
-    color: #FCF6F6;
-}
-body.dark-mode .dashboard-item.hovered h2,
-.dashboard-item.hovered p {
-    color: #1c1c1c !important;
-}
-body.dark-mode .dashboard-item.hovered{
-    color: #1c1c1c;
-}
-body.dark-mode .dashboard-item.hovered {
-    background-color: #FCF6F6;
-    color: #1c1c1c;
-}
-
-body.dark-mode .tbl-prod{
-    background-color: #444444;
-}
-body.dark-mode .tbl-prod .title-bar {
-    background-color: #FCF6F6;
-    color: #1C1C1D;
-}
-
-body.dark-mode .tbl-prod .prod-table .header{
-    background-color: #5B5A5A;
-    color: #FCF6F6;
-}
-
-body.dark-mode .table-container::-webkit-scrollbar {
-    width: 8px;
-}
-
-body.dark-mode .table-container::-webkit-scrollbar-thumb {
-    background-color: #C2BE63;
-}
-
-body.dark-mode .table-container::-webkit-scrollbar-track {
-    background-color: #5B5A5A;
-}
-
-body.dark-mode .prod-table td {
-    border-bottom: 1px solid #5B5A5A;
-}
-
-body.dark-mode .prod-table tbody tr:hover {
-    background-color: #5B5A5A;
-    transition: all .3s ease;
-}
-body.dark-mode .prod-table .td-name{
-    color: #FCF6F6;
-}
-body.dark-mode .prod-table .td-name span{
-    color: #d3d3d3;
-}
-body.dark-mode .total-revenue{
-    background-color: #444444;
-    color: #FCF6F6;
-}
-body.dark-mode .total-revenue h4{
-    color: #FCF6F6;
-}
 
 /*****Booking & Client*****/
-
 .booking-box {
     padding: 0px 0px 20px 0px;
-    margin: 10% 0% 0% 18.5%;
+    margin: 10% 0 0 10%;
     border-radius: 5px;
     background-color: #FCF6F6;
     height: 70%;
     position: absolute;
     box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25), 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
-    width: 77%;
+    width: 87%;
 }
 
 .booking-box h4 {
-    border-bottom: 1px solid #CCCCCC;
     padding: 15px 0px 15px 20px;
     color: #1c1c1c;
     font: normal 600 17px/normal 'Poppins';
@@ -269,16 +191,9 @@ body.dark-mode .total-revenue h4{
     display: inline-block; 
 }
 
-.booking td:nth-child(1),
-.booking td:nth-child(2),
-.booking td:nth-child(3),
-.booking td:nth-child(4),
-.booking td:nth-child(5),
-.booking td:nth-child(6) {
-    border-right: 1px solid #CCCCCC;
-} 
 
-.booking .accept{
+
+.accept{
     background-color: #00c72e;
     border-radius: 10px;
     font: normal 11px/normal 'Poppins';
@@ -291,12 +206,12 @@ body.dark-mode .total-revenue h4{
     cursor: pointer;
     text-decoration: none;
 }
-.booking .accept:hover{
+.accept:hover{
     background-color: #00861f;
     transition: 0.4s;
 }
 
-.booking .decline {
+.decline {
     background-color: #ff3628;
     border-radius: 10px;
     font: normal 11px/normal 'Poppins';
@@ -309,58 +224,115 @@ body.dark-mode .total-revenue h4{
     cursor: pointer;
     text-decoration: none;
 }
-.booking .decline:hover{
+.decline:hover{
     background-color: rgb(172, 3, 0);
     transition: 0.4s;
 }
 
+
+.status-circle {
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.pending-circle {
+    background-color: gray;
+}
+
+.accepted-circle {
+    background-color: green;
+}
+
+.declined-circle {
+    background-color: red;
+}
+
+
+/* Tab Buttons */
+
+.tab {
+    background-color: transparent;
+    border: none;
+    padding: 0px 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin: 0 5px;
+    border-radius: 5px;
+}
+
+.tab.active {
+    background-color: #be9d2d;
+    color: white;
+}
+
+.tab:hover {
+    background-color: #dcdcdc;
+}
+
+/* Search and Unavailability Button */
+#search {
+    width: 60%;
+    padding: 10px;
+    margin: 20px auto;
+    display: block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+#unavailability-btn {
+    padding: 10px 20px;
+    background-image: linear-gradient(147deg, #BC8759 0%, #77563D 100%);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-bottom: 20px;
+}
+
+#unavailability-btn:hover {
+    background-color: #914912;
+}
+
 /***Table Style***/ 
-.header-table {
+.header-table, .data-table {
     border-collapse: collapse;
     width: 100%;
-    table-layout: fixed;
     font: normal 13px/normal 'Poppins';
 }
 
-.data-table-container {
+.header-table tbody {
     overflow-y: scroll;
     overflow-x: hidden;
-    height: 53vh;
+    height: 40vh;
 }
-.data-table-container::-webkit-scrollbar {
+
+.header-table::-webkit-scrollbar {
     width: 8px;
 }
 
-.data-table-container::-webkit-scrollbar-thumb {
+.header-table::-webkit-scrollbar-thumb {
     background-color: #CCCCCC;
 }
 
-.data-table-container::-webkit-scrollbar-track {
+.header-table::-webkit-scrollbar-track {
     background-color: #FCF6F6;
 }
 
-.data-table {
-    border-collapse: collapse;
-    width: 100%;
-    table-layout: fixed;
-}
-
 th, td {
-    text-align: center;
+    text-align: left;
     padding: 10px;
-    border-bottom: 1px solid #CCCCCC;
+    border: 1px solid #CCCCCC;
 }
 
 th {
+    background-color: #f2f2f2;
     position: sticky;
     top: 0;
-    background-color: #f2f2f2;
     z-index: 2;
 }
 
-td {
-    font: normal 13px/normal 'Poppins';
-}
 
 td form button[name="delete"] {
     background-color: #ff3628;

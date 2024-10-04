@@ -32,6 +32,15 @@ body, html {
     text-align: left;
 }
 
+.admin-login-section {
+    flex: 1.5;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    text-align: left;
+}
+
 .logo {
     width: 30%;
     margin-bottom: 40px;
@@ -133,7 +142,7 @@ body, html {
     transform: translateY(-50%);
     background: none;
     border: none;
-    color: #0077b6;
+    color: #9B5928;
     cursor: pointer;
 }
 .remember-forgot {
@@ -142,16 +151,17 @@ body, html {
     align-items: center;
     margin: 10px 0;
     font: normal 500 13px/normal 'Poppins';
+    color: #9B5928;
 }
 .remember-forgot a {
-    color: #0077b6;
+    color: #9B5928;
     text-decoration: none;
     
 }
 
 .btn {
     width: 97%;
-    padding: 8px;
+    padding: 10px;
     background-color: #1C1C1D;
     color: #fff;
     border: none;
@@ -196,23 +206,14 @@ body, html {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 100%;
+    width: 70%;
     padding: 5px;
-    margin: 5px 0;
+    margin: 18px 0;
     font: normal 500 13px/normal 'Poppins';
     border: none;
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s ease-in-out; 
-}
-
-.auth-button.facebook {
-    background-color: #3b5998;
-    color: white;
-    text-decoration: none;
-}
-.facebook:hover {
-    background-color: #3868cf;
 }
 
 .auth-button.google {
@@ -250,8 +251,6 @@ body, html {
     color: #888;
     font-weight: bold;
 }
-
-
 
 .continue {
     display: none;

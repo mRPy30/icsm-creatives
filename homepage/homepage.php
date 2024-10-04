@@ -110,10 +110,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <div class="cover-content">
                 <div class="carousel">
                     <img src="../picture/coverpage1.jpg" alt="coverpage">
-                    <img src="../picture/prenup.jpg" alt="coverpage">
-                    <img src="../picture/girls.jpg" alt="coverpage">
-                    <img src="../picture/self.jpg" alt="coverpage">
-                    <img src="../picture/wedding.jpg" alt="coverpage">
+                    <img src="../picture/christening1.jpg" alt="coverpage">
+                    <img src="../picture/corporate.jpg" alt="coverpage">
+                    <img src="../picture/coverpage5.jpg" alt="coverpage">
+                    <img src="../picture/family.jpg" alt="coverpage">
                 </div>
                 <div class="text">
                     <h2>Capture every precious moment through our lenses </h2>
@@ -408,24 +408,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 </div>
             </div>
         </section>
-
-        <div id="login_modal" class="modal">
-            <div class="modal-content">
-                <i class="fa-solid fa-xmark"></i>                
-                <h2>Login</h2>
-                <form class="form-fillup" method="POST" onsubmit="return validateForm()">
-                    <input type="text" class="form" placeholder="Enter your Email" name="email" required>
-                    <input type="password" class="form" placeholder="Enter your Password" name="password" id="password" required oninput="checkPasswordStrength(this)">
-                        <div id="popup" class="popup">
-                            <p id="popup-message"></p>
-                        </div>
-                    <button class="btn btn-lg btn-block btn-success" type="submit" name="submit" value="Submit"
-                        style="height: 7vh;">Login</button>
-                    <a href="#">Forget Password?</a>
-                </form>
-                <p style="margin-top: 5%;">Don’t have any account? <span id="register">Register now</span></p>
-            </div>
-        </div>
     </main>
 
     

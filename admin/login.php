@@ -105,7 +105,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <body>
 
     <main class="main-container">
-        <div class="left-section">
+        <div class="admin-login-section">
             <a href="">
                 <img src="../picture/logo.png" alt="Icsm Creatives logo" class="logo">
             </a>
