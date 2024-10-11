@@ -153,22 +153,6 @@ if ($stmt) {
                         <form id="bookingForm" class="form-fillup needs-validation" method="POST" action="booking.php" onsubmit="return validateForm()">
                                 <div class="form-group">
                                     <div class="left-info">
-                                        <label for="bookingDate">Date</label>
-                                        <input type="text" id="event_date" name="event_date" required>
-                                        <br>
-                                        <label for="start_time">Start Time</label>
-                                        <select id="start_time" name="start_time" required></select>
-                                        <br>
-                                        <label for="end_time">End Time</label>
-                                        <select id="end_time" name="end_time" required></select>
-                                        <br>
-                                        <label for="event_location">Location:</label>
-                                        <input type="text" id="event_location" name="event_location" required>
-                                    </div>   
-                                    <div class="right-info">
-                                        <label for="title_event">Event Name:</label>
-                                        <input type="text" id="title_event" name="title_event" required>
-                                        <br>
                                         <label for="type_of_event">Type of Event:</label>
                                         <select id="type_of_event" name="type_of_event">
                                             <?php while ($row = $eventResult->fetch_assoc()): ?>
@@ -177,10 +161,32 @@ if ($stmt) {
                                                     <?php echo htmlspecialchars($row['eventName']); ?>
                                                 </option>
                                             <?php endwhile; ?>
-                                        </select>                                        
+                                        </select> 
                                         <br>
-                                        <label for="eventDescription" placeholder="(Optional)">Booking Description</label>
-                                        <input type="text" id="eventDescription" name="eventDescription" style="height: 75px;">
+                                        <label for="bookingDate">Date</label>
+                                        <input type="text" id="event_date" name="event_date" required>
+                                        <br>
+                                        <label for="event_location">Location:</label>
+                                        <input type="text" id="event_location" name="event_location" required>
+                                    </div>   
+                                    <div class="right-info">
+                                        <label for="title_event">Event Name:</label>
+                                        <input type="text" id="title_event" name="title_event" required>
+                                        <br>
+                                        <div class="time">
+                                            <label for="start_time">Start Time</label>
+                                            <select id="start_time" name="start_time" required></select>
+                                            <br>
+                                            <label for="end_time">End Time</label>
+                                            <select id="end_time" name="end_time" required></select>  
+                                        </div>                                     
+                                        <br>
+                                        <label for="pax">Pax</label>
+                                        <input type="text" name="pax" required>
+                                    </div>
+                                    <div class="info">
+                                        <label for="eventDescription">Additional Info</label>
+                                        <input type="text" id="eventDescription" name="eventDescription" placeholder="(Tell us more about your booking (Eq. Theme is Safari, This is our first time hiring photo and video teams.)">
                                     </div>
                                 </div>
                             </div>
@@ -421,8 +427,6 @@ document.addEventListener('DOMContentLoaded', function () {
         return true;
     }
 });
-</script>
-
 </script>
 
 </body>

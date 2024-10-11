@@ -44,7 +44,7 @@ if ($resultBookings->num_rows > 0) {
 }
 
 
-$sql = "SELECT staff_ID, name, profile, email, role FROM staff";
+$sql = "SELECT staff_ID, staff_name, profile, email, role FROM staff";
 $result = $conn->query($sql);
 
 
@@ -167,7 +167,7 @@ $page = $components[2];
                                 <tr onclick="window.location.href='../admin/production.php';" style="cursor: pointer;">
                                     <td style="padding-left: 30px; vertical-align: middle;"><img src="data:image/jpeg;base64,<?php echo base64_encode($staff['profile']); ?>" alt="Profile" style="width: 40px; height: 40px; border-radius: 100%;"></td>
                                     <td class="td-name">
-                                        <?php echo $staff['name']; ?><br>
+                                        <?php echo $staff['staff_name']; ?><br>
                                         <span><?php echo $staff['email']; ?></span>
                                     </td>
                                     <td>

@@ -1,6 +1,4 @@
 <?php
-// logout Automatically
-include '../backend/logout.php';
 // Connection
 include '../backend/dbcon.php';
 
@@ -10,7 +8,7 @@ $path = parse_url($directoryURI, PHP_URL_PATH);
 $components = explode('/', $path);
 $page = $components[2];
 
-$sqlStaff = "SELECT staffID, name, email, role FROM staff";
+$sqlStaff = "SELECT staff_ID, staff_name, email, role FROM staff";
 $resultStaff = $conn->query($sqlStaff);
 
 $sqlAdmin = "SELECT id, name, email FROM administrator";
@@ -97,8 +95,8 @@ $resultAdmin = $conn->query($sqlAdmin);
                                 while ($rowStaff = $resultStaff->fetch_assoc()) :
                                 ?>
                                     <tr>
-                                        <td><?php echo $rowStaff['staffID']; ?></td>
-                                        <td><?php echo $rowStaff['name']; ?></td>
+                                        <td><?php echo $rowStaff['staff_ID']; ?></td>
+                                        <td><?php echo $rowStaff['staff_name']; ?></td>
                                         <td><?php echo $rowStaff['email']; ?></td>
                                         <td><?php echo $rowStaff['role']; ?></td>
                                         <td>
@@ -271,33 +269,6 @@ $resultAdmin = $conn->query($sqlAdmin);
             }
         }
 
-
-        // Add the following script to periodically check for inactivity and logout
-        var inactivityTimeout = 900; // 15 minutes in seconds
-
-        function checkInactivity() {
-            setTimeout(function () {
-                window.location.href = '../login.php'; // Replace 'logout.php' with the actual logout page
-            }, inactivityTimeout * 1000);
-        }
-
-        // Start checking for inactivity when the page loads
-        document.addEventListener('DOMContentLoaded', function () {
-            checkInactivity();
-        });
-
-        // Reset the inactivity timer when there's user activity
-        document.addEventListener('mousemove', function () {
-            clearTimeout(checkInactivity);
-            checkInactivity();
-        });
-
-        document.addEventListener('keypress', function () {
-            clearTimeout(checkInactivity);
-            checkInactivity();
-        });
-
-        
         document.addEventListener("DOMContentLoaded", function () {
     const deleteButtons = document.querySelectorAll(".data-table button[name='delete']");
     const deletePopup = document.getElementById("deletePopup");

@@ -107,7 +107,7 @@
 
 .booking-feed {
     position: relative; 
-    height: 95vh;
+    height: 105vh;
 }
 
 .fillup-book { 
@@ -232,13 +232,29 @@
     cursor: pointer;
 }
 
+.right-info .time{
+    display: flex;
+    flex-direction: row;
+}
+
+.form-group input[type="time"]{
+    width: 50%;
+    height: 45px;
+    padding: 8px;
+    margin: 8px 0;
+    box-sizing: border-box;
+    border: 1px solid #b5b5b5;
+    border-radius: 5px;
+    box-sizing: border-box;
+    font: normal 400 12px/normal 'Poppins';
+}
+
 .form-group label {
     font: normal 500 14px/normal 'Poppins';
 }
 
 .form-group input[type="text"],
 .form-group input[type="date"],
-.form-group input[type="time"],
 .form-group input[type="password"],
 .form-group select {
     width: 100%;
@@ -260,9 +276,15 @@
     outline-color: #807f7f;
 }
 
+.info{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
 .buttons-book {
     position: absolute;
-    bottom: 3%;
+    bottom: -10%;
     right: 5%;
 }
 

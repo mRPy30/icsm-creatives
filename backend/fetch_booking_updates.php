@@ -11,19 +11,19 @@ $timeout = 5;
 $endTime = time() + $timeout;
 
 while (time() <= $endTime) {
-    // Modify query to join booking, client, and services tables
+    // Modify query to join booking, client, services, booking_staff, and staff tables
     $sql = "
-        SELECT b.bookingId, b.clientID, b.eventLocation, b.proof_payment, b.status, b.staff_assigned, b.service_package, b.eventDate, b.start_time, b.end_time, 
-               c.name, s.service_name 
-        FROM booking b
-        INNER JOIN client c ON b.clientID = c.clientID
-        LEFT JOIN services s ON b.service_package = s.serviceID
-        ORDER BY b.bookingId DESC
+    SELECT b.bookingId, b.clientID, b.eventLocation, b.proof_payment, b.status, b.service_package, b.eventDate, b.start_time, b.end_time, 
+           c.name as client_name, s.service_name
+    FROM booking b
+    LEFT JOIN client c ON b.clientID = c.clientID
+    LEFT JOIN services s ON b.service_package = s.serviceID
+    ORDER BY b.bookingId DESC
     ";
-    
-    $result = $conn->query($sql);
 
+    $result = $conn->query($sql);
     $bookingData = [];
+
     while ($row = $result->fetch_assoc()) {
         // Convert the image data to base64
         $row['proof_payment'] = $row['proof_payment'] ? base64_encode($row['proof_payment']) : null;
@@ -40,6 +40,26 @@ while (time() <= $endTime) {
         // Add service name to the row (fetched from the services table)
         $row['service_name'] = $row['service_name'] ? $row['service_name'] : 'Unknown Service';
 
+        // Fetch assigned staff for the bookingId
+        $staffSql = "
+            SELECT st.staff_name
+            FROM booking_staff bs
+            INNER JOIN staff st ON bs.staff_ID = st.staff_ID
+            WHERE bs.bookingId = ?
+        ";
+        $stmt = $conn->prepare($staffSql);
+        $stmt->bind_param('i', $row['bookingId']);
+        $stmt->execute();
+        $staffResult = $stmt->get_result();
+
+        // Collect staff names into an array
+        $assignedStaff = [];
+        while ($staffRow = $staffResult->fetch_assoc()) {
+            $assignedStaff[] = $staffRow['staff_name'];
+        }
+        $row['assignedStaff'] = $assignedStaff; // Store staff names
+
+        // Add the row data to the bookingData array
         $bookingData[] = $row;
     }
 

@@ -14,8 +14,7 @@ if ($result->num_rows > 0) {
     $name = $row["name"];
     $profile = base64_encode($row["profile"]);
 } else {
-    $name = "Name Not Found";
-    $profile = "default_profile.jpg"; 
+    
 }
 
 $pageTitles = array(
@@ -354,85 +353,33 @@ $pageTitle = isset($pageTitles[$currentPage]) ? $pageTitles[$currentPage] : "Adm
 </div>
     </body>
 <script>
+// Logout Popup
+function openPopup() {
+    document.getElementById("logoutPopup").style.display = "block"; // Show the popup
+}
 
+function closePopup() {
+    document.getElementById("logoutPopup").style.display = "none"; // Close the popup
+}
 
-    function toggleNotifications() {
-        const notificationDropdownContent = document.querySelector('.notification-dropdown-content');
-        notificationDropdownContent.classList.toggle('show');
-    }
+function handleLogout() {
+    // Redirect to the login page
+    window.location.href = "../admin/login.php"; 
+}
 
-    document.addEventListener('click', function(event) {
-        const notificationDropdownContent = document.querySelector('.notification-dropdown-content');
-        const bellIcon = document.querySelector('.fa-bell');
-
-        if (!event.target.matches('.fa-bell') && !event.target.matches('.notification-dropdown-content')) {
-            if (notificationDropdownContent.classList.contains('show')) {
-                notificationDropdownContent.classList.remove('show');
-            }
-        }
+document.addEventListener("DOMContentLoaded", function() {
+    // When logout icon is clicked, show the popup
+    document.querySelectorAll(".fa-power-off").forEach(function(btn) {
+        btn.addEventListener("click", openPopup);
     });
 
-    //Logout Popup
-    function openPopup() {
-        document.getElementById("logoutPopup").style.display = "block";
-    }
+    // Close popup when "No" button is clicked
+    document.getElementById("logoutNo").addEventListener("click", closePopup);
 
-    function closePopup() {
-        document.getElementById("logoutPopup").style.display = "none";
-    }
+    // Redirect to login page when "Yes" button is clicked
+    document.getElementById("logoutYes").addEventListener("click", handleLogout);
+});
 
-    function handleLogout() {
-        document.getElementById("loadingOverlay").style.display = "flex";
-        setTimeout(function() {
-            window.location.href = "../admin/login.php";
-        }, 1000); 
-    }
-
-    document.addEventListener("DOMContentLoaded", function() {
-        document.querySelectorAll(".fa-power-off").forEach(function(btn) {
-            btn.addEventListener("click", openPopup);
-        });
-
-        document.getElementById("logoutNo").addEventListener("click", closePopup);
-
-        document.getElementById("logoutYes").addEventListener("click", handleLogout);
-    });
-
-
-    //Dark Mode
-    function toggleDarkMode() {
-        const body = document.body;
-        const isDarkMode = body.classList.toggle('dark-mode');
-        const moonIcon = document.querySelector('.dark-mode-toggle i');
-
-        if (isDarkMode) {
-            moonIcon.className = 'fas fa-sun';
-
-            moonIcon.classList.add('sun-transition');
-            setTimeout(() => {
-                moonIcon.classList.remove('sun-transition');
-            }, 1000);
-        } else {
-            moonIcon.className = 'fas fa-moon';
-
-            moonIcon.classList.add('moon-transition');
-            setTimeout(() => {
-                moonIcon.classList.remove('moon-transition');
-            }, 1000);
-        }
-
-        localStorage.setItem('darkMode', isDarkMode);
-    }
-    
-    document.addEventListener('DOMContentLoaded', function () {
-        const body = document.body;
-        const savedDarkMode = localStorage.getItem('darkMode');
-
-        if (savedDarkMode === 'true') {
-            body.classList.add('dark-mode');
-            toggleDarkMode(); 
-        }
-    });
 
     
 </script>

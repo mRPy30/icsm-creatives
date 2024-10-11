@@ -34,7 +34,7 @@
         text-decoration: none;
         list-style: none;
         text-align: center;	
-        font: 50%;
+        font-size: 105%;
     }
 
     .side_bar .side_bar_bottom ul li{

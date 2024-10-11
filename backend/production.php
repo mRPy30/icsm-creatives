@@ -14,7 +14,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $sqlInsert = "INSERT INTO administrator (name, email, confirmPass, password) VALUES ('$name', '$email', '$confirmPassword', '$password')";
         } else {
             $staffRole = isset($_POST['role']) ? $_POST['role'] : "";
-            $sqlInsert = "INSERT INTO staff (name, email, role) VALUES ('$name', '$email', '$staffRole')";
+            $sqlInsert = "INSERT INTO staff (staff_name, email, role) VALUES ('$name', '$email', '$staffRole')";
         }
 
         if ($conn->query($sqlInsert) === TRUE) {

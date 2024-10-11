@@ -130,15 +130,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         
 
         <section class="portfolio">
-            <!-- Portfolio content here -->
             <div class="portfolio-title">
                 <hr class="horizontal-line1">
                 <h2>Explore Portfolio</h2>
                 <hr class="horizontal-line2">
             </div>
 
-            <div class="box-section">
-                <!-- Portfolio items -->
+            <!--<div class="box-section">
                 <div class="box1">
                     <div class="box4">
                         <div class="portfolio-content1">
@@ -171,15 +169,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     </div>
                 </div>
             </div>
-        </section>
+        </section>-->
 
-        <section class="services">
+        <!--<section class="services">
             <div class="services-title">
                 <h2>Check out these special deals!</h2>
                 <h6>The ICSM price ratings</h6>
             </div>
             <div class="services-box-section">
-                <!-- services price items -->
                 <div class="service-box" style="padding-bottom:130px;">
                     <div class="package-name">
                         <h6>Package A</h6>
@@ -260,9 +257,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 </div>
             </div>
             <button class="button-services-section" id="view-more-btn">View More</button>
-        </section>
+        </section>-->
 
-        <section class="review">
+        <!--<section class="review">
             <div class="review-part">
                 <div class="review-left">
                     <img src="../picture/review.jpg" alt="">
@@ -294,7 +291,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     </div>
                 </div>
             </div>
-        </section>
+        </section>-->
 
 
         <section class="about">
@@ -339,7 +336,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     <div class="banner-inner-content">
                         <h1>Let's make something incredible together</h1>
                         <div class="CTA-button">
-                            <a href="../homepage/booking.php"><button>Inquire about your date </button></a>
+                            <a href="../homepage/events.php"><button>Inquire about your date </button></a>
                         </div>
                     </div>
                 </div>
@@ -351,11 +348,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <div class="footer">
                 <div class="footer-row">
                     <ul class="footer-left-link">
-                        <li><a href="../login.php">Login</a></li>
-                        <li><a href="../about.php">About</a></li>
-                        <li><a href="../portfolio.php">Portfolio</a></li>
-                        <li><a href="../review.php">Testimonial</a></li>
-                        <li><a href="../contact.php">Contact</a></li>
+                        <li><a href="../client/login.php">Login</a></li>
+                        <li><a href="../homepage/about.php">About</a></li>
+                        <li><a href="../homepage/events.php">Offer Events</a></li>
+                        <li><a href="../homepage/contact.php">Contact</a></li>
                     </ul>
                 </div>
                 <div class="vertical-line-left"></div>

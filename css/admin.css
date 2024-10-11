@@ -3,8 +3,18 @@
     padding: 0;
     margin: 0;
 }
+:root {
+    --BgColor: #EEEEEE;
+    --DarkColor: #1C1C1D;
+    --tblColor: #FCF6F6;
+    --hoverDark: #444444;
+    --borderTble: #CCCCCC;
+    --acceptColor: #00c72e;
+    --declineColor: #ff3628;
+}
+
 body {
-    background-color: #EEEEEE;
+    background-color: var(--BgColor);
     overflow-x: hidden;
 }
 
@@ -19,7 +29,7 @@ body {
 
 .dashboard-item {
     flex: 1;
-    background-color: #FCF6F6;
+    background-color: var(--tblColor);
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.2);
@@ -51,13 +61,13 @@ body {
 }
 
 .dashboard-item.hovered {
-    background-color: #444444;
-    color: #FCF6F6;
+    background-color: var(--hoverDark);
+    color: var(--tblColor);
 }
 
 .dashboard-item.hovered h2,
 .dashboard-item.hovered p {
-    color: #FCF6F6 !important;
+    color: var(--tblColor) !important;
 }
 
 .icon-container-client{
@@ -91,7 +101,7 @@ body {
 
 .pendings{
     flex: 1 1 calc(47.666% - 10px);
-    background-color: #FCF6F6;
+    background-color: var(--tblColor);
     border-radius: 10px;
     height: 47vh;
     box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
@@ -105,7 +115,7 @@ body {
 
 .tbl-prod {
     flex: 1 1 calc(33.333% - 10px);
-    background-color: #FCF6F6; 
+    background-color: var(--tblColor); 
     padding: 0px 0px 50px 0px;
     height: 47vh;
     border-radius: 10px;
@@ -113,8 +123,8 @@ body {
 }
 
 .title-bar {
-    background-color: #444444;
-    color: #FCF6F6;
+    background-color: var(--hoverDark);
+    color: var(--tblColor);
     padding: 5px;
     border-radius: 10px 10px 0 0;
 }
@@ -136,7 +146,7 @@ body {
 }
 
 .prod-table th, .prod-table td {
-    border-bottom: 1px solid #CCCCCC;
+    border-bottom: 1px solid var(--tblColor);
 }
 
 .prod-table .td-name {
@@ -173,7 +183,7 @@ body {
     padding: 0px 0px 20px 0px;
     margin: 10% 0 0 10%;
     border-radius: 5px;
-    background-color: #FCF6F6;
+    background-color: var(--tblColor);
     height: 70%;
     position: absolute;
     box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25), 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
@@ -194,7 +204,7 @@ body {
 
 
 .accept{
-    background-color: #00c72e;
+    background-color: var(--acceptColor);
     border-radius: 10px;
     font: normal 11px/normal 'Poppins';
     height: 5%;
@@ -212,7 +222,7 @@ body {
 }
 
 .decline {
-    background-color: #ff3628;
+    background-color: var(--declineColor);
     border-radius: 10px;
     font: normal 11px/normal 'Poppins';
     height: 5%;
@@ -242,11 +252,11 @@ body {
 }
 
 .accepted-circle {
-    background-color: green;
+    background-color: var(--acceptColor);
 }
 
 .declined-circle {
-    background-color: red;
+    background-color: var(--declineColor);
 }
 
 
@@ -263,8 +273,7 @@ body {
 }
 
 .tab.active {
-    background-color: #be9d2d;
-    color: white;
+    color: #be9d2d;
 }
 
 .tab:hover {
@@ -295,8 +304,21 @@ body {
     background-color: #914912;
 }
 
+.staff-info {
+    display: flex;
+    align-items: center;
+}
+
+.staff-profile-pic {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    margin-right: 5px;
+}
+
+
 /***Table Style***/ 
-.header-table, .data-table {
+.header-table {
     border-collapse: collapse;
     width: 100%;
     font: normal 13px/normal 'Poppins';
@@ -389,28 +411,6 @@ td .profile-image {
 .search-bar button{
     margin-top: 7%;
 }
-
-
-/**dark-mode booking & client**/
-body.dark-mode .booking-box {
-    background-color: #444444;
-}
-body.dark-mode .booking-box h4{
-    color: #FCF6F6;
-}
-body.dark-mode .data-table td  {
-    border: 1px solid #5B5A5A;
-}
-
-body.dark-mode .data-table tbody tr:hover {
-    background-color: #5B5A5A;
-    transition: all .3s ease;
-}
-body.dark-mode .header-table{
-    background-color: #bbbbbb;
-    color: #1C1C1D;
-}
-
 
 /*****Admin Calendar*****/
 .calendar {
