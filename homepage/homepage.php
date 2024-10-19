@@ -28,6 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $_SESSION['name'] = $email;
             $_SESSION['id'] = $id;
 
+
             $redirect_url = "../client/booking.php?id=$id";
 
             echo '<style>
@@ -127,7 +128,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             </div>
         </section>
 
-        
+
 
         <section class="portfolio">
             <div class="portfolio-title">
@@ -171,7 +172,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             </div>
         </section>-->
 
-        <!--<section class="services">
+            <!--<section class="services">
             <div class="services-title">
                 <h2>Check out these special deals!</h2>
                 <h6>The ICSM price ratings</h6>
@@ -259,7 +260,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <button class="button-services-section" id="view-more-btn">View More</button>
         </section>-->
 
-        <!--<section class="review">
+            <!--<section class="review">
             <div class="review-part">
                 <div class="review-left">
                     <img src="../picture/review.jpg" alt="">
@@ -294,119 +295,123 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         </section>-->
 
 
-        <section class="about">
-            <div class="about-page">
-                <div class="about-left-content">
-                    <div class="about-title">
-                        <h1>Our Mission</h1>
-                        <h5>is to make Life Memorable</h5>
+            <section class="about">
+                <div class="about-page">
+                    <div class="about-left-content">
+                        <div class="about-title">
+                            <h1>Our Mission</h1>
+                            <h5>is to make Life Memorable</h5>
+                        </div>
+                        <div class="about-description">
+                            <p><B>We capture any occasion, easy and fast.</B><br>
+                                Our days are shaped by moments; joyful moments, big important life achievements, but
+                                also
+                                the
+                                ordinary, everyday moments. Anything could be special when you do it with the people
+                                closest
+                                to
+                                you. But sometimes, these moments pass you by.<br><br>
+                                Looking forward to work with you.</p>
+                        </div>
+                        <div class="more-button">
+                            <a href="../homepage/about.php"><button>About Us</button></a>
+                        </div>
                     </div>
-                    <div class="about-description">
-                        <p><B>We capture any occasion, easy and fast.</B><br>
-                            Our days are shaped by moments; joyful moments, big important life achievements, but also
-                            the
-                            ordinary, everyday moments. Anything could be special when you do it with the people closest
-                            to
-                            you. But sometimes, these moments pass you by.<br><br>
-                            Looking forward to work with you.</p>
-                    </div>
-                    <div class="more-button">
-                        <a href="../homepage/about.php"><button>About Us</button></a>
-                    </div>
-                </div>
 
-                
-                <div class="about-right-content">
-                    <div class="image1">
-                        <img src="../picture/team.jpg" alt="Team-Picture">
-                    </div>
-                    <div class="image2">
-                        <img src="../picture/behind-the-cam.jpg" alt="Behind-the-cam">
-                    </div>
-                </div>
-            </div>
-        </section>
 
-        <section class="call-to-attention">
-            <div class="banner-homepage">
-                <div class="banner-image">
-                    <img src="../picture/CTAcover.jpg" alt="coverpage">
-                </div>
-                <div class="banner-content">
-                    <div class="banner-inner-content">
-                        <h1>Let's make something incredible together</h1>
-                        <div class="CTA-button">
-                            <a href="../homepage/events.php"><button>Inquire about your date </button></a>
+                    <div class="about-right-content">
+                        <div class="image1">
+                            <img src="../picture/team.jpg" alt="Team-Picture">
+                        </div>
+                        <div class="image2">
+                            <img src="../picture/behind-the-cam.jpg" alt="Behind-the-cam">
                         </div>
                     </div>
                 </div>
-            </div>
-        </section>
+            </section>
 
-
-        <section class="footer-page">
-            <div class="footer">
-                <div class="footer-row">
-                    <ul class="footer-left-link">
-                        <li><a href="../client/login.php">Login</a></li>
-                        <li><a href="../homepage/about.php">About</a></li>
-                        <li><a href="../homepage/events.php">Offer Events</a></li>
-                        <li><a href="../homepage/contact.php">Contact</a></li>
-                    </ul>
-                </div>
-                <div class="vertical-line-left"></div>
-                <div class="footer-center-content">
-
-                    <div class="footer-center">
-                        <h6>About ICSM Creatives</h6>
-                        <p>We are dedicated to serving women of color in an underrepresented bridal market. All brides
-                            will find inspiration on our blog, in our digital publication, on our social circuit and at
-                            our national bridal events.</p>
-
-                        <div class="social-meadia-links">
-                            <h6>Connect with us</h6>
-                            <div class="icons">
-                                <a class="facebook" href="https://www.facebook.com/icsmcreatives" target="_blank"><i
-                                        class="fa-brands fa-facebook"></i>
-                                </a>
-                                <a class="mail" href="https://www.facebook.com/cvsuimusofficialpage" target="_blank"><i
-                                        class="fa-solid fa-envelope"></i>
-                                </a>
-                                <a class="instagram" href="https://www.instagram.com/icsmcreatives">
-                                    <i class=" fa-brands fa-instagram"></i>
-                                </a>
-                                <a class="tiktok" href="https://www.tiktok.com/@icsm.creatives">
-                                    <i class="fa-brands fa-tiktok"></i>
-                                </a>
+            <section class="call-to-attention">
+                <div class="banner-homepage">
+                    <div class="banner-image">
+                        <img src="../picture/CTAcover.jpg" alt="coverpage">
+                    </div>
+                    <div class="banner-content">
+                        <div class="banner-inner-content">
+                            <h1>Let's make something incredible together</h1>
+                            <div class="CTA-button">
+                                <a href="../homepage/events.php"><button>Inquire about your date </button></a>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="vertical-line-right"></div>
-                <div class="footer-logo">
-                    <a href="../homepage/homepage.php">
-                        <img src="../picture/logo.png" alt="logo">
-                    </a>
-                </div>
-            </div>
-        </section>
+            </section>
 
-        <section class="going-back">
-            <div class="arrow-up-button back-to-top-hidden">
-                <button class="back-to-top" onclick="scrollToTop()"><i class="fas fa-arrow-up"></i></button>
-            </div>
-        </section>
 
-        <section class="container-credential">
-            <div class="credit-info">
-                <div class="rights-definition">
-                    <p>© 2023-2024 ICSMCREATIVES.COM ALL RIGHTS RESERVED. TERMS OF USE | PRIVACY POLICY</p>
+            <section class="footer-page">
+                <div class="footer">
+                    <div class="footer-row">
+                        <ul class="footer-left-link">
+                            <li><a href="../client/login.php">Login</a></li>
+                            <li><a href="../homepage/about.php">About</a></li>
+                            <li><a href="../homepage/events.php">Offer Events</a></li>
+                            <li><a href="../homepage/contact.php">Contact</a></li>
+                        </ul>
+                    </div>
+                    <div class="vertical-line-left"></div>
+                    <div class="footer-center-content">
+
+                        <div class="footer-center">
+                            <h6>About ICSM Creatives</h6>
+                            <p>We are dedicated to serving women of color in an underrepresented bridal market. All
+                                brides
+                                will find inspiration on our blog, in our digital publication, on our social circuit and
+                                at
+                                our national bridal events.</p>
+
+                            <div class="social-meadia-links">
+                                <h6>Connect with us</h6>
+                                <div class="icons">
+                                    <a class="facebook" href="https://www.facebook.com/icsmcreatives" target="_blank"><i
+                                            class="fa-brands fa-facebook"></i>
+                                    </a>
+                                    <a class="mail" href="https://www.facebook.com/cvsuimusofficialpage"
+                                        target="_blank"><i class="fa-solid fa-envelope"></i>
+                                    </a>
+                                    <a class="instagram" href="https://www.instagram.com/icsmcreatives">
+                                        <i class=" fa-brands fa-instagram"></i>
+                                    </a>
+                                    <a class="tiktok" href="https://www.tiktok.com/@icsm.creatives">
+                                        <i class="fa-brands fa-tiktok"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="vertical-line-right"></div>
+                    <div class="footer-logo">
+                        <a href="../homepage/homepage.php">
+                            <img src="../picture/logo.png" alt="logo">
+                        </a>
+                    </div>
                 </div>
-            </div>
-        </section>
+            </section>
+
+            <section class="going-back">
+                <div class="arrow-up-button back-to-top-hidden">
+                    <button class="back-to-top" onclick="scrollToTop()"><i class="fas fa-arrow-up"></i></button>
+                </div>
+            </section>
+
+            <section class="container-credential">
+                <div class="credit-info">
+                    <div class="rights-definition">
+                        <p>© 2023-2024 ICSMCREATIVES.COM ALL RIGHTS RESERVED. TERMS OF USE | PRIVACY POLICY</p>
+                    </div>
+                </div>
+            </section>
     </main>
 
-    
+
 
     <script>
 
@@ -474,8 +479,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         });
 
         function scrollToTop() {
-            document.body.scrollTop = 0; 
-            document.documentElement.scrollTop = 0; 
+            document.body.scrollTop = 0;
+            document.documentElement.scrollTop = 0;
         }
 
         document.addEventListener('DOMContentLoaded', function () {
@@ -505,12 +510,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 
         //event
-        document.getElementById("book-now-btn").addEventListener("click", function() {
+        document.getElementById("book-now-btn").addEventListener("click", function () {
             window.location.href = "../homepage/event.php";
         });
 
         //register
-        document.getElementById("register").addEventListener("click", function() {
+        document.getElementById("register").addEventListener("click", function () {
             window.location.href = "../client/register.php";
         });
 
