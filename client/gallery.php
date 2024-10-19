@@ -2,7 +2,7 @@
 //Connection
 include '../backend/dbcon.php';
 session_start(); // Start the session
-
+$clientID = $_SESSION['clientID'];
 // Active Page
 
 $directoryURI = $_SERVER['REQUEST_URI'];

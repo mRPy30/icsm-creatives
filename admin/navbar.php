@@ -14,7 +14,11 @@ if ($result->num_rows > 0) {
     $name = $row["name"];
     $profile = base64_encode($row["profile"]);
 } else {
-    
+    echo "<script>
+            alert('No Admin account found, please login');
+            window.location.href = '../admin/login.php';
+          </script>";
+    exit();
 }
 
 $pageTitles = array(
@@ -335,51 +339,42 @@ $pageTitle = isset($pageTitles[$currentPage]) ? $pageTitles[$currentPage] : "Adm
                 <img src="data:image/jpeg;base64,<?php echo $profile; ?>" alt="admin image">
             </div>
             <div class="divider"></div>
-                <div class="icons">
-                    <i class="fa-solid fa-power-off" id="logoutPopup" title="Logout" ></i>
-                </div>
+            <div class="icons">
+                <i class="fa-solid fa-power-off" id="logoutIcon" title="Logout"></i>
+            </div>
         </div>
     </div>
 </header>
 
 <body>
-    <!-----popup confirmation logout------>
+    <!-- Popup Confirmation for Logout -->
     <div id="logoutPopup" class="popup">
-    <div class="popup-content">
-        <p>Are you sure you want to logout?</p>
-        <button id="logoutNo">No</button>
-        <button id="logoutYes">Yes</button>
+        <div class="popup-content">
+            <p>Are you sure you want to logout?</p>
+            <button id="logoutNo">No</button>
+            <button id="logoutYes">Yes</button>
+        </div>
     </div>
-</div>
-    </body>
+
+    <div id="loadingOverlay">
+        <div class="loading-circle"></div>
+    </div>
+</body>
+
 <script>
-// Logout Popup
-function openPopup() {
-    document.getElementById("logoutPopup").style.display = "block"; // Show the popup
-}
-
-function closePopup() {
-    document.getElementById("logoutPopup").style.display = "none"; // Close the popup
-}
-
-function handleLogout() {
-    // Redirect to the login page
-    window.location.href = "../admin/login.php"; 
-}
-
-document.addEventListener("DOMContentLoaded", function() {
-    // When logout icon is clicked, show the popup
-    document.querySelectorAll(".fa-power-off").forEach(function(btn) {
-        btn.addEventListener("click", openPopup);
-    });
-
-    // Close popup when "No" button is clicked
-    document.getElementById("logoutNo").addEventListener("click", closePopup);
-
-    // Redirect to login page when "Yes" button is clicked
-    document.getElementById("logoutYes").addEventListener("click", handleLogout);
+    document.getElementById('logoutIcon').addEventListener('click', function() {
+    document.getElementById('logoutPopup').style.display = 'block';
 });
 
+document.getElementById('logoutNo').addEventListener('click', function() {
+    document.getElementById('logoutPopup').style.display = 'none';
+});
 
-    
+document.getElementById('logoutYes').addEventListener('click', function() {
+    document.getElementById('loadingOverlay').style.display = 'flex';
+
+    setTimeout(function() {
+        window.location.href = '../admin/login.php';
+    }, 2000); 
+});
 </script>

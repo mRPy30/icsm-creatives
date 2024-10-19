@@ -5,16 +5,15 @@ if (isset($_POST['selected_event'])) {
     $selected_event = $_POST['selected_event'];
     $budget = isset($_POST['budget']) ? $_POST['budget'] : null;
 
-    // Base query for fetching services related to the selected event
-    $query = "SELECT service_name, price FROM services WHERE eventID = (SELECT eventID FROM event WHERE eventName = ?)";
-    
-    // If a budget is provided, modify the query to filter services by price
+    // Query to fetch services based on selected event
+    $query = "SELECT serviceID, service_name, price, image_url, inclusions FROM services WHERE eventID = (SELECT eventID FROM event WHERE eventName = ?)";
+
     if ($budget !== null && $budget !== '') {
         $query .= " AND price <= ?";
     }
 
     $stmt = $conn->prepare($query);
-    
+
     // Bind parameters based on whether budget is provided or not
     if ($budget !== null && $budget !== '') {
         $stmt->bind_param('sd', $selected_event, $budget);
@@ -27,25 +26,32 @@ if (isset($_POST['selected_event'])) {
 
     if ($result->num_rows > 0) {
         while ($row = $result->fetch_assoc()) {
-            // Choose a background image based on the service name
-            $backgroundImage = '';
-            switch ($row['service_name']) {
-                case 'Photoshoot Only':
-                    $backgroundImage = 'url(../picture/photoshoot.jpg)';
-                    break;
-                case 'Video Only':
-                    $backgroundImage = 'url(../picture/videoshoot.jpg)';
-                    break;
-                default:
-                    $backgroundImage = '';
-                    break;
-            }
+            // Convert the image blob to base64
+            $base64Image = base64_encode($row['image_url']);
+            $mimeType = 'image/png'; // or image/jpeg, depending on the image type you're storing
 
-            // Output the service as a card
-            echo '<div class="service-card" data-price="'.$row['price'].'" data-service="'.$row['service_name'].'">';
-            echo '<div class="service-content" style="background-image: '.$backgroundImage.';">';
+            echo '<div class="service-card" data-serviceid="'.$row['serviceID'].'" data-price="'.$row['price'].'" data-service="'.$row['service_name'].'">';
+            echo '<div class="service-image">';
+            echo '<img src="data:' . $mimeType . ';base64,' . $base64Image . '" alt="'.$row['service_name'].'" />';
+            echo '<div class="service-name-overlay">';
             echo '<h3>' . $row['service_name'] . '</h3>';
-            echo '<p>PHP ' . number_format($row['price'], 2) . '</p>';
+            echo '</div>';
+            echo '</div>';
+
+            echo '<div class="service-price-box">';
+            echo '<span>₱ ' . number_format($row['price'], 0) . '</span>';
+            echo '</div>';
+
+            echo '<div class="service-content">';
+            echo '<div class="service-inclusions">';
+            echo '<p>Inclusions:</p>';
+            echo '<ul>';
+            $inclusions = explode(",", $row['inclusions']);
+            foreach ($inclusions as $inclusion) {
+                echo '<li>' . trim($inclusion) . '</li>';
+            }
+            echo '</ul>';
+            echo '</div>';
             echo '</div>';
             echo '</div>';
         }

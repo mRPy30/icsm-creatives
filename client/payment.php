@@ -2,9 +2,13 @@
 session_start();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Ensure that booking data and total cost are set
-    $_SESSION['booking'] = array_merge($_SESSION['booking'] ?? [], $_POST); // Merge new data with existing
-    $total_cost = array_sum($_POST['services'] ?? []);
+    $_SESSION['booking'] = array_merge($_SESSION['booking'] ?? [], $_POST);
+
+    // Capture the selected service IDs
+    if (isset($_POST['service_ids'])) {
+        $_SESSION['service_ids'] = json_decode($_POST['service_ids'], true);
+    }
+
     $_SESSION['total_cost'] = $_POST['total_price'];
 }
 
@@ -45,13 +49,9 @@ if (!isset($_SESSION['booking']) || !isset($_SESSION['total_cost'])) {
         <section class="coverpage">
             <div class="cover-content">
                 <div class="carousel">
-                    <img src="../picture/coverpage1.jpg" alt="coverpage">
-                    <img src="../picture/prenup.jpg" alt="coverpage">
-                    <img src="../picture/girls.jpg" alt="coverpage">
-                    <img src="../picture/self.jpg" alt="coverpage">
-                    <img src="../picture/wedding.jpg" alt="coverpage">
+                
                 </div>
-                <div class="text">
+                <div class="text-header">
                     <h2>Capture every precious moment through our lenses </h2>
                     <p>Get expert photographers and amazing photos, and <br>videos, starting from just PHP 2,500.</p>
                 </div>
@@ -67,23 +67,24 @@ if (!isset($_SESSION['booking']) || !isset($_SESSION['total_cost'])) {
                                 </div>
                                 <div class="steps">
                                     <div class="step1">
-                                        <div class="circle active">
+                                        <div class="progress-line <?php echo basename($_SERVER['PHP_SELF']) != 'booking.php' ? 'active current' : ''; ?>"></div>
+                                        <div class="circle <?php echo basename($_SERVER['PHP_SELF']) == 'booking.php' ? 'active current' : (basename($_SERVER['PHP_SELF']) == 'service.php' || basename($_SERVER['PHP_SELF']) == 'payment.php' ? 'active' : ''); ?>">
                                             <h4>1</h4>
                                         </div>
                                         <p>Fillup Booking</p>
                                     </div>
-                                    <div class="step1">
-                                        <div class="progress-line active"></div>
-                                            <div class="circle active">
-                                                <h4>2</h4>
-                                            </div>
+                                    <div class="step2">
+                                        <div class="progress-line <?php echo basename($_SERVER['PHP_SELF']) == 'service.php' ? 'active current ' : ''; ?>"></div>
+                                        <div class="circle <?php echo basename($_SERVER['PHP_SELF']) == 'service.php' ? 'active current' : (basename($_SERVER['PHP_SELF']) == 'payment.php' ? 'active' : ''); ?>">
+                                            <h4>2</h4>
+                                        </div>
                                         <p>Choose Package</p>
                                     </div>
-                                    <div class="step1">
-                                        <div class="progress-line active"></div>
-                                            <div class="circle active">
-                                                <h4>3</h4>
-                                            </div>
+                                    <div class="step3">
+                                        <div class="progress-line"></div>
+                                        <div class="circle <?php echo basename($_SERVER['PHP_SELF']) == 'payment.php' ? 'active current' : ''; ?>">
+                                            <h4>3</h4>
+                                        </div>
                                         <p>Payment</p>
                                     </div>
                                 </div>

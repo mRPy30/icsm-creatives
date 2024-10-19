@@ -51,40 +51,42 @@ $page = $components[2];
     
     <section class="booking-box">
         <div class="table-booking">
-            <h4>Booking Details</h4>
-            <div class="search-bar">
-                <input type="text" placeholder="Search Booking" id="client-search">
-                <i class="fa-solid fa-magnifying-glass" type="button" onclick="searchClient()" title="Search Booking"></i>
+            <div class="top-book">
+                <h4>Booking Details</h4>
+                <div class="search-bar">
+                    <input type="text" placeholder="Search Booking" id="booking-search" onkeyup="searchBooking()">
+                    <i class="fa-solid fa-magnifying-glass" type="button" title="Search Booking"></i>
+                </div>
             </div>
             <div class="tabs">
-                <button class="tab active" data-filter="all">All</button>
-                <button class="tab" data-filter="pending">Pending</button>
-                <button class="tab" data-filter="accepted">Accepted</button>
-                <button class="tab" data-filter="declined">Declined</button>
-                <button class="tab" data-filter="completed">Completed</button>
-                <button class="tab" data-filter="cancelled">Cancelled</button>
+                <div class="sort">
+                    <button class="tab active" data-filter="all" onclick="filterBookings('all')">All (<span id="all-count">0</span>) |</button>
+                    <button class="tab" data-filter="pending" onclick="filterBookings('pending')">Pending (<span id="pending-count">0</span>) |</button>
+                    <button class="tab" data-filter="accepted" onclick="filterBookings('accepted')">Accepted (<span id="accepted-count">0</span>) |</button>
+                    <button class="tab" data-filter="declined" onclick="filterBookings('declined')">Declined (<span id="declined-count">0</span>)</button>
+                </div>
                 <button id="unavailability-btn">Unavailability</button>
             </div>
-            
-            <table class="header-table">
-                <thead>
-                    <tr>
-                        <th>Booking Id</th>
-                        <th>Status</th>
-                        <th>Service Package</th>
-                        <th>Assigned Staff</th>
-                        <th>Booked by</th>
-                        <th>Date & Time</th>
-                        <th>Location</th>
-                        <th>Payment Receipt</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                        
-                </tbody>
-            </table>
+            <div class="tbl-container">
+                <table class="header-table">
+                    <thead>
+                        <tr>
+                            <th>Booking Id</th>
+                            <th>Status</th>
+                            <th>Service Package</th>
+                            <th>Assigned Staff</th>
+                            <th>Booked by</th>
+                            <th>Date & Time</th>
+                            <th>Location</th>
+                            <th>Payment Receipt</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="booking-table-body">
 
+                    </tbody>
+                </table>
+            </div>
 
     <!-- Modal for Assigning Staff -->
     <div id="assign-staff-modal" class="modal">

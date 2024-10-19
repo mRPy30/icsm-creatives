@@ -109,12 +109,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <a href="">
                 <img src="../picture/logo.png" alt="Icsm Creatives logo" class="logo">
             </a>
-            <div class="welcome-text">
-                <p>Login As Administrator</p>
-            </div>
         </div>
         <div class="right-section">
             <div class="bottom-con">
+                <div class="welcome-text">
+                    <p>Login As Administrator</p>
+                </div>
                 <form class="login-form" method="POST" onsubmit="return validateForm()">
                     <div class="fillup">
                         <label>Email</label>

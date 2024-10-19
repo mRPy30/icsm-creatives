@@ -55,8 +55,8 @@ body, html {
 
 .welcome-text p {
     font-size: 1em;
-    color: #fbfbfb;;
-    max-width: 80%;
+    color: var(--DarkColor);
+    text-align: start;
 }
 
 /******Form Section****/
@@ -130,6 +130,10 @@ body, html {
     border: 1px solid #ccc;
     border-radius: 5px;
     background-color: var(--BgColor);
+}
+
+.fillup input:focus {
+    outline-color: #807f7f;
 }
 
 .password-wrapper {

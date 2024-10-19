@@ -4,6 +4,18 @@
      margin: 0;
  }
  
+ :root {
+    --BgColor: #EEEEEE;
+    --DarkColor: #1C1C1D;
+    --hoverDark: #444444;
+    --hoverLight: #CCCCCC;
+    --themeColor: #9D7651;
+    --HoverthemeColor: #BC8759;
+    --fontLight: #fcfcf6;
+    --line-border-fill: #1C1C1D;
+    --line-border-empty: #e0e0e0;
+}
+
  body {
      background-color: #EFEFEF;
      overflow-x: hidden;
@@ -80,231 +92,256 @@
     left: 4.5%;
 }
 
-
-
-.text {
+.cover-title {
     position: absolute;
     top: 28%;
     left: 24%;
     text-align: center;
     width: 55%;
-    color: black;
+    color: var(--fontLight);
     z-index: 1;
 }
 
-.text h2 {
+.cover-title h2 {
     font: normal 700 clamp(2em, 5vw, 3.2em)/normal 'Poppins';
     letter-spacing: 3px;
 }
 
-.text p {
+.cover-title p {
     font: normal 20px/normal 'Poppins';
     letter-spacing: 3px;
     margin-top: 20px;
 }
 
+.text-header {
+    text-align: start;
+    left: 10%;
+    top: 17%;
+    position: absolute;
+}
+
+.text-header h2 {
+    font: normal 700 60px/normal 'Poppins';
+    letter-spacing: 1px;
+}
+
+.text-header p {
+    font: normal 15px/normal 'Poppins';
+    color: var(--hoverDark);
+}
+
+
 /******Content feed*******/
 
 .booking-feed {
     position: relative; 
-    height: 105vh;
+    height: 150vh;
 }
 
-.fillup-book { 
+.fillup-book {
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-    border-radius: 15px;
-    z-index: 1;
-    background-color: #fbfbfb;
-    transform: translate(0%, -30%);
-    display: flex;
     border-radius: 10px;
+    transform: translate(0%, -30%);
+    background-color: #fbfbfb;
     width: 80vw;
+    padding: 20px;
 }
 
-.fillup-book h2 {
-    margin-top: 0;
-    margin-bottom: 20px;
-    font-size: 1.5em;
+.service-book {
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    background-color: #fbfbfb;
+    width: 80vw;
+    padding: 20px;
 }
 
 .form-book {
     width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
 }
 
 .top-book {
     display: flex;
     justify-content: space-between;
-    width: 100%;
-    margin-top: 2%;
 }
 
 .top-book h3 {
     font: normal 600 18px/normal 'Poppins';
-    margin-left: 20px;
+    margin-top: 10px;
 }
 
 .steps {
     display: flex;
-    align-items: center;
-}
-
-.circle {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 30px;
-    width: 30px;
-    color: #999;
-    border-radius: 50%;
-    background: #fff;
-    border: 4px solid #e0e0e0;
-    transition: all 200ms ease;
-    transition-delay: 0s;
+    justify-content: space-between;
     position: relative;
-    z-index: 2;
-    margin: 0 30px;
+    width: 30%;
 }
 
-.circle.active {
-    transition-delay: 100ms;
-    background-color: #1C1C1D;
-    color: #FBF4F4;
-    border-color: #000000;
-}
-
-.circle h4{
-    font: normal 600 18px/normal 'Poppins';
+.step1, .step2, .step3 {
+    flex: 1;
+    text-align: center;
+    position: relative;
+    font: normal 400 12px/normal 'Poppins';
 }
 
 .progress-line {
+    position: absolute;
+    top: 15px;
+    left: calc(-50% + 15px);
+    right: calc(50% + 15px);
     height: 4px;
-    background: #e0e0e0;
-    border-radius: 2px;
-    
+    background-color: var(--line-border-empty);
+    transition: background-color 0.5s ease-in-out;
 }
+
+.step1 .progress-line {
+    left: 50%;
+    width: 100%;
+    z-index: 2;
+}
+
+.step3 .progress-line {
+    right: 50%;
+    width: 100%;
+    z-index: 2;
+}
+
 .progress-line.active {
-    background-color: #1c1c1c;
+    background-color: var(--line-border-fill);
 }
 
-.step1 p,.step2 p,.step3 p{
-    font: normal 400 12px/normal 'Poppins';
-    margin: 0 5px;
-}
-.forms,
-.form-fillup {
+.circle {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: #fff;
+    border: 4px solid #e0e0e0;
     display: flex;
-    justify-content: space-between;
-    width: 100%;
-    padding: 1.5% 5% 0 5%;
-}
-
-.form-step {
-    height: 20%;
-    display: flex;
-    width: 100%;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
     position: relative;
+    z-index: 2;
+}
+
+.circle h4 {
+    margin: 0;
+    font-size: 14px;
+    color: #e0e0e0;
+    font: normal 600 18px/normal 'Poppins';
+
+}
+
+.circle.active {
+    border-color: var(--line-border-fill);
+    background-color: var(--line-border-fill);
+}
+
+.circle.active h4 {
+    font: normal 600 18px/normal 'Poppins';
+    color: var(--fontLight);
+
+}
+
+.circle.current {
+    background-color: var(--line-border-fill);
+}
+
+.circle.current h4 {
+    color: var(--line-border-empty);
+    font: normal 600 18px/normal 'Poppins';
+}
+
+.step1 .progress-line.active,
+.step2 .progress-line.active {
+    background-color: var(--line-border-fill);
 }
 
 .form-group {
-    width: 100%;
-}
-
-.left-info {
-    width: 45%;
-    float: left;
-    padding-right: 2%;
-}
-
-.right-info {
-    width: 45%;
-    float: right;
-    padding-left: 2%;
-}
-
-.right-info i {
-    position: absolute;
-    right: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    cursor: pointer;
-}
-
-.right-info .time{
     display: flex;
-    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 20px;
 }
 
-.form-group input[type="time"]{
-    width: 50%;
-    height: 45px;
-    padding: 8px;
-    margin: 8px 0;
-    box-sizing: border-box;
-    border: 1px solid #b5b5b5;
-    border-radius: 5px;
-    box-sizing: border-box;
-    font: normal 400 12px/normal 'Poppins';
+.left-info, .right-info {
+    flex: 1;
+    min-width: 250px;
 }
 
 .form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 500;
     font: normal 500 14px/normal 'Poppins';
 }
 
-.form-group input[type="text"],
-.form-group input[type="date"],
-.form-group input[type="password"],
-.form-group select {
+.form-group input, select {
     width: 100%;
-    height: 45px;
-    padding: 8px;
-    margin: 8px 0;
-    box-sizing: border-box;
-    border: 1px solid #b5b5b5;
+    padding: 10px;
+    border: 1px solid #e0e0e0;
+    font: normal 400 12px/normal 'Poppins';
     border-radius: 5px;
+    margin-bottom: 10px;
     box-sizing: border-box;
+}
+
+.input-with-icon {
+    position: relative;
+}
+
+.input-with-icon i {
+    position: absolute;
+    left: 10px;
+    top: 36%;
+    transform: translateY(-50%);
+    color: var(--hoverDark);
+}
+
+.input-with-icon input,
+.input-with-icon select {
+    padding-left: 35px;
+}
+
+.time {
+    display: flex;
+    gap: 30px;
+}
+
+.time-input {
+    flex: 5;
+}
+
+.start ,.end {
+    width: 100%;
     font: normal 400 12px/normal 'Poppins';
 }
 
-.form-group input[type="text"],
-.form-group input[type="date"],
-.form-group input[type="time"],
-.form-group input[type="password"],
-.form-group select:focus {
-    outline-color: #807f7f;
-}
 
-.info{
-    display: flex;
-    flex-direction: column;
+.info {
     width: 100%;
 }
 
 .buttons-book {
-    position: absolute;
-    bottom: -10%;
-    right: 5%;
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 20px;
 }
 
 .buttons-book #next {
-    margin-left: 10px;
-    font: normal 600 13px/normal 'Poppins';
-    color: #1c1c1c;
-    padding: 5px 30px;
+    background-color: var(--themeColor);
+    color: var(--fontLight);
     border: none;
-    border-radius: 10px;
+    padding: 8px 50px;
+    border-radius: 5px;
     cursor: pointer;
-    text-align: center;
-    text-decoration: none;
-    background-color: #E1DE8F;
+    font: normal 600 13px/normal 'Poppins';
     transition: background-color 0.3s ease-in-out;
     box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    text-decoration: none;
 }
 
 .buttons-book #next:hover {
-    background-color: #C2BE63;
+    background-color: var(--HoverthemeColor);
 }
 
 .buttons-book #prev {
@@ -337,6 +374,7 @@
     flex-direction: row;
     gap: 20px;
 }
+
 
 
 
@@ -792,19 +830,37 @@
 
 
 /*****Services******/
-#recommendedServices{
+/* Layout for the recommended services */
+#recommendedServices {
     display: flex;
-    margin: 5px 0;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+ .title-service{
+    display: flex;
+    flex-direction: row;
+    border: 1px solid var(--line-border-empty);
+    width: 50%;
+}
+
+.title-service h4{
+    font: normal 16px/normal 'Poppins';
+    color: var(--themeColor);
 }
 
 .service-card {
-    border: 2px solid #BCB4B5; /* Light gray border */
+    width: 30%; /* Three columns layout */
+    border: 2px solid #BCB4B5;
     border-radius: 8px;
     margin-bottom: 20px;
-    padding: 10px;
-    cursor: pointer;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
-    margin: 0 5px;
+    cursor: pointer;
+}
+
+.service-card.selected {
+    border: 5px solid var(--HoverthemeColor); 
 }
 
 .service-card:hover {
@@ -812,25 +868,94 @@
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
 }
 
+.service-image {
+    position: relative; /* Enable positioning inside this element */
+}
+
+.service-image img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    filter: brightness(50%);
+}
+
+/* Style for the service name overlay */
+.service-name-overlay {
+    position: absolute;
+    bottom: 10px;
+    left: 0;
+    right: 0;
+    color: var(--fontLight);
+    font-size: 1.5rem;
+    font-weight: bold;
+    padding: 10px 0;
+}
+
+.service-name-overlay h3{
+    font: normal 700 30px/normal 'Alfa Slab One';
+}
+
+/* Style for the price box */
+.service-price-box {
+    background-color: var(--themeColor);
+    padding: 15px;
+    color: var(--fontLight);
+    border-radius: 0px 25px 0px 0px;
+    width: 55%;
+    margin-top: 5px;
+}
+
+.service-price-box span{
+    font: normal 400 30px/normal 'Paprika';
+}
+
 .service-content {
-    background-size: cover;
-    background-position: center;
     padding: 20px;
-    color: white;
-    text-align: center;
-    border-radius: 6px;
-    min-height: 150px;
+    background-color: #fff;
 }
 
 .service-content h3 {
-    margin: 0;
-    font-size: 24px;
+    font-size: 20px;
     font-weight: bold;
-    color: Black;
+    color: #333;
 }
 
-.service-content p {
+.service-price span {
+    display: block;
+    font-size: 36px;
+    color: var(--themeColor);
+    font-weight: bold;
     margin-top: 10px;
-    font-size: 18px;
-    color: Black;
+}
+
+.service-inclusions {
+    margin-top: 15px;
+    text-align: left;
+}
+
+.service-inclusions p {
+    font-weight: bold;
+    color: #333;
+}
+
+.service-inclusions ul {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.service-inclusions ul li {
+    font-size: 16px;
+    color: #666;
+    margin-bottom: 5px;
+    padding-left: 20px;
+    position: relative;
+}
+
+.service-inclusions ul li::before {
+    content: "•"; /* Custom bullet point */
+    color: var(--HoverthemeColor);
+    font-size: 24px;
+    position: absolute;
+    left: 0;
+    top: 0;
 }

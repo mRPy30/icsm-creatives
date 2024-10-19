@@ -5,7 +5,7 @@ include '../backend/dbcon.php';
 
 
 session_start(); // Start the session
-$clientID = $_SESSION['id'];
+$clientID = $_SESSION['clientID'];
 
 // Display data in a table
 $sql = "SELECT title_event, eventLocation, eventDate, status FROM booking WHERE clientID = $clientID";

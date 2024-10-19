@@ -12,22 +12,17 @@ function closeAcceptPopup() {
 function acceptBooking() {
     var bookingId = document.getElementById('bookingId').value;
 
-    // Perform the update to the status in the database using AJAX or form submission
     var xhr = new XMLHttpRequest();
     xhr.open('POST', '../backend/status.php', true);
     xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
     xhr.onreadystatechange = function () {
         if (xhr.readyState == 4 && xhr.status == 200) {
-            // Check the response from the server if needed
             console.log(xhr.responseText);
-            // Close the popup
             closePopup();
-            // Reload the page to update the displayed data
             window.location.reload();
         }
     };
 
-    // Send the request with the bookingId and action (accept)
     xhr.send('schedule_id=' + bookingId + '&accept=1');
 }
 
@@ -46,22 +41,17 @@ function declineBooking() {
     var reasonSelect = document.getElementById('declineReason');
     var reason = reasonSelect.options[reasonSelect.selectedIndex].value;
 
-    // Perform the update to the status and reason in the database using AJAX or form submission
     var xhr = new XMLHttpRequest();
     xhr.open('POST', '../backend/status.php', true);
     xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
     xhr.onreadystatechange = function () {
         if (xhr.readyState == 4 && xhr.status == 200) {
-            // Check the response from the server if needed
             console.log(xhr.responseText);
-            // Close the popup
             closeDeclinePopup();
-            // Reload the page to update the displayed data
             window.location.reload();
         }
     };
 
-    // Send the request with the bookingId, action (decline), and reason
     xhr.send('schedule_id=' + bookingId + '&decline=1&reason=' + encodeURIComponent(reason));
 }
 
@@ -77,18 +67,15 @@ function openAssignStaffModal(bookingId, servicePackage, pax) {
     modal.style.display = 'block';
     document.getElementById('bookingId').value = bookingId;
 
-    // Decision Support Logic
     getAvailableStaff('Photographer').then(photographers => {
         getAvailableStaff('Videographer').then(videographers => {
             getAvailableStaff('Editor').then(editors => {
                 let staffNeeded = calculateStaff(servicePackage, pax);
 
-                // Populate dropdowns with recommended staff
                 populateDropdown('staff-select', photographers, staffNeeded.photographer);
                 populateDropdown('staff-select-videographer', videographers, staffNeeded.videographer);
                 populateDropdown('staff-select-editor', editors, staffNeeded.editor);
 
-                // Set deadline based on package
                 let deadline = calculateDeadline(servicePackage);
                 document.getElementById('deadline').value = deadline;
             });
@@ -98,7 +85,7 @@ function openAssignStaffModal(bookingId, servicePackage, pax) {
 
 
 function submitAssignStaff(event) {
-    event.preventDefault();  // Prevent default form submission
+    event.preventDefault();  
 
     const formData = new FormData(document.getElementById('assign-staff-form'));
 
@@ -110,8 +97,8 @@ function submitAssignStaff(event) {
     .then(data => {
         if (data.status === 'success') {
             alert('Staff assigned successfully!');
-            closeAssignStaffModal();  // Close the modal
-            location.reload();  // Reload the page or update the UI as needed
+            closeAssignStaffModal();  
+            location.reload();  
         } else {
             alert('Failed to assign staff.');
         }
@@ -122,68 +109,81 @@ function submitAssignStaff(event) {
     });
 }
 
+let bookings = []; // To hold all bookings data
+let currentFilter = 'all'; // To keep track of the current filter
+
+function filterBookings(filter) {
+    currentFilter = filter; // Update current filter
+    renderBookings(); // Render bookings based on the current filter
+}
+
+function renderBookings() {
+    const tableBody = document.getElementById('booking-table-body');
+    const allCount = document.getElementById('all-count');
+    const pendingCount = document.getElementById('pending-count');
+    const acceptedCount = document.getElementById('accepted-count');
+    const declinedCount = document.getElementById('declined-count');
+
+    tableBody.innerHTML = ''; 
+
+
+    const filteredBookings = bookings.filter(booking => {
+        if (currentFilter === 'all') return true; // Show all bookings
+        return booking.status.toLowerCase() === currentFilter; // Filter by status
+    });
+
+    allCount.innerText = bookings.length;
+    pendingCount.innerText = bookings.filter(b => b.status.toLowerCase() === 'pending').length;
+    acceptedCount.innerText = bookings.filter(b => b.status.toLowerCase() === 'accepted').length;
+    declinedCount.innerText = bookings.filter(b => b.status.toLowerCase() === 'declined').length;
+
+    filteredBookings.forEach(booking => {
+        let statusCircle = '';
+        let statusButtons = '';
+
+        if (booking.status === 'Pending') {
+            statusCircle = '<span class="status-circle pending-circle"></span>';
+            statusButtons = `
+                <button class="accept" onclick="openAcceptPopup('${booking.bookingId}')">Accept</button>
+                <button class="decline" onclick="openDeclinePopup('${booking.bookingId}')">Decline</button>`;
+        } else if (booking.status === 'Accepted') {
+            statusCircle = '<span class="status-circle accepted-circle"></span>';
+            statusButtons = '';
+        } else if (booking.status === 'Declined') {
+            statusCircle = '<span class="status-circle declined-circle"></span>';
+            statusButtons = '';
+        }
+
+        const receiptLink = booking.proof_payment ?
+            `<a href="javascript:void(0);" onclick="seeReceipt('${booking.bookingId}', '${booking.proof_payment}')">See Receipt</a>` :
+            'No Receipt';
+
+        const assignStaffButton = booking.assignedStaff && booking.assignedStaff.length > 0
+            ? `<span>${booking.assignedStaff.join(', ')}</span>`
+            : (booking.status === 'Accepted' ? `<button class="assign-btn" onclick="openAssignStaffModal('${booking.bookingId}')"><i class="fa-solid fa-user-plus"></i></button>` : '');
+
+        const row = `
+            <tr>
+                <td>${booking.bookingId}</td>
+                <td>${statusCircle}</td>
+                <td>${booking.service_name}</td>
+                <td>${assignStaffButton}</td>
+                <td>${booking.client_name}</td>
+                <td>${booking.formattedEventDate} ${booking.formattedTimeRange}</td>
+                <td>${booking.eventLocation}</td>
+                <td>${receiptLink}</td>
+                <td>${statusButtons}</td>
+            </tr>`;
+        tableBody.insertAdjacentHTML('beforeend', row);
+    });
+}
+
 function startSSE() {
     var source = new EventSource("../backend/fetch_booking_updates.php");
 
     source.onmessage = function(event) {
-        var bookings = JSON.parse(event.data);
-        var tableBody = document.querySelector('.header-table tbody');
-        tableBody.innerHTML = '';  // Clear the table body
-
-        bookings.forEach(function(booking) {
-            var statusCircle = ''; 
-            var statusButtons = '';
-
-            // Assign circle color based on booking status
-            if (booking.status === 'Pending') {
-                statusCircle = '<span class="status-circle pending-circle"></span>';
-                statusButtons = `
-                    <button class="accept" onclick="openAcceptPopup('${booking.bookingId}')">Accept</button>
-                    <button class="decline" onclick="openDeclinePopup('${booking.bookingId}')">Decline</button>`;
-            } else if (booking.status === 'Accepted') {
-                statusCircle = '<span class="status-circle accepted-circle"></span>';
-                statusButtons = ''; // Hide buttons when accepted
-            } else if (booking.status === 'Declined') {
-                statusCircle = '<span class="status-circle declined-circle"></span>';
-                statusButtons = ''; // Hide buttons when declined
-            }
-
-            // Check if proof of payment exists, create a clickable link to view the receipt
-            var receiptLink = booking.proof_payment ? 
-                `<a href="javascript:void(0);" onclick="seeReceipt('${booking.bookingId}', '${booking.proof_payment}')">See Receipt</a>` : 
-                'No Receipt';
-
-            // Check if staff are assigned
-            var assignStaffButton = '';
-            if (booking.assignedStaff && booking.assignedStaff.length > 0) {
-                // If staff members are assigned, display their names in a comma-separated list
-                var staffNames = booking.assignedStaff.join(', ');
-                assignStaffButton = `<span>${staffNames}</span>`;
-            } else if (booking.status === 'Accepted') {
-                // Display the "+" button only if the status is "Accepted"
-                assignStaffButton = `
-                    <button class="assign-btn" onclick="openAssignStaffModal('${booking.bookingId}')">+</button>
-                `;
-            } else if (booking.status === 'Declined') {
-                // Make sure no button is shown for Declined status
-                assignStaffButton = '';  // No button for Declined status
-            }
-
-            // Create the row and insert it into the table body
-            var row = `
-                <tr>
-                    <td>${booking.bookingId}</td>
-                    <td>${statusCircle}</td>
-                    <td>${booking.service_name}</td>
-                    <td>${assignStaffButton}</td>
-                    <td>${booking.client_name}</td>
-                    <td>${booking.formattedEventDate} ${booking.formattedTimeRange}</td>
-                    <td>${booking.eventLocation}</td>
-                    <td>${receiptLink}</td>
-                    <td>${statusButtons}</td>
-                </tr>`;
-            tableBody.insertAdjacentHTML('beforeend', row);
-        });
+        bookings = JSON.parse(event.data); 
+        renderBookings(); 
     };
 
     source.addEventListener('close', function() {
@@ -194,6 +194,30 @@ function startSSE() {
 
 startSSE();
 
+function searchBooking() {
+    const input = document.getElementById('booking-search');
+    const filter = input.value.toLowerCase();
+    const tableBody = document.getElementById('booking-table-body');
+    const rows = tableBody.getElementsByTagName('tr');
+
+    for (let i = 0; i < rows.length; i++) {
+        const cells = rows[i].getElementsByTagName('td');
+        let found = false;
+        for (let j = 0; j < cells.length; j++) {
+            if (cells[j]) {
+                if (cells[j].textContent.toLowerCase().indexOf(filter) > -1) {
+                    found = true;
+                    break;
+                }
+            }
+        }
+        if (found) {
+            rows[i].style.display = '';
+        } else {
+            rows[i].style.display = 'none';
+        }
+    }
+}
 
 // Function to open the image in a new tab with a download button
 function seeReceipt(bookingId, imageBase64) {

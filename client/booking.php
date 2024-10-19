@@ -111,7 +111,7 @@ if ($stmt) {
                 <div class="carousel">
                     <img src="../picture/coverpage1.jpg" alt="coverpage">
                 </div>
-                <div class="text">
+                <div class="cover-title">
                     <h2>Capture every precious moment through our lenses </h2>
                     <p>Customize Your Package with Flexible Options and Budget-Friendly Add-Ons That Fits Your Unique Style and Budget.</p>
                 </div>
@@ -128,22 +128,22 @@ if ($stmt) {
                             </div>
                             <div class="steps">
                                 <div class="step1">
-                                <div class="progress-line"></div>
-                                    <div class="circle active">
+                                    <div class="progress-line <?php echo basename($_SERVER['PHP_SELF']) != 'booking.php' ? 'active current' : ''; ?>"></div>
+                                    <div class="circle <?php echo basename($_SERVER['PHP_SELF']) == 'booking.php' ? 'active current' : (basename($_SERVER['PHP_SELF']) == 'service.php' || basename($_SERVER['PHP_SELF']) == 'payment.php' ? 'active' : ''); ?>">
                                         <h4>1</h4>
                                     </div>
                                     <p>Fillup Booking</p>
                                 </div>
                                 <div class="step2">
-                                    <div class="progress-line"></div>
-                                        <div class="circle">
-                                            <h4>2</h4>
-                                        </div>
+                                    <div class="progress-line <?php echo basename($_SERVER['PHP_SELF']) == 'service.php' ? 'active current ' : ''; ?>"></div>
+                                    <div class="circle <?php echo basename($_SERVER['PHP_SELF']) == 'service.php' ? 'active current' : (basename($_SERVER['PHP_SELF']) == 'payment.php' ? 'active' : ''); ?>">
+                                        <h4>2</h4>
+                                    </div>
                                     <p>Choose Package</p>
                                 </div>
                                 <div class="step3">
-                                <div class="progress-line"></div>
-                                    <div class="circle">
+                                    <div class="progress-line"></div>
+                                    <div class="circle <?php echo basename($_SERVER['PHP_SELF']) == 'payment.php' ? 'active current' : ''; ?>">
                                         <h4>3</h4>
                                     </div>
                                     <p>Payment</p>
@@ -154,35 +154,57 @@ if ($stmt) {
                                 <div class="form-group">
                                     <div class="left-info">
                                         <label for="type_of_event">Type of Event:</label>
-                                        <select id="type_of_event" name="type_of_event">
-                                            <?php while ($row = $eventResult->fetch_assoc()): ?>
-                                                <option value="<?php echo htmlspecialchars($row['eventName']); ?>" 
-                                                    <?php echo ($row['eventName'] == $type_of_event) ? 'selected' : ''; ?>>
-                                                    <?php echo htmlspecialchars($row['eventName']); ?>
-                                                </option>
-                                            <?php endwhile; ?>
-                                        </select> 
+                                        <div class="input-with-icon">
+                                            <i class="fa-solid fa-camera"></i>
+                                            <select id="type_of_event" name="type_of_event">
+                                                <?php while ($row = $eventResult->fetch_assoc()): ?>
+                                                    <option value="<?php echo htmlspecialchars($row['eventName']); ?>" 
+                                                        <?php echo ($row['eventName'] == $type_of_event) ? 'selected' : ''; ?>>
+                                                        <?php echo htmlspecialchars($row['eventName']); ?>
+                                                    </option>
+                                                <?php endwhile; ?>
+                                            </select> 
+                                        </div>
                                         <br>
                                         <label for="bookingDate">Date</label>
-                                        <input type="text" id="event_date" name="event_date" required>
+                                        <div class="input-with-icon">
+                                            <i class="fa-regular fa-calendar-days"></i>
+                                            <input type="text" id="event_date" name="event_date" required>
+                                        </div>
                                         <br>
                                         <label for="event_location">Location:</label>
-                                        <input type="text" id="event_location" name="event_location" required>
+                                        <div class="input-with-icon">
+                                            <i class="fa-solid fa-location-dot"></i>
+                                            <input type="text" id="event_location" name="event_location" required>
+                                        </div>
                                     </div>   
                                     <div class="right-info">
                                         <label for="title_event">Event Name:</label>
-                                        <input type="text" id="title_event" name="title_event" required>
+                                        <div class="input-with-icon">
+                                            <i class="fa-regular fa-pen-to-square"></i>
+                                            <input type="text" id="title_event" name="title_event" required>
+                                        </div>
                                         <br>
                                         <div class="time">
-                                            <label for="start_time">Start Time</label>
-                                            <select id="start_time" name="start_time" required></select>
+                                            <div class="start">
+                                                <label for="start_time">Start Time</label>
+                                                <div class="input-with-icon">
+                                                    <i class="fa-regular fa-clock"></i>
+                                                    <select id="start_time" name="start_time" required></select>
+                                                </div>
+                                            </div>
                                             <br>
-                                            <label for="end_time">End Time</label>
-                                            <select id="end_time" name="end_time" required></select>  
+                                            <div class="end">
+                                                <label for="end_time">End Time</label>
+                                                <div class="input-with-icon">
+                                                    <i class="fa-regular fa-clock"></i>
+                                                    <select id="end_time" name="end_time" required></select>  
+                                                </div>
+                                            </div>
                                         </div>                                     
                                         <br>
                                         <label for="pax">Pax</label>
-                                        <input type="text" name="pax" required>
+                                        <input type="text" id="pax" name="pax" required>
                                     </div>
                                     <div class="info">
                                         <label for="eventDescription">Additional Info</label>
@@ -218,7 +240,7 @@ if ($stmt) {
                             <ul class="days"></ul>
                         </div>
                     </div>
-                    <div class="pf">
+                    <!--<div class="pf">
                         <div class="table-booking">
                             <div class="title-bar">
                                 <h4>Upcoming Events</h4>
@@ -253,20 +275,19 @@ if ($stmt) {
                     <p>© 2023-2024 ICSMCREATIVES.COM ALL RIGHTS RESERVED. TERMS OF USE | PRIVACY POLICY</p>
                 </div>
             </div>
-        </section>
+        </section>-->
     </main>
 
-    <!-- JavaScript to handle date picker -->
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-    const eventDateInput = document.getElementById('event_date');
-    const startTimeSelect = document.getElementById('start_time');
-    const endTimeSelect = document.getElementById('end_time');
-    const navbar = document.querySelector('.navbar');
-    const coverContent = document.querySelector('.text');
-    const daysTag = document.querySelector(".days"),
-    currentDate = document.querySelector(".current-date"),
-    prevNextIcon = document.querySelectorAll(".icons span");
+    document.addEventListener('DOMContentLoaded', function () {
+        const eventDateInput = document.getElementById('event_date');
+        const startTimeSelect = document.getElementById('start_time');
+        const endTimeSelect = document.getElementById('end_time');
+        const navbar = document.querySelector('.navbar');
+        const coverContent = document.querySelector('.cover-title');
+        const daysTag = document.querySelector(".days"),
+        currentDate = document.querySelector(".current-date"),
+        prevNextIcon = document.querySelectorAll(".icons span");
 
     // Populate time options (Assuming events can be booked on the hour from 8am to 8pm)
     function populateTimeOptions(selectElement) {
@@ -427,6 +448,56 @@ document.addEventListener('DOMContentLoaded', function () {
         return true;
     }
 });
+
+const progress = document.getElementById('progress')
+const prev = document.getElementById('prev')
+const next = document.getElementById('next')
+const circles = document.querySelectorAll('.circle')
+
+let currentActive = 1
+
+next.addEventListener('click', () => {
+    currentActive++
+
+    if(currentActive > circles.length) {
+        currentActive = circles.length
+    }
+
+    update()
+})
+
+prev.addEventListener('click', () => {
+    currentActive--
+
+    if(currentActive < 1) {
+        currentActive = 1
+    }
+
+    update()
+})
+
+function update() {
+    circles.forEach((circle, idx) => {
+        if(idx < currentActive) {
+            circle.classList.add('active')
+        } else {
+            circle.classList.remove('active')
+        }
+    })
+
+    const actives = document.querySelectorAll('.active')
+
+    progress.style.width = (actives.length - 100) / (circles.length - 1) * 700 + '%'
+
+    if(currentActive === 1) {
+        prev.disabled = true
+    } else if(currentActive === circles.length) {
+        next.disabled = true
+    } else {
+        prev.disabled = false
+        next.disabled = false
+    }
+}
 </script>
 
 </body>

@@ -61,55 +61,61 @@ $services = $result->fetch_all(MYSQLI_ASSOC);
                 <div class="carousel">
                     
                 </div>
-                <div class="text">
-                    <h2>Choose your Ratings</h2>
+                <div class="text-header">
+                    <h2>Customize Your Package</h2>
                     <p>Make Sure you details is correct before proceeding to the next step</p>
                 </div>
             </div>
         </section>
             <section class="booking-feed">
                 <div class="content">
-                    <div class="fillup-book">
+                    <div class="service-book">
                         <div class="form-book">
                             <div class="top-book">
                                 <div class="title">
-                                    <h3>Event Services</h3>
+                                    <h3>Choose the Perfect Package for Your Event</h3>
                                 </div>
                                 <div class="steps">
                                     <div class="step1">
-                                        <div class="circle active">
+                                        <div class="progress-line <?php echo basename($_SERVER['PHP_SELF']) != 'booking.php' ? 'active current' : ''; ?>"></div>
+                                        <div class="circle <?php echo basename($_SERVER['PHP_SELF']) == 'booking.php' ? 'active current' : (basename($_SERVER['PHP_SELF']) == 'service.php' || basename($_SERVER['PHP_SELF']) == 'payment.php' ? 'active' : ''); ?>">
                                             <h4>1</h4>
                                         </div>
                                         <p>Fillup Booking</p>
                                     </div>
                                     <div class="step2">
-                                        <div class="progress-line active"></div>
-                                        <div class="circle active">
+                                        <div class="progress-line <?php echo basename($_SERVER['PHP_SELF']) == 'service.php' ? 'active current ' : ''; ?>"></div>
+                                        <div class="circle <?php echo basename($_SERVER['PHP_SELF']) == 'service.php' ? 'active current' : (basename($_SERVER['PHP_SELF']) == 'payment.php' ? 'active' : ''); ?>">
                                             <h4>2</h4>
                                         </div>
                                         <p>Choose Package</p>
                                     </div>
                                     <div class="step3">
                                         <div class="progress-line"></div>
-                                        <div class="circle">
+                                        <div class="circle <?php echo basename($_SERVER['PHP_SELF']) == 'payment.php' ? 'active current' : ''; ?>">
                                             <h4>3</h4>
                                         </div>
                                         <p>Payment</p>
                                     </div>
                                 </div>
                             </div>
-                            <form action="payment.php" class="form-fillup needs-validation" method="POST" id="serviceForm">
-                                <div class="form-group">
+                            <form action="payment.php" class="service-section" method="POST" id="serviceForm">
+                                <div class="price">
                                     <h3>Recommended Services for Your Event: <?php echo htmlspecialchars($selected_event); ?></h3>
 
                                     <!-- Budget Input -->
-                                    <label for="budget">Enter your budget: </label>
+                                    <label for="budget">Set your Budget (₱): </label>
                                     <input type="number" id="budget" name="budget" placeholder="Please enter you budget" >
 
                                     <!-- Services Section -->
                                     <div id="servicesSection">
-                                        <h4>Recommended Services:</h4>
-                                        <div id="recommendedServices"></div>
+                                        <div class="title-service">
+                                            <i class="fa-regular fa-thumbs-up"></i>
+                                            <h4>Recommended Services:</h4>
+                                        </div>
+                                        <div id="recommendedServices" class="recommended-services">
+
+                                        </div>
                                     </div>
 
                                     <!-- Additional Services -->
@@ -218,6 +224,57 @@ $(document).ready(function() {
         updateTotal();
     });
 });
+
+// Initialize an array to hold selected services and their prices
+let selectedServices = [];
+
+$(document).on('click', '.service-card', function() {
+    const serviceID = $(this).data('serviceid');  // Get the serviceID
+    const serviceName = $(this).data('service');
+    const servicePrice = parseFloat($(this).data('price'));
+
+    const index = selectedServices.findIndex(service => service.id === serviceID);
+
+    if (index === -1) {
+        selectedServices.push({ id: serviceID, name: serviceName, price: servicePrice });
+        $(this).addClass('selected');
+    } else {
+        selectedServices.splice(index, 1);
+        $(this).removeClass('selected');
+    }
+
+    updateTotal();
+});
+
+function updateTotal() {
+    let total = 0;
+    selectedServices.forEach(service => total += service.price);
+    $('input[name="additional_services[]"]:checked').each(function() {
+        total += parseFloat($(this).val());
+    });
+
+    $('#totalPrice').text(total.toFixed(2));
+    $('#totalPriceInput').val(total.toFixed(2));
+}
+
+// Modify form submission to include selected service IDs
+$('#serviceForm').submit(function(e) {
+    e.preventDefault();
+    
+    // Get service IDs
+    const selectedServiceIDs = selectedServices.map(service => service.id);
+
+    // Create a hidden input to send the selected service IDs to payment.php
+    $('<input>').attr({
+        type: 'hidden',
+        name: 'service_ids',
+        value: JSON.stringify(selectedServiceIDs)
+    }).appendTo('#serviceForm');
+
+    // Now submit the form
+    this.submit();
+});
+
 </script>
 
 

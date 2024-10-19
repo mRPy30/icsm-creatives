@@ -238,17 +238,6 @@
     </nav>
 </div>
     
-<div id="loadingOverlay">
-    <div class="loading-circle"></div>
-</div>
-    <!-----popup confirmation logout------>
-    <div id="logoutPopup" class="popup">
-        <div class="popup-content">
-            <p>Are you sure you want to logout?</p>
-            <button id="logoutNo">No</button>
-            <button id="logoutYes">Yes</button>
-        </div>
-    </div>
 
 <script>
 
@@ -275,55 +264,6 @@
     // Call the setActivePage function when the page loads
     window.addEventListener("load", setActivePage);
 
-   
-    function openPopup() {
-        document.getElementById("logoutPopup").style.display = "block";
-
-        // Close the popup when clicking "No"
-        document.getElementById("logoutNo").addEventListener("click", function () {
-            document.getElementById("logoutPopup").style.display = "none";
-        });
-
-         // Handle the "Yes" click event for logout
-         document.getElementById("logoutYes").addEventListener("click", function () {
-            document.getElementById("loadingOverlay").style.display = "flex";
-
-            setTimeout(function () {
-                window.location.href = "../login.php";
-            }, 2000); 
-        });
-    }
-
-    function toggleDarkMode() {
-        const body = document.body;
-        const isDarkMode = body.classList.toggle('dark-mode');
-        const moonIcon = document.querySelector('.dark-mode-toggle i');
-
-        if (isDarkMode) {
-            moonIcon.className = 'fas fa-sun';
-
-            // Add transition class for animation
-            moonIcon.classList.add('sun-transition');
-            setTimeout(() => {
-                moonIcon.classList.remove('sun-transition');
-            }, 1000);
-        } else {
-            moonIcon.className = 'fas fa-moon';
-        }
-
-        // Save the dark mode preference to local storage or cookies if needed
-        localStorage.setItem('darkMode', isDarkMode);
-    }
-
-    document.addEventListener('DOMContentLoaded', function () {
-        const body = document.body;
-        const savedDarkMode = localStorage.getItem('darkMode');
-
-        if (savedDarkMode === 'true') {
-            body.classList.add('dark-mode');
-            toggleDarkMode(); // Add this line to set the initial sun icon state
-        }
-    });
     
 </script>
 <!-------End Sidebar------------>

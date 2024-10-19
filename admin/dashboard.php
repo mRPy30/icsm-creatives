@@ -3,16 +3,6 @@ session_start();
 //Connection
 include '../backend/dbcon.php';
 
-
-// Set the last activity time
-if (isset($_SESSION['LAST_ACTIVITY']) && (time() - $_SESSION['LAST_ACTIVITY'] > 600)) {
-    // Last request was more than 10 minutes ago
-    session_unset();     
-    session_destroy();   
-}
-$_SESSION['LAST_ACTIVITY'] = time(); 
-
-
 $sqlClients = "SELECT COUNT(*) AS totalClients FROM client"; 
 $resultClients = $conn->query($sqlClients);
 
@@ -216,27 +206,6 @@ $page = $components[2];
             }
         });
 
-
-        // Reset the inactivity timer when there's user activity
-        document.addEventListener('mousemove', function () {
-            clearTimeout(checkInactivity);
-            checkInactivity();
-        });
-
-        //Hovers
-        document.addEventListener('DOMContentLoaded', function() {
-            const dashboardItems = document.querySelectorAll('.dashboard-item');
-
-            dashboardItems.forEach(function(dashboardItem) {
-                dashboardItem.addEventListener('mouseover', function() {
-                    dashboardItem.classList.add('hovered');
-                });
-            
-                dashboardItem.addEventListener('mouseout', function() {
-                    dashboardItem.classList.remove('hovered');
-                });
-            });
-        });
 
     </script>
 </body>

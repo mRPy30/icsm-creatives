@@ -401,20 +401,20 @@ $pageTitle = isset($pageTitles[$currentPage]) ? $pageTitles[$currentPage] : "Boo
 <header class="navbar">
     <div class="nav-left">
         <div class="logo">
-            <a href="../homepage/homepage.php">
+            <a href="../client/booking.php">
                 <img src="../picture/logo.png" alt="logo">
             </a>
         </div>
     </div>
         <ul class="nav-links">
             <li>
-                <a href="#">Booking</a>
+                <a href="../client/booking.php">Booking</a>
             </li>
             <li>
-                <a href="#">Feedback</a>
+                <a href="../client/feedback.php">Feedback</a>
             </li>
             <li>
-                <a href="#">Gallery</a>
+                <a href="../client/Gallery.php">Gallery</a>
             </li>
         </ul>
     <div class="profile_dropdown">

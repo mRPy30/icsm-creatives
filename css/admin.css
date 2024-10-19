@@ -190,13 +190,6 @@ body {
     width: 87%;
 }
 
-.booking-box h4 {
-    padding: 15px 0px 15px 20px;
-    color: #1c1c1c;
-    font: normal 600 17px/normal 'Poppins';
-    border-radius: 5px 5px 0px 0px;
-}
-
 .accept-decline-form {
     display: inline-block; 
 }
@@ -259,8 +252,26 @@ body {
     background-color: var(--declineColor);
 }
 
+.top-book {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 2%;
+}
 
-/* Tab Buttons */
+.top-book h4 {
+    font: normal 600 18px/normal 'Poppins';
+    margin-left: 20px;
+}
+
+.tabs {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 8px;
+}
+
+.sort{
+    margin: 20px 0px 5px 10px;
+}
 
 .tab {
     background-color: transparent;
@@ -280,41 +291,46 @@ body {
     background-color: #dcdcdc;
 }
 
-/* Search and Unavailability Button */
-#search {
-    width: 60%;
-    padding: 10px;
-    margin: 20px auto;
-    display: block;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-}
-
 #unavailability-btn {
-    padding: 10px 20px;
-    background-image: linear-gradient(147deg, #BC8759 0%, #77563D 100%);
+    padding: 7px 15px;
+    background: linear-gradient(147deg, #BC8759 0%, #77563D 100%);
     color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    margin-bottom: 20px;
+    margin: 0px 20px 10px 0px;
 }
 
 #unavailability-btn:hover {
-    background-color: #914912;
+    background: linear-gradient(147deg, #c8864c 0%, #7c5334 100%);
 }
 
-.staff-info {
-    display: flex;
-    align-items: center;
+.search-bar #booking-search {
+    width: 80%;
+    border: none;
+    border-bottom: 2px solid #9b9b9b;
+    outline: 0;
+    font-size: 13px;
+    color: #1C1C1D;
+    background: transparent;
+    transition: border-color 0.2s;
+}
+.search-bar #booking-search::placeholder {
+    color: #9b9b9b;
+    font: normal 13px/normal 'Poppins';
 }
 
-.staff-profile-pic {
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    margin-right: 5px;
+.search-bar #booking-search:focus{
+  border-width: 3px;
+  border-image: linear-gradient(to right, #C2BE63, #c0b71a);
+  border-image-slice: 1;
+  font: normal 13px/normal 'Poppins';
 }
+.search-bar button{
+    margin-top: 7%;
+}
+
+
 
 
 /***Table Style***/ 
@@ -324,21 +340,36 @@ body {
     font: normal 13px/normal 'Poppins';
 }
 
-.header-table tbody {
-    overflow-y: scroll;
-    overflow-x: hidden;
-    height: 40vh;
+.tbl-container {
+    height: 55vh;
+    overflow-y: auto;
 }
 
-.header-table::-webkit-scrollbar {
+.header-table thead th {
+    background-color: #f2f2f2;
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    text-align: left;
+    padding: 10px;
+    border: 1px solid #CCCCCC;
+}
+
+.header-table tbody td {
+    text-align: left;
+    padding: 10px;
+    border: 1px solid #CCCCCC;
+}
+
+.tbl-container::-webkit-scrollbar {
     width: 8px;
 }
 
-.header-table::-webkit-scrollbar-thumb {
+.tbl-container::-webkit-scrollbar-thumb {
     background-color: #CCCCCC;
 }
 
-.header-table::-webkit-scrollbar-track {
+.tbl-container::-webkit-scrollbar-track {
     background-color: #FCF6F6;
 }
 
@@ -381,36 +412,30 @@ td .profile-image {
     border-radius: 50%; 
 }
 
-.search-bar {
-    margin: -3.4% 0px 0px 80%; 
-    position: absolute;
+
+.assign-btn{
+    padding: 5px;
+    border-radius: 100px;
+    background-color: transparent;
+    color: var(--hoverDark);
+    border: 1px solid var(--DarkColor);
+    font-size: larger;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 
-.search-bar #client-search {
-    width: 70%;
-    border: none;
-    border-bottom: 2px solid #9b9b9b;
-    outline: 0;
-    font-size: 17px;
-    color: #1C1C1D;
-    background: transparent;
-    transition: border-color 0.2s;
-}
-.search-bar #client-search::placeholder {
-    color: #9b9b9b;
-    font: normal 13px/normal 'Poppins';
+.assign-btn:hover {
+    background-color: #e1e1e1; 
 }
 
-.search-bar #client-search:focus{
-  font-weight: 700;
-  border-width: 3px;
-  border-image: linear-gradient(to right, #C2BE63, #c0b71a);
-  border-image-slice: 1;
-  font: normal 15px/normal 'Poppins';
+.staff-profile-img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
 }
-.search-bar button{
-    margin-top: 7%;
-}
+
+
 
 /*****Admin Calendar*****/
 .calendar {
