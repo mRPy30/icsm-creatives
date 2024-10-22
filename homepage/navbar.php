@@ -19,7 +19,8 @@
     .cover-content-style .logo img {
         content: url('../picture/logoDark.png');
     }
-    .cover-content-style .register button{
+
+    .cover-content-style .register button {
         background-color: #fcf6f6;
         color: #1c1c1d;
     }
@@ -28,13 +29,13 @@
         color: #C2BE63 !important;
         transition: all 0.3s;
     }
-    
+
     .header-section {
         width: 100%;
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 0px 5% 0px 5%;
+        padding: 0px 10% 0px 9%;
         position: fixed;
         background: #fcf6f6;
         z-index: 9999;
@@ -53,23 +54,24 @@
     }
 
     .nav-links {
-      list-style: none;
-      display: flex;
-      gap: 20px 50px; 
+        list-style: none;
+        display: flex;
+        gap: 20px 50px;
     }
-  
+
     .nav-links li {
-      padding: 0;
-      display: inline-block;
+        padding: 0;
+        display: inline-block;
     }
 
     .nav-links li a {
-      color: #1c1c1c;
-      font: normal 600 17px/normal 'Poppins';
-      cursor: pointer;
-      letter-spacing: 1px;
-      text-decoration: none;
+        color: #1c1c1c;
+        font: normal 600 17px/normal 'Poppins';
+        cursor: pointer;
+        letter-spacing: 1px;
+        text-decoration: none;
     }
+
     .nav-links li a.active {
         color: #C2BE63;
     }
@@ -113,7 +115,7 @@
         color: #1c1c1d;
     }
 
-    .hamburger-menu:focus{
+    .hamburger-menu:focus {
         background: #1c1c1c;
     }
 
@@ -122,48 +124,45 @@
         transition: transform 0.5s ease;
     }
 
-@media screen and (max-width: 768px) {
-    .nav-links {
-      display: none;
-    }
-  
-    .register {
-      display: none;
-    }
-  
-    .hamburger-menu {
-      display: block;
-      animation: rotateMenu 0.5s ease-in-out forwards;
-    }
+    @media screen and (max-width: 768px) {
+        .nav-links {
+            display: none;
+        }
+
+        .register {
+            display: none;
+        }
+
+        .hamburger-menu {
+            display: block;
+            animation: rotateMenu 0.5s ease-in-out forwards;
+        }
 
 
-    .cover-content-style .nav-links li a {
-      color: #1c1c1c !important;
-    }
+        .cover-content-style .nav-links li a {
+            color: #1c1c1c !important;
+        }
 
-    .cover-content-style .hamburger-menu{
-        color: #fbfbfb !important;
-    }
+        .cover-content-style .hamburger-menu {
+            color: #fbfbfb !important;
+        }
 
-    .nav-active {
-      display: flex;
-      flex-direction: column;
-      position: absolute;
-      background-color: #fbfbfb;
-      top: 30px;
-      left: 0;
-      right: 0;
-      text-align: center;
-    }
-  
-    .nav-active li {
-      margin: 10px 0;
-    }
-    
-    }
+        .nav-active {
+            display: flex;
+            flex-direction: column;
+            position: absolute;
+            background-color: #fbfbfb;
+            top: 30px;
+            left: 0;
+            right: 0;
+            text-align: center;
+        }
 
+        .nav-active li {
+            margin: 10px 0;
+        }
 
-    
+    }
 </style>
 
 <body>
@@ -196,7 +195,7 @@
             hamburgerMenu.classList.toggle('rotate');
             navLinks.classList.toggle('nav-active');
         }
-        
+
     </script>
 </body>
 
