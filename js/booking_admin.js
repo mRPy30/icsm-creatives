@@ -171,6 +171,7 @@ function renderBookings() {
                 <td>${booking.client_name}</td>
                 <td>${booking.formattedEventDate} ${booking.formattedTimeRange}</td>
                 <td>${booking.eventLocation}</td>
+                <td>${booking.payment_option}</td>
                 <td>${receiptLink}</td>
                 <td>${statusButtons}</td>
             </tr>`;

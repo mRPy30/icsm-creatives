@@ -78,6 +78,8 @@ $page = $components[2];
                             <th>Booked by</th>
                             <th>Date & Time</th>
                             <th>Location</th>
+                            <th>Payment Status</th>
+                            <th>Remaining Balance</th>
                             <th>Payment Receipt</th>
                             <th>Actions</th>
                         </tr>

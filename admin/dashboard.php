@@ -44,6 +44,20 @@ if ($result->num_rows > 0) {
     $staffData = array(); 
 }
 
+$sqlPendingBookings = "
+    SELECT client.name, booking.eventDate, booking.start_time, booking.end_time, booking.status 
+    FROM booking 
+    JOIN client ON booking.clientID = client.clientID 
+    WHERE booking.status = 'pending'";
+    
+$resultPendingBookings = $conn->query($sqlPendingBookings);
+
+if ($resultPendingBookings->num_rows > 0) {
+    $pendingBookings = $resultPendingBookings->fetch_all(MYSQLI_ASSOC);
+} else {
+    $pendingBookings = array(); // No pending bookings found
+}
+
 // Active Page
 $directoryURI = $_SERVER['REQUEST_URI'];
 $path = parse_url($directoryURI, PHP_URL_PATH);
@@ -131,13 +145,30 @@ $page = $components[2];
                     <h4>Pending Bookings</h4>
                 </div>
                 <table class="prod-table">
-                    <thead>
-                        <tr>
-                            <th class="header">Booked By</th>
-                            <th class="header">Date</th>
-                            <th class="header">Time</th>
-                        </tr>
+                <thead>
+                    <tr>
+                        <th class="header">Booked By</th>
+                        <th class="header" colspan="3">Date & Time</th>
+                        <th class="header">Status</th> <!-- Added Status Column -->
+                    </tr>
                     </thead>
+                    <tbody>
+                        <?php if (!empty($pendingBookings)): ?>
+                            <?php foreach ($pendingBookings as $booking): ?>
+                                <tr>
+                                    <td><?php echo htmlspecialchars($booking['name']); ?></td>
+                                    <td><?php echo htmlspecialchars($booking['eventDate']); ?></td>
+                                    <td><?php echo htmlspecialchars($booking['start_time']); ?></td>
+                                    <td><?php echo htmlspecialchars($booking['end_time']); ?></td>
+                                    <td><?php echo htmlspecialchars($booking['status']); ?></td> <!-- Show the status -->
+                                </tr>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <tr>
+                                <td colspan="4">No pending bookings found.</td>
+                            </tr>
+                        <?php endif; ?>
+                    </tbody>
                 </table>
             </div>
             <div class="tbl-prod">

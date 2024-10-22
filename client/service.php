@@ -1,5 +1,9 @@
 <?php
 session_start();
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $_SESSION['booking'] = array_merge($_SESSION['booking'] ?? [], $_POST);
+}
 $selected_event = isset($_SESSION['selected_event']) ? $_SESSION['selected_event'] : '';  // Event from the session
 
 // Ensure the event is set correctly
@@ -15,6 +19,24 @@ $additional_services = [
     'Props and Background' => 2500,
     'Drone Shot' => 8000
 ];
+
+if (isset($_POST['additional_services'])) {
+    $_SESSION['additional_services'] = $_POST['additional_services'];
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Ensure total_price is set
+    if (isset($_POST['total_price']) && !empty($_POST['total_price'])) {
+        $_SESSION['total_cost'] = $_POST['total_price']; // Store total cost in session
+    } else {
+        die("Total price is missing. Please select services.");
+    }
+
+    // Redirect to payment.php
+    header("Location: payment.php");
+    exit;
+}
+
 
 include('../backend/dbcon.php');
 
@@ -56,108 +78,122 @@ $services = $result->fetch_all(MYSQLI_ASSOC);
     <!-----Navbar------->
     <?php include '../client/navbar.php'; ?>
     <main class="main-content">
-        <section class="coverpage">
-            <div class="cover-content">
-                <div class="carousel">
-                    
-                </div>
-                <div class="text-header">
-                    <h2>Customize Your Package</h2>
-                    <p>Make Sure you details is correct before proceeding to the next step</p>
-                </div>
+        <section class="container">
+            <div class="text-header">
+                <h2>Customize Your Package</h2>
+                <p>Make Sure you details is correct before proceeding to the next step</p>
             </div>
         </section>
             <section class="booking-feed">
                 <div class="content">
                     <div class="service-book">
-                        <div class="form-book">
-                            <div class="top-book">
-                                <div class="title">
-                                    <h3>Choose the Perfect Package for Your Event</h3>
+                        <div class="top-book">
+                            <div class="title">
+                                <h3>Choose the Perfect Package for Your Event</h3>
+                            </div>
+                            <div class="steps">
+                                <div class="step1">
+                                    <div class="progress-line <?php echo basename($_SERVER['PHP_SELF']) != 'booking.php' ? 'active current' : ''; ?>"></div>
+                                    <div class="circle <?php echo basename($_SERVER['PHP_SELF']) == 'booking.php' ? 'active current' : (basename($_SERVER['PHP_SELF']) == 'service.php' || basename($_SERVER['PHP_SELF']) == 'payment.php' ? 'active' : ''); ?>">
+                                        <h4>1</h4>
+                                    </div>
+                                    <p>Fillup Booking</p>
                                 </div>
-                                <div class="steps">
-                                    <div class="step1">
-                                        <div class="progress-line <?php echo basename($_SERVER['PHP_SELF']) != 'booking.php' ? 'active current' : ''; ?>"></div>
-                                        <div class="circle <?php echo basename($_SERVER['PHP_SELF']) == 'booking.php' ? 'active current' : (basename($_SERVER['PHP_SELF']) == 'service.php' || basename($_SERVER['PHP_SELF']) == 'payment.php' ? 'active' : ''); ?>">
-                                            <h4>1</h4>
-                                        </div>
-                                        <p>Fillup Booking</p>
+                                <div class="step2">
+                                    <div class="progress-line <?php echo basename($_SERVER['PHP_SELF']) == 'service.php' ? 'active current ' : ''; ?>"></div>
+                                    <div class="circle <?php echo basename($_SERVER['PHP_SELF']) == 'service.php' ? 'active current' : (basename($_SERVER['PHP_SELF']) == 'payment.php' ? 'active' : ''); ?>">
+                                        <h4>2</h4>
                                     </div>
-                                    <div class="step2">
-                                        <div class="progress-line <?php echo basename($_SERVER['PHP_SELF']) == 'service.php' ? 'active current ' : ''; ?>"></div>
-                                        <div class="circle <?php echo basename($_SERVER['PHP_SELF']) == 'service.php' ? 'active current' : (basename($_SERVER['PHP_SELF']) == 'payment.php' ? 'active' : ''); ?>">
-                                            <h4>2</h4>
-                                        </div>
-                                        <p>Choose Package</p>
+                                    <p>Choose Package</p>
+                                </div>
+                                <div class="step3">
+                                    <div class="progress-line"></div>
+                                    <div class="circle <?php echo basename($_SERVER['PHP_SELF']) == 'payment.php' ? 'active current' : ''; ?>">
+                                        <h4>3</h4>
                                     </div>
-                                    <div class="step3">
-                                        <div class="progress-line"></div>
-                                        <div class="circle <?php echo basename($_SERVER['PHP_SELF']) == 'payment.php' ? 'active current' : ''; ?>">
-                                            <h4>3</h4>
-                                        </div>
-                                        <p>Payment</p>
-                                    </div>
+                                    <p>Payment</p>
                                 </div>
                             </div>
-                            <form action="payment.php" class="service-section" method="POST" id="serviceForm">
-                                <div class="price">
-                                    <h3>Recommended Services for Your Event: <?php echo htmlspecialchars($selected_event); ?></h3>
+                        </div>
+                        <form action="payment.php" class="service-section" method="POST" id="serviceForm">
+                            <div class="price">
+                                <h3>Recommended Services for Your Event: <?php echo htmlspecialchars($selected_event); ?></h3>
 
-                                    <!-- Budget Input -->
+                                <!-- Budget Input -->
+                                <div class="budget-input">
                                     <label for="budget">Set your Budget (₱): </label>
                                     <input type="number" id="budget" name="budget" placeholder="Please enter you budget" >
+                                </div>
 
-                                    <!-- Services Section -->
-                                    <div id="servicesSection">
-                                        <div class="title-service">
-                                            <i class="fa-regular fa-thumbs-up"></i>
-                                            <h4>Recommended Services:</h4>
-                                        </div>
-                                        <div id="recommendedServices" class="recommended-services">
-
-                                        </div>
+                                <!-- Services Section -->
+                                <div id="servicesSection">
+                                    <div class="title-service">
+                                        <i class="fa-regular fa-thumbs-up"></i>
+                                        <h4>Recommended Services:</h4>
                                     </div>
+                                    <div id="recommendedServices" class="recommended-services">
 
-                                    <!-- Additional Services -->
-                                    <h4>Additional Services:</h4>
-                                    <?php foreach ($additional_services as $service => $price): ?>
+                                    </div>
+                                </div>
+
+                                <h2>Additional Services:</h2>
+                                <div class="add-services">
+                                    <div class="column">
+                                        <?php 
+                                        $half = ceil(count($additional_services) / 2); // Divide into 2 columns
+                                        $i = 0;
+                                        foreach ($additional_services as $service => $price): 
+                                            if ($i == $half): 
+                                        ?>
+                                    </div>
+                                    <div class="column"> <!-- Start second column -->
+                                        <?php endif; ?>
                                         <label>
                                             <input type="checkbox" name="additional_services[]" value="<?php echo $price; ?>">
                                             <?php echo $service; ?> (PHP <?php echo number_format($price, 2); ?>)
                                         </label><br>
-                                    <?php endforeach; ?>
-                                    
-                                    <h4>Total Price: PHP <span id="totalPrice">0.00</span></h4>
-                                    <input type="hidden" name="total_price" id="totalPriceInput" value="0"> 
-                                    
-                                    <button type="submit" id="next">Next</button>
+                                        <?php $i++; endforeach; ?>
+                                    </div>
                                 </div>
-                            </form>
-                        </div>
+                                <div class="buttons-book">
+                                    <h1>Total Price: PHP <span id="totalPrice">0.00</span></h1>
+                                    <input type="hidden" name="total_price" id="totalPriceInput" value="0">  
+                                    <button id="next" type="submit">Next</button>
+                                </div>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </section>
-                <section class="going-back">
-                    <div class="arrow-up-button back-to-top-hidden">
-                        <button class="back-to-top" onclick="scrollToTop()"><i class="fas fa-arrow-up"></i></button>
-                    </div>
-                </section>
-
-                <section class="container-credential">
-                    <div class="credit-info">
-                        <div class="rights-definition">
-                            <p>© 2023-2024 ICSMCREATIVES.COM ALL RIGHTS RESERVED. TERMS OF USE | PRIVACY POLICY</p>
-                        </div>
-                    </div>
-                </section>
-        </main>
+        <section class="going-back">
+            <div class="arrow-up-button back-to-top-hidden">
+                <button class="back-to-top" onclick="scrollToTop()"><i class="fas fa-arrow-up"></i></button>
+            </div>
+        </section>
+        <section class="container-credential">
+            <div class="credit-info">
+                <div class="rights-definition">
+                    <p>© 2023-2024 ICSMCREATIVES.COM ALL RIGHTS RESERVED. TERMS OF USE | PRIVACY POLICY</p>
+                </div>
+            </div>
+        </section>
+    </main>
 </body>
 <script>
 $(document).ready(function() {
     // Fetch recommended services based on budget input
     $('#budget').on('input', function() {
         const budget = $(this).val();
-        $('#recommendedServices').html('<p>Loading...</p>');
+        $('#recommendedServices').html(`
+            <div class="recommended-container">
+                <div class="loading-container">
+                    <div class="scaling-dots">
+                        <div></div><div></div><div></div><div></div><div></div>
+                    </div>
+                    <p>Loading</p>
+                </div>
+            </div>
+        `);
 
         setTimeout(function() {
             $.ajax({
@@ -172,8 +208,9 @@ $(document).ready(function() {
                     updateTotal(); // Update total after services load
                 }
             });
-        }, 2000);  // 1-second delay for smoother UX
+        }, 3000);  // 2-second delay for smoother UX
     });
+
 
     // Initialize an array to hold selected services and their prices
     let selectedServices = [];
@@ -260,20 +297,22 @@ function updateTotal() {
 // Modify form submission to include selected service IDs
 $('#serviceForm').submit(function(e) {
     e.preventDefault();
-    
-    // Get service IDs
+
+    // Get selected service IDs
     const selectedServiceIDs = selectedServices.map(service => service.id);
 
     // Create a hidden input to send the selected service IDs to payment.php
     $('<input>').attr({
         type: 'hidden',
         name: 'service_ids',
-        value: JSON.stringify(selectedServiceIDs)
+        value: JSON.stringify(selectedServiceIDs)  // Send the service IDs
     }).appendTo('#serviceForm');
 
-    // Now submit the form
-    this.submit();
+    this.submit();  // Now submit the form
 });
+
+
+
 
 </script>
 

@@ -16,13 +16,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $startTime = $_SESSION['booking']['start_time'];
     $endTime = $_SESSION['booking']['end_time'];
     $eventLocation = $_SESSION['booking']['event_location'];
-    $theme = $_SESSION['booking']['theme'];
     $title_event = $_SESSION['booking']['title_event'];
     $budget = $_SESSION['booking']['budget'];
-    $pax = $_SESSION['booking']['pax'];
-    $total_cost = $_SESSION['total_cost'];
     $selectedServiceIDs = isset($_SESSION['service_ids']) ? $_SESSION['service_ids'] : [];
     $service_package = !empty($selectedServiceIDs) ? $selectedServiceIDs[0] : null;
+    $pax = $_SESSION['booking']['pax'];
+    $total_cost = $_SESSION['total_cost'];
+    $payment_option = $_POST['payment_option'];
+    $remaining_balance = $_POST['remaining_balance'];
+    $ref_num = $_POST['ref_num'];
+    
+    
+
+
 
     // Fetch eventID based on the event name stored in the booking session (type_of_event is eventName)
     $type_of_event = $_SESSION['booking']['type_of_event']; // This holds the event name from booking step 1
@@ -56,8 +62,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     // Insert booking data into the database with "pending" status, including service_package
-    $sql = "INSERT INTO booking (clientID, eventDate, start_time, end_time, eventLocation, theme, eventID, title_event, budget, pax, total_cost, proof_payment, service_package, status)
-            VALUES ('$clientID', '$eventDate', '$startTime', '$endTime', '$eventLocation', '$theme', '$eventID', '$title_event', '$budget', '$total_cost', '$pax', '$proof_payment', '$service_package', 'Pending')";
+    $sql = "INSERT INTO booking (clientID, eventDate, start_time, end_time, eventLocation, eventID, title_event, budget, service_package, pax, total_cost, proof_payment, payment_option, remaining_balance, status, ref_num)
+        VALUES ('$clientID', '$eventDate', '$startTime', '$endTime', '$eventLocation', '$eventID', '$title_event', '$budget', '$service_package', '$pax', '$total_cost', '$proof_payment', '$payment_option', '$remaining_balance', 'Pending', '$ref_num')";
 
     if ($conn->query($sql) === TRUE) {
         // Send notification email to admin

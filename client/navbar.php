@@ -5,8 +5,8 @@ include '../backend/dbcon.php';
 if (isset($_SESSION['clientID'])) {
     $clientID = $_SESSION['clientID'];
 
-    // Fetch the client's name
-    $sql = "SELECT name FROM client WHERE clientID = ?";
+    // Fetch the client's name and profile picture
+    $sql = "SELECT clientID, name, profile FROM client WHERE clientID = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("i", $clientID);
     $stmt->execute();
@@ -14,12 +14,19 @@ if (isset($_SESSION['clientID'])) {
     
     if ($result->num_rows > 0) {
         $row = $result->fetch_assoc();
+        $clientID = $row['clientID'];
         $clientName = $row['name'];
+        $profilePicture = $row['profile']; // Assuming this is the BLOB data for the profile picture
+
+        // Convert the profile picture BLOB to base64
+        $profilePictureBase64 = base64_encode($profilePicture);
     } else {
         $clientName = "Guest";
+        $profilePictureBase64 = null; // No profile picture for guest
     }
 } else {
     $clientName = "Guest";
+    $profilePictureBase64 = null; // No profile picture if not logged in
 }
 
 $pageTitles = array(
@@ -46,8 +53,13 @@ $pageTitle = isset($pageTitles[$currentPage]) ? $pageTitles[$currentPage] : "Boo
         content: url('../picture/logoDark.png');
     }
 
-    .transparent-background .nav-links li a {
+    .transparent-background .nav-links li .nav {
         color: #fcf6f6 !important;
+    }
+
+    .transparent-background .nav-links li .nav .active{
+        color: #BC8759 !important;
+        
     }
 
     .transparent-background .nav-right i{
@@ -105,19 +117,20 @@ $pageTitle = isset($pageTitles[$currentPage]) ? $pageTitles[$currentPage] : "Boo
       display: inline-block;
     }
 
-    .nav-links li a {
+    .nav-links li .nav {
       color: #1c1c1c;
       font: normal 600 17px/normal 'Poppins';
       cursor: pointer;
       letter-spacing: 1px;
       text-decoration: none;
     }
-    .nav-links li a.active {
-        color: #C2BE63;
+    .nav-links li .nav.active {
+        color: #BC8759;
+        border-bottom: 3px solid #BC8759;
     }
 
-    .nav-links li a:hover {
-        color: #C2BE63;
+    .nav-links li .nav:hover {
+        color: #BC8759;
         transition: all 0.3s;
     }
 
@@ -212,6 +225,16 @@ $pageTitle = isset($pageTitles[$currentPage]) ? $pageTitles[$currentPage] : "Boo
     .profile_info p {
         margin-right: 10px;
         font: normal 400 70%/normal 'Poppins';
+    }
+
+    .profile_pic{
+        display: flex;
+        flex-direction: row;
+    }
+
+    .profile_pic .name{
+        display: flex;
+        flex-direction: column;
     }
 
     .profile_pic img {
@@ -408,29 +431,38 @@ $pageTitle = isset($pageTitles[$currentPage]) ? $pageTitles[$currentPage] : "Boo
     </div>
         <ul class="nav-links">
             <li>
-                <a href="../client/booking.php">Booking</a>
+                <a class="nav active" href="../client/booking.php">Booking</a>
             </li>
             <li>
-                <a href="../client/feedback.php">Feedback</a>
+                <a class="nav" href="../client/feedback.php">Feedback</a>
             </li>
             <li>
-                <a href="../client/Gallery.php">Gallery</a>
+                <a class="nav" href="../client/Gallery.php">Gallery</a>
             </li>
         </ul>
     <div class="profile_dropdown">
-    <div class="nav-right">
+        <div class="nav-right">
+            <i class="fa-solid fa-cart-flatbed" onclick="location.href='cart.php'"></i>
             <div class="divider"></div>
             <div class="profile_info">
             <?php if ($clientName != "Guest") { ?>
-                <?php echo htmlspecialchars($clientName); ?>
-                <a href="login.php" class="logout-btn">Logout</a>
-            <?php } else { ?>
-                <a href="login.php" class="login-btn">Login</a>
+                <div class="profile_dropdown">
+                    <!-- Profile Info (Name + Picture) -->
+                    <div class="profile_pic">
+                        <div class="name">
+                            <h3><?php echo htmlspecialchars($clientName); ?></h3>
+                            <p>Client ID: <?php echo htmlspecialchars($clientID); ?></p>
+                        </div>
+                        <img src="data:image/jpeg;base64,<?php echo $profilePictureBase64; ?>" alt="Profile Picture">
+                    </div>
+                    <!-- Dropdown Menu -->
+                    <div class="profile_dropdown-content">
+                        <a href="profile.php">My Profile</a>
+                        <a href="login.php" class="logout-btn">Logout</a>
+                    </div>
+                </div>
             <?php } ?>
-            </div>
-            <div class="profile_pic">
-
-            </div>
+        </div>
         </div>
     <div class="hamburger-menu" onclick="toggleMenu()">&#9776;</div>
 </header>
