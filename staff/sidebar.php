@@ -3,68 +3,38 @@
 <style>
     /*****Sidebar*****/
 
-
-    /**Dark Mode**/
-    body.dark-mode .side_bar {
-        background-color: #444444; 
-        color: #fff; 
-    }
-    body.dark-mode .side_bar_bottom{
-        background-color: #444444;
-        color: #fff; 
-    } 
-    body.dark-mode .wrapper{
-        background-color: #f6f6f6;
-        background-image: linear-gradient(315deg, #f6f6f6 0%, #e9e9e9 74%);
-    }
-    body.dark-mode .side_bar .side_bar_bottom ul .nav-link.active a{
-        background-color: #f6f6f6;
-        background-image: linear-gradient(315deg, #f6f6f6 0%, #e9e9e9 74%);
-        color: #1c1c1c;
-    }
-    body.dark-mode .side_bar .side_bar_bottom ul .nav-link a{
-        color: #FCF6F6;
-    }
-    body.dark-mode .side_bar .side_bar_bottom ul .nav-link:not(.active) a:hover {
-        background: #5B5A5A;
-        color: #fcfcfc;
-        border-radius: 30px 0px 0px 30px;
-    }
-    body.dark-mode .logo-sidebar img.logo-image {
-    content: url('../picture/logoDark.png');
-    }
-
-
     .wrapper {
         height: 100%;
         display: flex;
         position: fixed;
         top: 0;
         left: 0;
-        width: 14%;
+        width: 7%;
         background-color: #000000;
         background-image: linear-gradient(147deg, #000000 0%, #434343 74%);
         z-index: 1001; 
+        text-align: center;
     }
-
-
+    
     .side_bar {
-        width: 98%;
+        width: 96%;
         height: 100vh;
         background: #EEEEEE;
     }
 
     .side_bar .logo-sidebar img{
-        width: 50%;
-        margin: 15% 0% 0% 27%;
+        width: 70%;
+        margin-top: 18%;
     }
 
     .side_bar .side_bar_bottom{
         background: #EEEEEE;
         height: calc(100% - 200px);
-        padding: 15% 0% 0% 10%;
+        padding: 15% 0% 0% 8%;
         text-decoration: none;
-        list-style: none;	
+        list-style: none;
+        text-align: center;	
+        font-size: 105%;
     }
 
     .side_bar .side_bar_bottom ul li{
@@ -74,10 +44,10 @@
 
     .side_bar .side_bar_bottom ul .nav-link a{
         display: block;
-        padding: 13px 15px 13px 50px;		
+        padding: 15px 0;		
         color: #1c1c1c;
-        font: normal 500 14px/20px 'Poppins';
-        margin-bottom: 8px;		
+        font: 100%;
+        margin-bottom: 5px;		
         text-decoration: none;	
     }
 
@@ -87,13 +57,12 @@
         color: #fbf4fb;
         border-top-left-radius: 30px;
         border-bottom-left-radius: 30px;
-        font: normal 500 14px/20px 'Poppins';
     }
 
     .side_bar .side_bar_bottom ul .nav-link.active .top_curve,
     .side_bar .side_bar_bottom ul .nav-link.active .bottom_curve{
         position: absolute;
-        left: 0;
+        margin-left: 20px;
         width: 100%;
         height: 20px;
         background: #EEEEEE;
@@ -101,11 +70,11 @@
     }
 
     .side_bar .side_bar_bottom ul .nav-link.active .top_curve{
-        top: -20px;
+        top: 0px;
     }
 
     .side_bar .side_bar_bottom ul .nav-link.active .bottom_curve{
-        bottom: -20px;	
+        bottom: 0px;	
     }
 
     .side_bar .side_bar_bottom ul .nav-link.active .top_curve:before,
@@ -115,7 +84,7 @@
         top: 0;
         left: 0;
         width: 100%;
-        height: 90%;
+        height: 100%;
         background: #EEEEEE;	
     }
 
@@ -185,38 +154,29 @@
             <ul>
                 <li class="nav-link">
                     <span class="top_curve"></span>
-                    <a href="dashboard.php" class="<?php if ($page == "..staff/booking.php") {
+                    <a href="dashboard.php" title="Dashboard" class="<?php if ($page == "dashboard.php") {
                         echo "nav-link active";
                     } else {
                         echo "nav-link";
-                    } ?> "><span class="item">Booking</span></a>
+                    } ?> "><i class="fa-solid fa-table-columns"></i></a>
                     <span class="bottom_curve"></span>
                 </li>
                 <li class="nav-link">
                     <span class="top_curve"></span>
-                    <a href="booking.php" class="<?php if ($page == "..staff/booking.php") {
+                    <a href="booking.php" title="Booking Management" class="<?php if ($page == "..staff/booking.php") {
                         echo "nav-link active";
                     } else {
                         echo "nav-link";
-                    } ?> "><span class="item">Calendar</span></a>
+                    } ?> "><i class="fa-solid fa-calendar-check" ></i></a>
                     <span class="bottom_curve"></span>
                 </li>
                 <li class="nav-link">
                     <span class="top_curve"></span>
-                    <a href="calendar.php" class="<?php if ($page == "..staff/calendar.php") {
+                    <a href="production.php" title="Production Team" class="<?php if ($page == "..staff/production.php") {
                         echo "nav-link active";
                     } else {
                         echo "nav-link";
-                    } ?> "><span class="item">Message</span></a>
-                    <span class="bottom_curve"></span>
-                </li>
-                <li class="nav-link">
-                    <span class="top_curve"></span>
-                    <a href="folders.php" class="<?php if ($page == "..staff/folders.php") {
-                        echo "nav-link active";
-                    } else {
-                        echo "nav-link";
-                    } ?> "><span class="item">Albums</span></a>
+                    } ?> "><i class="fa-solid fa-users-gear"></i></a>
                     <span class="bottom_curve"></span>
                 </li>
             </ul>
@@ -224,7 +184,6 @@
     </nav>
 </div>
     
-
 
 <script>
 
@@ -251,35 +210,6 @@
     // Call the setActivePage function when the page loads
     window.addEventListener("load", setActivePage);
 
-    function toggleDarkMode() {
-        const body = document.body;
-        const isDarkMode = body.classList.toggle('dark-mode');
-        const moonIcon = document.querySelector('.dark-mode-toggle i');
-
-        if (isDarkMode) {
-            moonIcon.className = 'fas fa-sun';
-
-            // Add transition class for animation
-            moonIcon.classList.add('sun-transition');
-            setTimeout(() => {
-                moonIcon.classList.remove('sun-transition');
-            }, 1000);
-        } else {
-            moonIcon.className = 'fas fa-moon';
-        }
-
-        // Save the dark mode preference to local storage or cookies if needed
-        localStorage.setItem('darkMode', isDarkMode);
-    }
-
-    document.addEventListener('DOMContentLoaded', function () {
-        const body = document.body;
-        const savedDarkMode = localStorage.getItem('darkMode');
-
-        if (savedDarkMode === 'true') {
-            body.classList.add('dark-mode');
-            toggleDarkMode(); // Add this line to set the initial sun icon state
-        }
-    });
+    
 </script>
 <!-------End Sidebar------------>

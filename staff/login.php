@@ -10,7 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $password = mysqli_real_escape_string($conn, $_POST['password']);
 
         // Query the administrator table for a matching email and password
-        $query = "SELECT id FROM administrator WHERE email = '$email' AND password = '$password'";
+        $query = "SELECT staff_ID FROM staff WHERE email = '$email' AND password = '$password'";
         $result = mysqli_query($conn, $query);
 
         if (!$result) {
@@ -21,10 +21,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         if ($matchedRows > 0) {
             $row = mysqli_fetch_assoc($result);
-            $id = $row['id'];
+            $id = $row['staff_ID'];
 
-            $_SESSION['name'] = $email;
-            $_SESSION['id'] = $id;
+            $_SESSION['staff_name'] = $email;
+            $_SESSION['staff_ID'] = $id;
 
             // Show loading overlay using inline style
             echo '<style>
@@ -62,7 +62,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             // Redirect after a delay
             echo '<script>
                 setTimeout(function() {
-                    window.location.href = "../admin/dashboard.php?id=' . $id . '";
+                    window.location.href = "../staff/dashboard.php?id=' . $id . '";
                 }, 2000);
             </script>';
             exit();
@@ -111,7 +111,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             </a>
         </div>
         <div class="right-section">
-            <p class="credentials">Login As Administrator</p>
+            <p class="credentials">Login As staff</p>
             <div class="bottom-con">
                 <form class="login-form" method="POST" onsubmit="return validateForm()">
                     <div class="fillup">

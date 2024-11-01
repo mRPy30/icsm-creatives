@@ -14,6 +14,7 @@
     --fontLight: #fcfcf6;
     --line-border-fill: #1C1C1D;
     --line-border-empty: #e0e0e0;
+    --linkColor: #0000FF;
 }
 
  body {
@@ -149,6 +150,15 @@
 }
 
 .service-book {
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    background-color: #fbfbfb;
+    width: 80vw;
+    padding: 20px;
+    margin-bottom: 60px;
+}
+
+.payment-book {
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
     border-radius: 10px;
     background-color: #fbfbfb;
@@ -330,14 +340,14 @@
 }
 
 .buttons-book #next {
-    background-color: var(--themeColor);
+    background-image: linear-gradient(147deg, #BC8759 0%, #77563D 100%);
     color: var(--fontLight);
     border: none;
     padding: 8px 50px;
     border-radius: 5px;
     cursor: pointer;
     font: normal 600 13px/normal 'Poppins';
-    transition: background-color 0.3s ease-in-out;
+    transition: all .6s ease;
     box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.2);
     text-align: center;
     text-decoration: none;
@@ -345,6 +355,14 @@
 
 .buttons-book #next:hover {
     background-color: var(--HoverthemeColor);
+    transform: scale(1.02);
+}
+
+.buttons-book #next.disabled {
+    background-color: var(--themeColor); 
+    cursor: not-allowed;
+    pointer-events: none; 
+    opacity: 0.5; 
 }
 
 .buttons-book #prev {
@@ -621,6 +639,18 @@
     overflow-y: auto;
 }
 
+#recommendedServices::-webkit-scrollbar {
+    width: 15px;
+}
+
+#recommendedServices::-webkit-scrollbar-thumb {
+    background-color: #CCCCCC;
+}
+
+#recommendedServices::-webkit-scrollbar-track {
+    background-color: #FCF6F6;
+}
+
 .recommended-container{
     margin-left: 50%;
 }
@@ -845,39 +875,10 @@
 
 
 /*****Payment****/
-.cart{
-    background-color: var(--themeColor);
-    color: var(--fontLight);
-    border: none;
-    padding: 8px 15px;
-    border-radius: 5px;
-    cursor: pointer;
-    font: normal 600 13px/normal 'Poppins';
-    transition: background-color 0.3s ease-in-out;
-    box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.2);
-}
-
-.top{
+.payment-btn{
     display: flex;
-    justify-content: space-between;
-    flex-direction: row;
-}
-
-.left-details, .right-details{
-    border: 1px solid var(--line-border-empty);
-    width: 100%;
-    margin: 10px 0;
-    box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.2);
-
-}
-
-.right-details ul li{
-    text-decoration: none;
-    list-style: none;
-}
-
-.left-details{
-    margin-right: 5px;
+    justify-content: flex-end;
+    margin-top: 15px;
 }
 
 .edit{
@@ -891,66 +892,385 @@
     background: var(--BgColor);
 }
 
+.cart{
+    background-color: var(--themeColor);
+    color: var(--fontLight);
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font: normal 600 13px/normal 'Poppins';
+    transition: background-color 0.3s ease-in-out;
+    box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.2);
+    margin-right: 10px;
+}
+
+.top{
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
+}
+
+.left-details, .right-details{
+    border: 1px solid var(--line-border-empty);
+    width: 100%;
+    margin: 15px 0;
+    box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.2);
+
+}
+
+.right-details ul li{
+    text-decoration: none;
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+}
+
+.left-details{
+    margin-right: 20px;
+}
+
+
+.booking-header h3 {
+    font: normal 600 20px/normal 'Poppins';
+    margin: 0 0 20px 0;
+}
+
+.booking-header {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+}
+
+.summary {
+    display: flex;
+    flex-direction: column;
+}
+
+.header-summary {
+    border: 1px solid var(--line-border-empty);
+    margin-bottom: 20px;
+    padding: 10px 0;
+}
+
+.header-summary h4{
+    font: normal 600 15px/normal 'Poppins';
+    margin-left: 10px;
+}
+
+.details-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 15px;
+}
+
+.detail-item {
+    display: flex;
+    flex-direction: column;
+    margin: 0 0 10px 10px;
+}
+
+.detail-item h6{
+    font: normal 600 15px/normal 'Poppins';
+
+}
+
+.detail-item .label {
+    color: var(--hoverDark);
+    min-width: 90px;
+    font: normal 500 13px/normal 'Poppins';
+}
+
+.detail-item select{
+    width: 97%;
+    padding: 10px;
+    border: 1px solid var(--line-border-empty);
+    font: normal 400 12px / normal 'Poppins';
+    border-radius: 5px;
+    margin-bottom: 10px;
+    box-sizing: border-box;
+}
+
+.detail-item ul p{
+    font: normal 500 13px/normal 'Poppins';
+}
+
+.detail-item .service-name{
+    font: normal 600 15px / normal 'Poppins';
+}
+
+.detail-item .service-price{
+    font: normal 500 18px / normal 'Poppins';
+    margin-right: 15px;
+    color: var(--HoverthemeColor);
+}
+
+.subtotal{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+#total-cost{
+    color: var(--HoverthemeColor);
+    font: normal 500 18px / normal 'Roboto';
+    margin-right: 20px;
+}
+
+.subtotal h4{
+    margin-left: 10px; 
+    font: normal 500 17px / normal 'Roboto';
+}
+
+.payment-grid{
+    display: grid;
+    gap: 15px;
+}
 
 .payment-section {
     display: flex;
-    justify-content: space-between;
-    margin-bottom: 20px;
-    border: 2px solid var(--line-border-empty);
+    gap: 30px;
+    border: 1px solid var(--line-border-empty);
+    border-radius: 5px;
     box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.2);
+    margin-bottom: 20px;
+}
+
+.qr-code {
+    flex: 0 0 350px;
+    text-align: center;
+    padding: 30px 130px;
 }
 
 .qr-code img {
-    max-width: 100px;
-    display: block;
+    width: 200px;
+    height: 200px;
+    object-fit: contain;
+    margin-bottom: 10px;
 }
 
 .qr-code p {
-    text-align: center;
-    font-size: 14px;
+    margin: 5px 0;
+    font: normal 500 14px / normal 'Poppins';
+    color: var(--hoverDark);
 }
 
 .payment-instructions {
-    width: 60%;
+    flex: 1;
+    border: 1px solid var(--line-border-empty);
+    border-radius: 0 5px 0 5px;
 }
 
 .payment-instructions h4 {
-    font-size: 16px;
-    margin-bottom: 10px;
+    font: normal 600 17px / normal 'Roboto';
+    margin: 5px 0 15px 5px;
+    color: var(--DarkColor);
 }
 
-.payment-instructions ol {
-    padding-left: 20px;
+.instruction {
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--line-border-empty);
 }
 
-.payment-instructions input[type="file"],
-.payment-instructions input[type="text"] {
+.step-pay {
+    margin: 8px 10px;
+    font: normal 400 14px / normal 'Roboto';
+    color: var(--DarkColor);
+}
+
+.step-pay span {
+    font: normal 600 14px/normal 'Roboto';
+}
+
+.payment-form {
+    margin: 20px 12px 15px 12px;
+}
+
+.payment-form label {
     display: block;
-    width: 100%;
-    padding: 10px;
-    margin-top: 10px;
-    margin-bottom: 10px;
+    font: normal 600 14px/normal 'poppins';
+    margin-bottom: 8px;
+    color: var(--DarkColor);
+}
+
+.upload-field {
+    display: flex;
+    gap: 10px;
+}
+
+.upload-field input[type="text"] {
+    flex: 1;
+    padding: 8px 12px;
     border: 1px solid #ddd;
     border-radius: 4px;
+    font-size: 14px;
+}
+
+.browse-btn {
+    padding: 8px 20px;
+    background: #f5f5f5;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.reference-input {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.security-note {
+    margin-top: 20px;
+    font: normal 400 12px / normal 'Poppins';
+    color: var(--hoverDark);
+    margin-left: 10px;
 }
 
 #pending-payment {
     color: red;
-    font-weight: bold;
+    margin-left: 10px;
+    font: normal 400 12px / normal 'Poppins';
 }
 
 .policy-section {
     margin-bottom: 20px;
+    font: normal 400 15px / normal 'Poppins';
+    border: 1px solid var(--line-border-empty);
+    border-radius: 5px;
+    box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.2);
+    padding: 12px;
 }
 
-.policy-section a {
-    color: #BC8759;
+.policy-section a , .policy p a {
+    color: var(--linkColor);
     text-decoration: none;
 }
 
 .policy-section a:hover {
     text-decoration: underline;
 }
+
+.popup-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+}
+
+.popup-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: var(--BgColor);
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.popup-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.popup-buttons button {
+    padding: 8px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.popup-buttons button:first-child {
+    background: var(--HoverthemeColor);
+    color:var(--fontLight);
+}
+
+.popup-buttons button:last-child {
+    background: var(--BgColor);
+    color: var();
+}
+
+.cart-item {
+    display: flex;
+    gap: 20px;
+    border-top: 3px solid var(--line-border-empty);
+    margin-bottom: 20px;
+}
+
+.cart-image {
+    width: 150px;
+    height: 150px;
+    background: #f5f5f5;
+}
+
+.cart-details {
+    flex: 1;
+}
+
+.cart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.cart-title h3 {
+    margin: 0;
+    color: var(--themeColor);
+    font: normal 600 25px / normal 'Poppins';
+}
+
+.cart-status {
+    color: var(--DarkColor);
+    font: normal 500 12px / normal 'Poppins';
+}
+
+.cart-booking-details {
+    margin-bottom: 10px;
+}
+
+.cart-booking-details p {
+    margin: 5px 0;
+    color: var(--DarkColor);
+    font: normal 400 12px / normal 'Poppins';
+}
+
+.cart-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.cart-actions button {
+    padding: 5px 25px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.pay-now-btn {
+    background: var(--HoverthemeColor);
+    color: var(--fontLight);
+    font: normal 400 12px / normal 'Poppins';
+}
+
+.timer {
+    color: var(--DarkColor);
+    font: normal 500 12px / normal 'Poppins';
+}
+
+
+
 /***CTA banner homepage****/
 
 .call-to-attention {

@@ -1,32 +1,4 @@
 
-function openAcceptPopup(bookingId) {
-    document.getElementById('customPopup').style.display = 'block';
-    document.getElementById('bookingId').value = bookingId;
-}
-
-function closeAcceptPopup() {
-    document.getElementById('customPopup').style.display = 'none';
-}
-
-
-function acceptBooking() {
-    var bookingId = document.getElementById('bookingId').value;
-
-    var xhr = new XMLHttpRequest();
-    xhr.open('POST', '../backend/status.php', true);
-    xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-    xhr.onreadystatechange = function () {
-        if (xhr.readyState == 4 && xhr.status == 200) {
-            console.log(xhr.responseText);
-            closePopup();
-            window.location.reload();
-        }
-    };
-
-    xhr.send('schedule_id=' + bookingId + '&accept=1');
-}
-
-
 function openDeclinePopup(bookingId) {
     document.getElementById('declinePopup').style.display = 'block';
     document.getElementById('declineBookingId').value = bookingId;
@@ -109,34 +81,56 @@ function submitAssignStaff(event) {
     });
 }
 
-let bookings = []; // To hold all bookings data
-let currentFilter = 'all'; // To keep track of the current filter
+let bookings = []; // Holds all bookings data
+let currentFilter = 'all'; // Current status filter
+let selectedYear = ''; // Selected year filter
+let selectedMonth = ''; // Selected month filter
 
-function filterBookings(filter) {
-    currentFilter = filter; // Update current filter
-    renderBookings(); // Render bookings based on the current filter
-}
+    // Function to update status filter and re-render bookings
+    function filterBookings(filter) {
+        currentFilter = filter;
+        renderBookings(); // Re-render based on new status filter
+    }
 
-function renderBookings() {
-    const tableBody = document.getElementById('booking-table-body');
-    const allCount = document.getElementById('all-count');
-    const pendingCount = document.getElementById('pending-count');
-    const acceptedCount = document.getElementById('accepted-count');
-    const declinedCount = document.getElementById('declined-count');
+    // Function to update year/month filters and re-render bookings
+    function filterByDate() {
+        selectedYear = document.getElementById('year-select').value;
+        selectedMonth = document.getElementById('month-select').value;
+        renderBookings(); // Re-render based on updated date filter
+    }
 
-    tableBody.innerHTML = ''; 
+    function renderBookings() {
+        const tableBody = document.getElementById('booking-table-body');
+        const allCount = document.getElementById('all-count');
+        const pendingCount = document.getElementById('pending-count');
+        const acceptedCount = document.getElementById('accepted-count');
+        const declinedCount = document.getElementById('declined-count');
 
+        tableBody.innerHTML = ''; 
 
-    const filteredBookings = bookings.filter(booking => {
-        if (currentFilter === 'all') return true; // Show all bookings
-        return booking.status.toLowerCase() === currentFilter; // Filter by status
+        // Filter bookings based on current status, year, and month
+        const filteredBookings = bookings.filter(booking => {
+            const bookingDate = new Date(booking.eventDate);
+            const matchesStatus = currentFilter === 'all' || booking.status.toLowerCase() === currentFilter;
+            const matchesYear = !selectedYear || bookingDate.getFullYear() === parseInt(selectedYear);
+            const matchesMonth = !selectedMonth || (bookingDate.getMonth() + 1) === parseInt(selectedMonth);
+
+            return matchesStatus && matchesYear && matchesMonth;
     });
 
+    // Update booking counts
     allCount.innerText = bookings.length;
     pendingCount.innerText = bookings.filter(b => b.status.toLowerCase() === 'pending').length;
     acceptedCount.innerText = bookings.filter(b => b.status.toLowerCase() === 'accepted').length;
     declinedCount.innerText = bookings.filter(b => b.status.toLowerCase() === 'declined').length;
 
+    // Display "Empty" message if no bookings match the filter
+    if (filteredBookings.length === 0) {
+        tableBody.innerHTML = `<tr><td colspan="10" style="text-align:center;">Empty</td></tr>`;
+        return;
+    }
+
+    // Render each booking row in filteredBookings
     filteredBookings.forEach(booking => {
         let statusCircle = '';
         let statusButtons = '';
@@ -148,19 +142,36 @@ function renderBookings() {
                 <button class="decline" onclick="openDeclinePopup('${booking.bookingId}')">Decline</button>`;
         } else if (booking.status === 'Accepted') {
             statusCircle = '<span class="status-circle accepted-circle"></span>';
-            statusButtons = '';
         } else if (booking.status === 'Declined') {
             statusCircle = '<span class="status-circle declined-circle"></span>';
-            statusButtons = '';
         }
 
         const receiptLink = booking.proof_payment ?
             `<a href="javascript:void(0);" onclick="seeReceipt('${booking.bookingId}', '${booking.proof_payment}')">See Receipt</a>` :
             'No Receipt';
 
-        const assignStaffButton = booking.assignedStaff && booking.assignedStaff.length > 0
-            ? `<span>${booking.assignedStaff.join(', ')}</span>`
-            : (booking.status === 'Accepted' ? `<button class="assign-btn" onclick="openAssignStaffModal('${booking.bookingId}')"><i class="fa-solid fa-user-plus"></i></button>` : '');
+            const assignStaffButton = booking.assignedStaff && booking.assignedStaff.length > 0
+            ? `<div class="staff-profiles">
+         ${booking.assignedStaff.map(staff => `
+           <div class="staff-profile">
+             ${staff.profile_picture 
+               ? `<img src="data:image/jpeg;base64,${staff.profile_picture}" 
+                      alt="${staff.staff_name || 'Staff Member'}" 
+                      class="staff-profile-pic">`
+               : `<div class="staff-profile-placeholder">
+                    ${(staff.staff_name || '?').charAt(0).toUpperCase()}
+                  </div>`
+             }
+             
+           </div>
+         `).join('')}
+       </div>`
+    : (booking.status === 'Accepted' 
+       ? `<button class="assign-btn" onclick="openAssignStaffModal('${booking.bookingId}', '${booking.service_package}')">
+            <i class="fa-solid fa-user-plus"></i>
+          </button>` 
+       : '');
+
 
         const row = `
             <tr>
@@ -172,6 +183,7 @@ function renderBookings() {
                 <td>${booking.formattedEventDate} ${booking.formattedTimeRange}</td>
                 <td>${booking.eventLocation}</td>
                 <td>${booking.payment_option}</td>
+                <td>${booking.remaining_balance}</td>
                 <td>${receiptLink}</td>
                 <td>${statusButtons}</td>
             </tr>`;
@@ -179,21 +191,232 @@ function renderBookings() {
     });
 }
 
+function openAcceptPopup(bookingId) {
+    document.getElementById('customPopup').style.display = 'block';
+    document.getElementById('bookingId').value = bookingId;
+}
+
+function closeAcceptPopup() {
+    document.getElementById('customPopup').style.display = 'none';
+}
+
+function acceptBooking() {
+    var bookingId = document.getElementById('bookingId').value;
+
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '../backend/status.php', true);
+    xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+            console.log(xhr.responseText);
+            closeAcceptPopup(); // Close the popup after successful booking acceptance
+            window.location.reload();
+        }
+    };
+
+    xhr.send('schedule_id=' + bookingId + '&accept=1');
+}
+
 function startSSE() {
     var source = new EventSource("../backend/fetch_booking_updates.php");
 
     source.onmessage = function(event) {
-        bookings = JSON.parse(event.data); 
-        renderBookings(); 
+        bookings = JSON.parse(event.data); // Update bookings data
+        renderBookings(); // Apply current status and date filters
     };
 
     source.addEventListener('close', function() {
         console.log("Connection closed, reconnecting...");
-        setTimeout(startSSE, 100);
+        setTimeout(startSSE, 100); // Reconnect on close
     });
 }
 
+// Add event listeners to year and month selectors
+document.getElementById('year-select').addEventListener('change', filterByDate);
+document.getElementById('month-select').addEventListener('change', filterByDate);
+
+// Start the SSE connection
 startSSE();
+
+const downloadBtn = document.getElementById('download-btn');
+
+// Add click event listener to print button
+downloadBtn.addEventListener('click', generatePDF);
+
+function generatePDF() {
+    try {
+        // Create new jsPDF instance
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF('landscape', 'mm', 'a4');
+
+        const logoPath = '../picture/logo.png'; 
+
+        const img = new Image();
+        img.src = logoPath;
+        
+        // Wait for the image to load
+        img.onload = function() {
+            // Add company logo
+            doc.addImage(img, 'PNG', 10, 10, 40, 20); // Position: x, y, width, height
+            
+            // Add company name under logo
+            doc.setFontSize(20);
+            doc.text('ICSM Creatives', 60, 20); // Adjust positioning as needed
+
+            let yPos = 40;
+
+            // Add other content (title, date, etc.)
+            doc.setFontSize(16);
+            doc.text('Booking Details Report', doc.internal.pageSize.getWidth() / 2, yPos, { align: 'center' });
+
+            doc.setFontSize(10);
+            const currentDate = new Date().toLocaleString('en-US', { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+            doc.text(`Generated on: ${currentDate}`, 15, yPos + 8);
+
+            doc.text(`Filter: ${currentFilter.charAt(0).toUpperCase() + currentFilter.slice(1)}`, 15, yPos + 13);
+
+            const headers = [
+                ['Booking ID', 'Status', 'Service Package', 'Client Name', 'Date & Time', 'Location', 'Payment Status', 'Balance']
+            ];
+
+            // Filter bookings based on current filter
+            const filteredBookings = bookings.filter(booking => {
+                if (currentFilter === 'all') return true;
+                return booking.status.toLowerCase() === currentFilter;
+            });
+
+            // Prepare table data
+            const data = filteredBookings.map(booking => [
+                booking.bookingId,
+                booking.status,
+                booking.service_name,
+                booking.client_name,
+                `${booking.formattedEventDate} ${booking.formattedTimeRange}`,
+                booking.eventLocation,
+                booking.payment_option,
+                formatCurrency(booking.remaining_balance)
+            ]);
+
+            // Auto table configuration
+            doc.autoTable({
+                startY: yPos + 20,
+                head: headers,
+                body: data,
+                theme: 'grid',
+                styles: {
+                    fontSize: 8,
+                    cellPadding: 2,
+                    overflow: 'linebreak',
+                    cellWidth: 'wrap'
+                },
+                headStyles: {
+                    fillColor: [66, 66, 66],
+                    textColor: 255,
+                    fontSize: 8,
+                    fontStyle: 'bold'
+                },
+                columnStyles: {
+                    0: { cellWidth: 25 }, // Booking ID
+                    1: { cellWidth: 20 }, // Status
+                    2: { cellWidth: 35 }, // Service Package
+                    3: { cellWidth: 30 }, // Client Name
+                    4: { cellWidth: 35 }, // Date & Time
+                    5: { cellWidth: 40 }, // Location
+                    6: { cellWidth: 25 }, // Payment Status
+                    7: { cellWidth: 25 }  // Balance
+                },
+                alternateRowStyles: {
+                    fillColor: [245, 245, 245]
+                },
+                margin: { top: 20 },
+                didDrawPage: function(data) {
+                    // Add page number at the bottom
+                    doc.setFontSize(8);
+                    doc.text(
+                        `Page ${doc.internal.getCurrentPageInfo().pageNumber} of ${doc.internal.getNumberOfPages()}`,
+                        doc.internal.pageSize.getWidth() / 2, 
+                        doc.internal.pageSize.getHeight() - 10,
+                        { align: 'center' }
+                    );
+                }
+            });
+
+            // Add summary information at the bottom
+            const totalRows = data.length;
+            doc.setFontSize(10);
+            doc.text(`Total Entries: ${totalRows}`, 15, doc.lastAutoTable.finalY + 10);
+
+            // Save the PDF with formatted date in filename
+            const dateStr = new Date().toISOString().split('T')[0];
+            const timeStr = new Date().toTimeString().split(' ')[0].replace(/:/g, '-');
+            const fileName = `booking_report_${currentFilter}_${dateStr}_${timeStr}.pdf`;
+            doc.save(fileName);
+        };
+        
+    } catch (error) {
+        console.error('PDF Generation Error:', error);
+        alert('Error generating PDF. Please check console for details.');
+    }
+}
+
+// Updated Helper function to format currency
+function formatCurrency(amount) {
+    if (amount === null || amount === undefined || isNaN(amount)) {
+        return '₱0.00';
+    }
+    return new Intl.NumberFormat('en-PH', {
+        style: 'currency',
+        currency: 'PHP',
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+    }).format(amount);
+}
+
+
+function seeReceipt(bookingId, base64Image) {
+    // Get the modal
+    const modal = document.getElementById('receiptModal');
+    const receiptContainer = document.getElementById('receiptImage');
+    
+    // Clear previous content
+    receiptContainer.innerHTML = '';
+    
+    if (base64Image) {
+        // Create image element
+        const img = document.createElement('img');
+        img.src = 'data:image/jpeg;base64,' + base64Image;
+        img.alt = 'Receipt for booking #' + bookingId;
+        img.style.maxWidth = '100%';
+        
+        // Add image to container
+        receiptContainer.appendChild(img);
+    } else {
+        receiptContainer.innerHTML = '<p>No receipt available for this booking.</p>';
+    }
+    
+    // Display the modal
+    modal.style.display = 'block';
+}
+
+// Function to close receipt modal
+function closeReceiptModal() {
+    const modal = document.getElementById('receiptModal');
+    modal.style.display = 'none';
+}
+
+// Close modal when clicking outside of it
+window.onclick = function(event) {
+    const modal = document.getElementById('receiptModal');
+    if (event.target == modal) {
+        modal.style.display = 'none';
+    }
+}
 
 function searchBooking() {
     const input = document.getElementById('booking-search');
@@ -217,30 +440,6 @@ function searchBooking() {
         } else {
             rows[i].style.display = 'none';
         }
-    }
-}
-
-// Function to open the image in a new tab with a download button
-function seeReceipt(bookingId, imageBase64) {
-    // Create a new window/tab
-    var newWindow = window.open("", "_blank");
-    if (newWindow) {
-        // Write the image and download link into the new window
-        newWindow.document.write(`
-            <html>
-                <head><title>Receipt for Booking ID: ${bookingId}</title></head>
-                <body style="text-align:center;margin:0;padding:20px;">
-                    <img src="data:image/jpeg;base64,${imageBase64}" style="max-width:100%;height:auto;">
-                    <br><br>
-                    <a href="data:image/jpeg;base64,${imageBase64}" download="receipt_booking_${bookingId}.jpg">
-                        <button style="padding:10px 20px;font-size:16px;">Download Receipt</button>
-                    </a>
-                </body>
-            </html>
-        `);
-        newWindow.document.close();
-    } else {
-        alert("Popup blocked! Please allow popups for this website.");
     }
 }
 
@@ -270,6 +469,4 @@ document.getElementById('save-unavailability').addEventListener('click', functio
 function closeUnavailabilityModal() {
     unavailabilityModal.style.display = 'none';
 }
-
-
 

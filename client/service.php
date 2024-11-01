@@ -17,7 +17,9 @@ $additional_services = [
     'Virtual Invitation' => 700,
     'Throwback Presentation' => 2000,
     'Props and Background' => 2500,
-    'Drone Shot' => 8000
+    'Drone Shot' => 8000,
+    'Extended 1 Hour' => 8000,
+    'Add 1 Photographer' => 8000
 ];
 
 if (isset($_POST['additional_services'])) {
@@ -212,109 +214,92 @@ $(document).ready(function() {
     });
 
 
-    // Initialize an array to hold selected services and their prices
     let selectedServices = [];
+    let selectedAdditionalServices = [];
 
-    // Listen for service card click
+    // Listen for service card clicks (from fetch_services.php results)
     $(document).on('click', '.service-card', function() {
+        const serviceID = $(this).data('serviceid');
         const serviceName = $(this).data('service');
         const servicePrice = parseFloat($(this).data('price'));
 
-        // Check if the service is already selected
-        const index = selectedServices.findIndex(service => service.name === serviceName);
+        const index = selectedServices.findIndex(service => service.id === serviceID);
 
         if (index === -1) {
-            // Add the selected service to the array if it's not already there
-            selectedServices.push({ name: serviceName, price: servicePrice });
-            $(this).addClass('selected'); // Optionally, highlight the selected service
+            selectedServices.push({ 
+                id: serviceID, 
+                name: serviceName, 
+                price: servicePrice 
+            });
+            $(this).addClass('selected');
         } else {
-            // Remove the service from the array if it's already selected (toggle functionality)
             selectedServices.splice(index, 1);
             $(this).removeClass('selected');
         }
 
-        // Update the total price whenever a service is added or removed
         updateTotal();
     });
 
-    // Function to update the total price
-    function updateTotal() {
-       let total = 0;
-        
-       // Add up prices of selected services
-       selectedServices.forEach(service => {
-           total += service.price;
-       });
-    
-       // Add additional services price
-       $('input[name="additional_services[]"]:checked').each(function() {
-           total += parseFloat($(this).val());
-       });
-    
-       // Display the total price
-       $('#totalPrice').text(total.toFixed(2));
-       $('#totalPriceInput').val(total.toFixed(2));  // Update hidden input value
-    }
-
-    // Listen for changes in additional services
+    // Listen for additional services selection
     $('input[name="additional_services[]"]').on('change', function() {
+        const price = parseFloat($(this).val());
+        const serviceName = $(this).parent().text().split('(')[0].trim();
+        
+        if ($(this).is(':checked')) {
+            selectedAdditionalServices.push({
+                name: serviceName,
+                price: price
+            });
+        } else {
+            const index = selectedAdditionalServices.findIndex(service => 
+                service.name === serviceName);
+            if (index > -1) {
+                selectedAdditionalServices.splice(index, 1);
+            }
+        }
+        
         updateTotal();
     });
-});
 
-// Initialize an array to hold selected services and their prices
-let selectedServices = [];
+    // Modify form submission to include both service arrays
+    $('#serviceForm').submit(function(e) {
+        e.preventDefault();
 
-$(document).on('click', '.service-card', function() {
-    const serviceID = $(this).data('serviceid');  // Get the serviceID
-    const serviceName = $(this).data('service');
-    const servicePrice = parseFloat($(this).data('price'));
+        // Add selected services to form
+        $('<input>').attr({
+            type: 'hidden',
+            name: 'service_ids',
+            value: JSON.stringify(selectedServices.map(service => service.id))
+        }).appendTo(this);
 
-    const index = selectedServices.findIndex(service => service.id === serviceID);
+        // Add service names and prices
+        $('<input>').attr({
+            type: 'hidden',
+            name: 'service_names',
+            value: JSON.stringify(selectedServices)
+        }).appendTo(this);
 
-    if (index === -1) {
-        selectedServices.push({ id: serviceID, name: serviceName, price: servicePrice });
-        $(this).addClass('selected');
-    } else {
-        selectedServices.splice(index, 1);
-        $(this).removeClass('selected');
-    }
+        // Add additional services
+        $('<input>').attr({
+            type: 'hidden',
+            name: 'additional_services_data',
+            value: JSON.stringify(selectedAdditionalServices)
+        }).appendTo(this);
 
-    updateTotal();
-});
-
-function updateTotal() {
-    let total = 0;
-    selectedServices.forEach(service => total += service.price);
-    $('input[name="additional_services[]"]:checked').each(function() {
-        total += parseFloat($(this).val());
+        this.submit();
     });
 
-    $('#totalPrice').text(total.toFixed(2));
-    $('#totalPriceInput').val(total.toFixed(2));
-}
+    function updateTotal() {
+        let total = 0;
+        // Add selected services prices
+        selectedServices.forEach(service => total += service.price);
+        // Add additional services prices
+        selectedAdditionalServices.forEach(service => total += service.price);
 
-// Modify form submission to include selected service IDs
-$('#serviceForm').submit(function(e) {
-    e.preventDefault();
-
-    // Get selected service IDs
-    const selectedServiceIDs = selectedServices.map(service => service.id);
-
-    // Create a hidden input to send the selected service IDs to payment.php
-    $('<input>').attr({
-        type: 'hidden',
-        name: 'service_ids',
-        value: JSON.stringify(selectedServiceIDs)  // Send the service IDs
-    }).appendTo('#serviceForm');
-
-    this.submit();  // Now submit the form
+        $('#totalPrice').text(total.toFixed(2));
+        $('#totalPriceInput').val(total.toFixed(2));
+    }
 });
-
-
-
 
 </script>
-
-
 </html>

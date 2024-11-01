@@ -13,7 +13,7 @@ $endTime = time() + $timeout;
 while (time() <= $endTime) {
     // Modify query to join booking, client, services, booking_staff, and staff tables
     $sql = "
-    SELECT b.bookingId, b.clientID, b.eventLocation, b.proof_payment, b.status, b.service_package, b.eventDate, b.start_time, b.end_time, b.payment_option, 
+    SELECT b.bookingId, b.clientID, b.eventLocation, b.proof_payment, b.status, b.service_package, b.eventDate, b.start_time, b.end_time, b.payment_option, b.remaining_balance,
            c.name as client_name, s.service_name
     FROM booking b
     LEFT JOIN client c ON b.clientID = c.clientID
@@ -42,22 +42,34 @@ while (time() <= $endTime) {
 
         // Fetch assigned staff for the bookingId
         $staffSql = "
-            SELECT st.staff_name
-            FROM booking_staff bs
-            INNER JOIN staff st ON bs.staff_ID = st.staff_ID
-            WHERE bs.bookingId = ?
-        ";
-        $stmt = $conn->prepare($staffSql);
-        $stmt->bind_param('i', $row['bookingId']);
-        $stmt->execute();
-        $staffResult = $stmt->get_result();
-
-        // Collect staff names into an array
-        $assignedStaff = [];
-        while ($staffRow = $staffResult->fetch_assoc()) {
-            $assignedStaff[] = $staffRow['staff_name'];
-        }
-        $row['assignedStaff'] = $assignedStaff; // Store staff names
+        SELECT 
+            st.staff_ID,
+            st.staff_name,
+            st.profile_picture,
+            st.role
+        FROM booking_staff bs
+        INNER JOIN staff st ON bs.staff_ID = st.staff_ID
+        WHERE bs.bookingId = ?
+    ";
+    $stmt = $conn->prepare($staffSql);
+    $stmt->bind_param('i', $row['bookingId']);
+    $stmt->execute();
+    $staffResult = $stmt->get_result();
+    
+    // Collect staff information into an array
+    $assignedStaff = [];
+    while ($staffRow = $staffResult->fetch_assoc()) {
+        // Convert profile picture to base64 if it exists
+        $staffRow['profile_picture'] = $staffRow['profile_picture'] ? base64_encode($staffRow['profile_picture']) : null;
+        // Make sure we're sending all needed fields
+        $assignedStaff[] = array(
+            'staff_ID' => $staffRow['staff_ID'],
+            'staff_name' => $staffRow['staff_name'],
+            'profile_picture' => $staffRow['profile_picture'],
+            'role' => $staffRow['role']
+        );
+    }
+    $row['assignedStaff'] = $assignedStaff;; // Store staff names
 
         // Add the row data to the bookingData array
         $bookingData[] = $row;
