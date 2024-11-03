@@ -22,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 // Fetch all bookings with 'Accepted' status
-$sql = "SELECT eventDate, start_time, end_time FROM booking WHERE status = 'Accepted' ORDER BY eventDate, start_time";
+$sql = "SELECT eventDate, event_time FROM booking WHERE status = 'Accepted' ORDER BY eventDate, event_time";
 $result = $conn->query($sql);
 $bookings = [];
 $fullyBookedDates = [];
@@ -31,7 +31,7 @@ while ($row = $result->fetch_assoc()) {
     if (!isset($bookings[$date])) {
         $bookings[$date] = [];
     }
-    $bookings[$date][] = ['start_time' => $row['start_time'], 'end_time' => $row['end_time']];
+    $bookings[$date][] = $row['event_time'];
     
     // If the date has 2 or more 'Accepted' bookings, consider it fully booked
     if (count($bookings[$date]) >= 2) {
@@ -60,7 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 // Fetch the current user's bookings
-$sql = "SELECT bookingID, title_event, eventDate, eventLocation, start_time, end_time, status FROM booking WHERE clientID = ? ORDER BY bookingID DESC";
+$sql = "SELECT bookingID, title_event, eventDate, eventLocation, event_time, status FROM booking WHERE clientID = ? ORDER BY bookingID DESC";
 $stmt = $conn->prepare($sql);
 if ($stmt) {
     $stmt->bind_param("i", $clientID);
@@ -70,6 +70,19 @@ if ($stmt) {
     echo "Error preparing statement: " . $conn->error;
     exit();
 }
+
+// Fetch all unavailable dates from the unavailability table
+$sql = "SELECT date FROM unavailability";
+$unavailableResult = $conn->query($sql);
+$unavailableDates = [];
+
+while ($row = $unavailableResult->fetch_assoc()) {
+    $unavailableDates[] = $row['date'];
+}
+
+// Merge fully booked dates and unavailable dates
+$allUnavailableDates = array_merge($fullyBookedDates, $unavailableDates);
+
 ?>
 
 <!DOCTYPE html>
@@ -187,20 +200,14 @@ if ($stmt) {
                                     <br>
                                     <div class="time">
                                         <div class="start">
-                                            <label for="start_time">Start Time</label>
+                                            <label for="event_time">Event Time</label>
                                             <div class="input-with-icon">
                                                 <i class="fa-regular fa-clock"></i>
-                                                <select id="start_time" name="start_time" required></select>
+                                                <select id="event_time" name="event_time" required></select>
                                             </div>
                                         </div>
                                         <br>
-                                        <div class="end">
-                                            <label for="end_time">End Time</label>
-                                            <div class="input-with-icon">
-                                                <i class="fa-regular fa-clock"></i>
-                                                <select id="end_time" name="end_time" required></select>  
-                                            </div>
-                                        </div>
+                                        
                                     </div>                                     
                                     <br>
                                     <label for="pax">Pax</label>
@@ -217,10 +224,9 @@ if ($stmt) {
                         </div>
                     </form>
                 </div>
+                <h1>Stay updated in your booking status:</h1>
             </div>
         </section>
-
-        <!--<h1>Stay updated in your booking status:</h1>-->
 
         <section class="booking-status">
             <div class="status-tabs">
@@ -230,16 +236,27 @@ if ($stmt) {
                 <button class="status-tab" data-status="Completed">Completed</button> 
             </div>
             <div class="status-content">
-                <?php
+            <?php
                 $statuses = ['Pending', 'Accepted', 'Declined', 'Completed'];
                 $currentDate = date('Y-m-d');
 
                 foreach ($statuses as $status) {
+                    $headingText = $status == 'Accepted' ? 'Upcoming Events' : "{$status} Events";
+
                     echo "<div class='status-panel" . ($status == 'Pending' ? ' active' : '') . "' id='{$status}-panel'>";
-                    echo "<h3>{$status} Events</h3>";
-                    echo "<p>" . ($status == 'Pending' ? 'Please wait for your booking response from ICSM Creatives' : '') . "</p>";
-                    echo "<div class='event-container' id='events-{$status}'>"; 
+                    echo "<h3>{$headingText}</h3>";
+
+                    if ($status == 'Pending') {
+                        echo "<p>Please wait for your booking response from ICSM Creatives.</p>";
+                    } elseif ($status == 'Accepted') {
+                        echo "<p>These are the special memories you`ll soon capture with ICSM Creatives.</p>";
+                    } elseif ($status == 'Declined') {
+                        echo "<p>Here`s your Declined bookings overview with ICSM Creatives.</p>";
+                    } elseif ($status == 'Completed') {
+                        echo "<p>Your completed events are here for you to cherish.</p>";
+                    }
                 
+                    echo "<div class='event-container' id='events-{$status}'>"; 
                     echo "</div>"; 
                     echo "</div>"; 
                 }
@@ -260,75 +277,63 @@ if ($stmt) {
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const eventDateInput = document.getElementById('event_date');
-        const startTimeSelect = document.getElementById('start_time');
-        const endTimeSelect = document.getElementById('end_time');
+    const eventTimeSelect = document.getElementById('event_time');
         const navbar = document.querySelector('.navbar');
         const coverContent = document.querySelector('.cover-title h2');
         const daysTag = document.querySelector(".days"),
         currentDate = document.querySelector(".current-date"),
         prevNextIcon = document.querySelectorAll(".icons span");
 
-    // Populate time options (Assuming events can be booked on the hour from 8am to 8pm)
+    // Populate time options
     function populateTimeOptions(selectElement) {
         selectElement.innerHTML = '';
-        for (let hour = 8; hour <= 20; hour++) {
-            const hourString = hour.toString().padStart(2, '0') + ':00';
+        const timeSlots = [
+            '08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00',
+            '15:00', '16:00', '17:00', '18:00', '19:00', '20:00'
+        ];
+        
+        timeSlots.forEach(time => {
             const option = document.createElement('option');
-            option.value = hourString;
-            option.textContent = hourString;
+            option.value = time;
+            option.textContent = time;
             selectElement.appendChild(option);
-        }
+        });
     }
 
-    populateTimeOptions(startTimeSelect);
-    populateTimeOptions(endTimeSelect);
+    populateTimeOptions(eventTimeSelect);
 
+        const bookings = <?php echo json_encode($bookings); ?>;
+        const allUnavailableDates = <?php echo json_encode($allUnavailableDates); ?>;
 
-    const bookings = <?php echo json_encode($bookings); ?>;
-    const fullyBookedDates = <?php echo json_encode($fullyBookedDates); ?>;
+        flatpickr(eventDateInput, {
+            dateFormat: "Y-m-d",
+            minDate: "today",
+            disable: allUnavailableDates, // Disable both fully booked and unavailable dates
+            onChange: function(selectedDates, dateStr, instance) {
+                const selectedDate = dateStr;
+                const bookedTimes = bookings[selectedDate] || [];
 
-    flatpickr(eventDateInput, {
-        dateFormat: "Y-m-d",
-        minDate: "today", // Ensure dates before today are not selectable
-        disable: [
-            {
-                from: new Date().toISOString().split('T')[0], // Block today
-                to: new Date(new Date().setDate(new Date().getDate() + 2)).toISOString().split('T')[0] // Block next 2 days
-            },
-            ...fullyBookedDates // Continue to disable fully booked dates
-        ],
-        onChange: function (selectedDates, dateStr, instance) {
-            const selectedDate = dateStr;
-            const bookedTimes = bookings[selectedDate] || [];
+                // Reset all time slots
+                Array.from(eventTimeSelect.options).forEach(option => {
+                    option.disabled = false;
+                });
 
-            // Reset the availability of time slots
-            for (let i = 0; i < startTimeSelect.options.length; i++) {
-                startTimeSelect.options[i].disabled = false;
-                endTimeSelect.options[i].disabled = false;
+                // Disable booked time slots
+                bookedTimes.forEach(bookedTime => {
+                    Array.from(eventTimeSelect.options).forEach(option => {
+                        if (option.value === bookedTime) {
+                            option.disabled = true;
+                        }
+                    });
+                });
+
+                eventTimeSelect.selectedIndex = -1; // Reset selection
             }
-
-            // Disable time slots that are already booked
-            bookedTimes.forEach(function (booking) {
-                const bookedStartTime = booking.start_time;
-                const bookedEndTime = booking.end_time;
-
-                for (let i = 0; i < startTimeSelect.options.length; i++) {
-                    const optionValue = startTimeSelect.options[i].value;
-                    if (optionValue >= bookedStartTime && optionValue < bookedEndTime) {
-                        startTimeSelect.options[i].disabled = true;
-                        endTimeSelect.options[i].disabled = true;
-                    }
-                }
-            });
-
-            startTimeSelect.selectedIndex = -1; // Reset the selected index
-            endTimeSelect.selectedIndex = -1;   // Reset the selected index
-            
-        }
-    });
+        });
 
 
-    function startSSE() {
+
+        function startSSE() {
     var source = new EventSource("../backend/fetch.php");
 
     source.onmessage = function(event) {
@@ -353,24 +358,61 @@ if ($stmt) {
             var status = booking.status;
             bookingCount[status]++;
 
-            // Construct the HTML for the event card
-            var eventCard = `
-                <div class='event-card'>
-                    <img src='../picture/event-placeholder.jpg' alt='Event Image'>
-                    <div class='event-details'>
-                        <h5>${booking.title_event}</h5>
-                        <p><i class='fas fa-map-marker-alt'></i> ${booking.eventLocation}</p>
-                        <p><i class='far fa-calendar'></i> ${booking.eventDate}</p>
-                        <p><i class='far fa-clock'></i> ${booking.start_time} - ${booking.end_time}</p>
-                        ${booking.status === 'Accepted' ? `<div class="buttons-book"><a href="../client/details.php?bookingID=${booking.bookingID}" class="view-more-button">View Details</a></div>` : ''}
+            // Construct the HTML for the event card based on the status
+            let eventCard = '';
+
+            if (status === 'Accepted' || status === 'Pending' || status === 'Declined') {
+                // Layout for Accepted, Pending, and Declined bookings
+                eventCard = `
+                    <div class='event-card'>
+                        <img src='${booking.picture}' alt='Event Image'>
+                        <div class='event-details'>
+                            <h5>${booking.title_event}</h5>
+                            <p><i class='fas fa-map-marker-alt'></i> ${booking.eventLocation}</p>
+                            <p><i class='far fa-calendar'></i> ${booking.formattedDate}</p>
+                            <p><i class='far fa-clock'></i> ${booking.formattedTime}</p>
+                            ${status === 'Accepted' ? `<div class="buttons-book"><a href="../client/details.php?bookingID=${booking.bookingID}" class="view-more-button">View Details</a></div>` : ''}
+                        </div>
                     </div>
-                </div>
-            `;
+                `;
+            } else if (status === 'Completed') {
+                // Layout for Completed bookings
+                eventCard = `
+                    <div class="completed">
+                        <div class='booking-header'>
+                            <h3>${booking.title_event}</h3>
+                            <button class='view-img-button'>View Photo</button>
+                        </div>
+                        <div class="summary">
+                            <div class="header-summary">
+                                <h4>Booking Details</h4>
+                            </div>
+                            <div class="details-grid">
+                                <div class="event-grid">
+                                    <p><i class='fas fa-map-marker-alt'></i> ${booking.eventLocation}</p>
+                                </div>
+                                <div class="event-grid">
+                                    <p><i class='far fa-calendar'></i> ${booking.formattedDate}</p>
+                                </div>
+                                <div class="event-grid">
+                                    <p><i class='far fa-clock'></i> ${booking.formattedTime}</p>
+                                </div>
+                                <div class="event-grid">
+                                    <p><strong>Service Package:</strong> ${booking.servicePackage}</p>
+                                </div>
+                                <div class="event-grid">
+                                    <p><strong>Additional Service:</strong> ${booking.additionalService}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
 
             // Add the event card to the correct status container
             document.querySelector(`#events-${status}`).insertAdjacentHTML('beforeend', eventCard);
         });
-
+        
         // Display default messages if no bookings were found
         statuses.forEach(status => {
             const eventContainer = document.querySelector(`#events-${status}`);
@@ -392,6 +434,7 @@ if ($stmt) {
         });
     };
 
+    // Reconnect on close event
     source.addEventListener('close', function() {
         console.log("Connection closed, reconnecting...");
         setTimeout(startSSE, 100);
@@ -399,6 +442,7 @@ if ($stmt) {
 }
 
 startSSE();
+
 
 
     // Tab switching functionality

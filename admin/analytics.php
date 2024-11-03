@@ -1,7 +1,6 @@
-<?php 
-// logout Automatically
-include '../backend/logout.php';
-//Connection
+<?php
+session_start();
+// Connection
 include '../backend/dbcon.php';
 
 
@@ -49,7 +48,7 @@ $averageRating = ($totalRatings > 0) ? $totalRatings / $totalClients : 0; // Cal
 
 $ratingPercentage = ($averageRating / 5) * 100;
 
-$sql = "SELECT staffID, name, profile, email, role FROM staff";
+$sql = "SELECT staff_ID, staff_name, profile_picture, email, role FROM staff";
 $result = $conn->query($sql);
 
 

@@ -19,7 +19,7 @@ $additional_services = [
     'Props and Background' => 2500,
     'Drone Shot' => 8000,
     'Extended 1 Hour' => 8000,
-    'Add 1 Photographer' => 8000
+    'Add 1 Photographer' => 1500
 ];
 
 if (isset($_POST['additional_services'])) {

@@ -149,6 +149,11 @@
     padding: 20px;
 }
 
+.fillup-book h1{
+    transform: translate(0%, -230%);
+    font: normal 600 18px/normal 'Poppins';
+}
+
 .service-book {
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
     border-radius: 10px;
@@ -472,7 +477,7 @@
 
 .booking-status {
     padding: 20px;
-    background-color: #fff;
+    background-color: var(--fontLight);
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     transform: translate(0%, -5%);
@@ -510,7 +515,7 @@
 
 .status-panel p{
     font: normal 500 13px/normal 'Poppins' ;
-    color: var(--hoverLight);
+    color: var(--line-border-fill);
 }
 
 .status-panel.active {
@@ -543,10 +548,15 @@
     margin-bottom: 20px;
 }
 
+.event-card:hover {
+    background-color: var(--BgColor);
+}
+
 .event-card img {
-    width: 150px;
-    height: 100px;
+    width: 170px;
+    height: 130px;
     object-fit: cover;
+    margin-top: 15px;
 }
 
 .event-details {
@@ -578,7 +588,40 @@
     color: var(--DarkColor);
 }
 
+/* Completed Event Card Styles */
 
+.event-grid {
+    display: flex;
+    flex-direction: column;
+    margin: 0 0 10px 10px;
+}
+
+.completed{
+    border: 1px solid var(--line-border-empty);
+    width: 98%;
+    margin: 15px 0;
+    box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.2);
+}
+
+.completed{
+    margin-right: 20px;
+}
+
+.view-img-button{
+    background-image: linear-gradient(147deg, #BC8759 0%, #77563D 100%);
+    color: var(--fontLight);
+    border: none;
+    padding: 5px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font: normal 600 13px/normal 'Poppins';
+    box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.2);
+    transition: all .3s ease;
+}
+
+.view-img-button:hover{
+    transform: scale(1.01);
+}
 /*****Cart****/
 .cart-section{
     padding: 20px;
@@ -847,20 +890,21 @@
 }
 .add-services{
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
     
 }
 
 .add-services .column{
     display: flex;
     flex-direction: column;
-    margin: 40px;
 }
 
 .add-services label{
     border: 1px solid;
     padding: 10px;
     font: normal 500 15px / normal 'Poppins';
+    width: 35vw;
+    height: 20%;
 }
 
 .buttons-book h1{
@@ -1028,12 +1072,51 @@
 }
 
 .payment-section {
-    display: flex;
-    gap: 30px;
     border: 1px solid var(--line-border-empty);
     border-radius: 5px;
     box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.2);
     margin-bottom: 20px;
+    overflow: hidden;
+}
+
+.payment-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    background-color: #f8f9fa;
+    cursor: pointer;
+    border-bottom: 1px solid var(--line-border-empty);
+}
+
+.payment-header h3 {
+    margin: 0;
+    font: normal 600 16px/normal 'Roboto';
+    color: var(--DarkColor);
+}
+
+.arrow {
+    transition: transform 0.3s ease;
+    color: var(--DarkColor);
+}
+
+.arrow.active {
+    transform: rotate(180deg);
+}
+
+.payment-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out;
+}
+
+.payment-content.active {
+    max-height: 1000px;
+}
+
+.payment-content-inner {
+    display: flex;
+    gap: 30px;
 }
 
 .qr-code {
@@ -1051,7 +1134,7 @@
 
 .qr-code p {
     margin: 5px 0;
-    font: normal 500 14px / normal 'Poppins';
+    font: normal 500 14px/normal 'Poppins';
     color: var(--hoverDark);
 }
 
@@ -1062,7 +1145,7 @@
 }
 
 .payment-instructions h4 {
-    font: normal 600 17px / normal 'Roboto';
+    font: normal 600 17px/normal 'Roboto';
     margin: 5px 0 15px 5px;
     color: var(--DarkColor);
 }
@@ -1074,7 +1157,7 @@
 
 .step-pay {
     margin: 8px 10px;
-    font: normal 400 14px / normal 'Roboto';
+    font: normal 400 14px/normal 'Roboto';
     color: var(--DarkColor);
 }
 
@@ -1125,7 +1208,7 @@
 
 .security-note {
     margin-top: 20px;
-    font: normal 400 12px / normal 'Poppins';
+    font: normal 400 12px/normal 'Poppins';
     color: var(--hoverDark);
     margin-left: 10px;
 }
@@ -1133,9 +1216,8 @@
 #pending-payment {
     color: red;
     margin-left: 10px;
-    font: normal 400 12px / normal 'Poppins';
+    font: normal 400 12px/normal 'Poppins';
 }
-
 .policy-section {
     margin-bottom: 20px;
     font: normal 400 15px / normal 'Poppins';
@@ -1198,6 +1280,138 @@
 .popup-buttons button:last-child {
     background: var(--BgColor);
     color: var();
+}
+
+.consent-popup-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.consent-popup-content {
+    background: var(--fontLight);
+    padding: 30px;
+    border-radius: 10px;
+    text-align: center;
+    max-width: 500px;
+    width: 90%;
+    background: var(--BgColor);
+    animation: popupFade 0.3s ease-out;
+}
+
+@keyframes popupFade {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.success-icon {
+    width: 80px;
+    height: 80px;
+    background: var(--HoverthemeColor);
+    border-radius: 50%;
+    margin: 0 auto 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.success-icon i {
+    font-size: 40px;
+    color: var(--fontLight);
+}
+
+.consent-popup-content h3 {
+    font: normal 600 25px / normal 'Poppins';
+    color: var(--hoverDark);
+    margin-bottom: 15px;
+}
+
+.consent-message {
+    margin: 20px 0;
+    color: #666;
+    line-height: 1.6;
+}
+
+.consent-message p {
+    font: normal 400 14px / normal 'Poppins';
+    margin-bottom: 10px;
+}
+
+.consent-btn {
+    background: var(--HoverthemeColor);
+    color: var(--fontLight);
+    border: none;
+    padding: 12px 30px;
+    border-radius: 5px;
+    font: normal 400 14px / normal 'Poppins';
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.consent-btn:hover {
+    background: var(--themeColor);
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.error-popup {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    text-align: center;
+    min-width: 300px;
+    animation: fadeIn 0.3s ease-out;
+    box-shadow: 0px 0px 400px 900px rgba(0, 0, 0, 0.28);
+    z-index: 10000;
+}
+
+.error-popup .icon {
+    font-size: 60px;
+    color: red;
+    margin-bottom: 20px;
+}
+
+.error-popup .message {
+    color: #333;
+    margin-bottom: 20px;
+    font: normal 400 14px/15px 'Poppins';
+}
+
+.error-popup .ok-btn {
+    background: var(--HoverthemeColor);
+    color: white;
+    border: none;
+    padding: 10px 30px;
+    border-radius: 5px;
+    cursor: pointer;
+    font: normal 400 14px/15px 'Poppins';
+    transition: background 0.3s;
+}
+
+.error-popup .ok-btn:hover {
+    background: var(--themeColor);
 }
 
 .cart-item {

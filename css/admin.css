@@ -222,7 +222,7 @@ body {
 }
 
 /*****Booking & Client*****/
-.booking-box {
+.container-admin {
     padding: 0px 0px 20px 0px;
     margin: 10% 0 0 10%;
     border-radius: 5px;
@@ -298,12 +298,11 @@ body {
 .top-book {
     display: flex;
     justify-content: space-between;
-    margin-top: 2%;
+    margin: 15px 18px;
 }
 
 .top-book h4 {
     font: normal 600 18px/normal 'Poppins';
-    margin-left: 20px;
 }
 
 .tabs {
@@ -375,6 +374,21 @@ body {
 }
 
 #unavailability-btn:hover {
+    background: linear-gradient(147deg, #c8864c 0%, #7c5334 100%);
+}
+
+.btn-admin {
+    padding: 7px 15px;
+    background: linear-gradient(147deg, #BC8759 0%, #77563D 100%);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 0px 20px 10px 0px;
+    box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.2);
+}
+
+.btn-admin:hover {
     background: linear-gradient(147deg, #c8864c 0%, #7c5334 100%);
 }
 
@@ -473,7 +487,7 @@ th {
 
 
 td form button[name="delete"] {
-    background-color: #ff3628;
+    background-color: var(--declineColor);
     border-radius: 6px;
     font: normal 11px/normal 'Poppins';
     height: 5%;
@@ -490,6 +504,26 @@ td form button[name="delete"]:hover{
     background-color: rgb(172, 3, 0);
     transition: 0.4s;
 }
+
+.delete-admin {
+    background-color: var(--declineColor);
+    border-radius: 6px;
+    font: normal 11px/normal 'Poppins';
+    height: 5%;
+    color: #FFF;
+    border: none;
+    padding: 5px 10px;
+    text-align: center;
+    display: inline-block;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.delete-admin:hover{
+    background-color: rgb(172, 3, 0);
+    transition: 0.4s;
+}
+
 
 td .profile-image {
     width: 50px; 
@@ -517,7 +551,7 @@ td .profile-image {
     margin: 20px 0;
 }
 
-.popup-staff{
+.popup-admin{
     display: none;
     position: fixed;
     top: 50%;
@@ -531,6 +565,11 @@ td .profile-image {
     z-index: 1000;
     box-shadow: 0px 0px 400px 900px rgba(0,0,0,0.28);
     z-index: 10000;
+}
+
+.popup-admin h3{
+    font: normal 500 25px/normal 'Poppins';
+    margin-bottom: 10px;
 }
 
 .staff-card {
@@ -579,26 +618,21 @@ td .profile-image {
     font-size: 14px;
 }
 
-.save-btn {
+.submit-btn {
     width: 100%;
     padding: 12px;
-    background-color: white;
-    border: 1px solid var(--themeColor);
-    color: #daa520;
+    background-color: var(--BgColor);
+    border: 2px solid var(--themeColor);
+    color: var(--themeColor);
     border-radius: 6px;
     cursor: pointer;
-    font-size: 14px;
+    font: normal 400 14px / normal 'Poppins';
     margin-top: 20px;
 }
 
-.save-btn:hover {
-    background-color: #daa520;
-    color: white;
-}
-
-.recommended {
-    font-weight: bold;
-    color: #28a745;
+.submit-btn:hover {
+    background-color: var(--themeColor);
+    color: var(--tblColor);
 }
 
 .staff-profiles {
@@ -835,9 +869,11 @@ td .profile-image {
 }
 
 .form-group input[type="text"],
+.form-group input[type="number"],
 .form-group input[type="date"],
 .form-group input[type="password"],
-.form-group select {
+.form-group select, 
+.form-group textarea{
     width: 100%;
     padding: 8px;
     border: 1px solid #FCF6F6;;
@@ -1112,6 +1148,59 @@ button#acceptNo:hover {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
 }
+
+.success-popup {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    text-align: center;
+    min-width: 300px;
+    animation: fadeIn 0.3s ease-out;
+    box-shadow: 0px 0px 400px 900px rgba(0, 0, 0, 0.28);
+    z-index: 10000;
+}
+
+.success-popup .icon {
+    font-size: 55px;
+    color: var(--acceptColor);
+    margin-bottom: 20px;
+}
+
+.success-popup .message {
+    color: #333;
+    margin-bottom: 20px;
+    font: normal 400 14px/15px 'Poppins';
+}
+
+.success-popup .ok-btn {
+    background: var(--HoverthemeColor);
+    color: white;
+    border: none;
+    padding: 10px 30px;
+    border-radius: 5px;
+    cursor: pointer;
+    font: normal 400 14px/15px 'Poppins';
+    transition: background 0.3s;
+}
+
+.success-popup .ok-btn:hover {
+    background: var(--themeColor);
+}
+
+.popup-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
 /**details feedback***/
 .feedbox-inner {
     display: flex;
@@ -1701,12 +1790,7 @@ form .profile-section p{
     flex-direction: column;
 }
 .exp-box{
-    padding: 20px 0px 50px 0px;
-    margin: 1% 0% 2% 0%;
-    background-color: #FBF4F4;
-    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
-    width: 101.2%;
-    height: 73vh;
+    
     border-radius: 10px;
 }
 
@@ -1780,22 +1864,29 @@ td form button[name="edit"]:hover{
     background-color: rgb(0, 62, 120);
     transition: 0.4s;
 }
-/*****production****/
-.production{
-    margin: 5% 0 0 13%;
-    padding: 1.8% 3% 0% 3%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+
+.edit-admin {
+    background-color: #17A1FA;
+    border-radius: 6px;
+    font: normal 11px/normal 'Poppins';
+    height: 5%;
+    color: #FFF;
+    border: none;
+    padding: 5px 10px;
+    text-align: center;
+    display: inline-block;
+    cursor: pointer;
+    text-decoration: none;
 }
+
+.edit-admin:hover{
+    background-color: rgb(0, 62, 120);
+    transition: 0.4s;
+}
+/*****production****/
+
 .prod-box{
     padding: 20px 0px 50px 0px;
-    margin: 1% 0% 2.3% 0%;
-    background-color: #FBF4F4;
-    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
-    width: 101.2%;
-    height: 78vh;
-    border-radius: 10px;
 }
 
 

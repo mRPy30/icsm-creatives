@@ -24,8 +24,7 @@ $bookingDetails = $_SESSION['booking'];
 
 $requiredKeys = [
     'event_date',
-    'start_time',
-    'end_time',
+    'event_time',
     'event_location',
     'type_of_event',
     'title_event',
@@ -49,7 +48,7 @@ if (isset($_POST['service_names'])) {
 // Process additional services
 $selected_additional_services = [];
 if (isset($_POST['additional_services_data'])) {
-    $selected_additional_services = json_decode($_POST['additional_services_data'], true) ?? [];
+    $selected_additional_services = json_decode($_POST['additional_services_data'], true);
 }
 
 // Store in session if needed
@@ -149,12 +148,8 @@ $_SESSION['selected_additional_services'] = $selected_additional_services;
                                                 <h6><?php echo htmlspecialchars($_SESSION['booking']['event_date'] ?? 'Not provided'); ?></h6>
                                             </div>
                                             <div class="detail-item">
-                                                <p class="label">Start Time:</p>
-                                                <h6><?php echo htmlspecialchars($_SESSION['booking']['start_time'] ?? 'Not provided'); ?></h6>
-                                            </div>
-                                            <div class="detail-item">
-                                                <p class="label">End Time:</p>
-                                                <h6><?php echo htmlspecialchars($_SESSION['booking']['end_time'] ?? 'Not provided'); ?></h6>
+                                                <p class="label">Event Time:</p>
+                                                <h6><?php echo htmlspecialchars($_SESSION['booking']['event_time'] ?? 'Not provided'); ?></h6>
                                             </div>
                                             <div class="detail-item">
                                                 <p class="label">Type of event</p>
@@ -222,31 +217,81 @@ $_SESSION['selected_additional_services'] = $selected_additional_services;
                             </div>
                             <div class="bottom">
                                 <div class="payment-section">
-                                    <div class="qr-code">
-                                        <img src="../picture/qr-code.png" alt="QR Code">
-                                        <p><strong>Gycia Moran</strong></p>
-                                        <p>099999999</p>
+                                    <div class="payment-header">
+                                        <h3>E-Wallet GCash</h3>
+                                        <span class="arrow"><i class="fa-solid fa-angle-down"></i></span>
                                     </div>
+                                    <div class="payment-content">
+                                        <div class="payment-content-inner">
+                                            <div class="qr-code">
+                                                <img src="../picture/qr-code.png" alt="QR Code">
+                                                <p><strong>Gycia Moran</strong></p>
+                                                <p>099999999</p>
+                                            </div>
 
-                                    <div class="payment-instructions">
-                                        <h4>Follow these steps:</h4>
-                                        <div class="instruction">
-                                            <p class="step-pay"><span>Step1:</span> Scan QR Code or Go to GCash App and enter number 09999999999</p>
-                                            <p class="step-pay"><span>Step2:</span> Upload receipt</p>
-                                            <p class="step-pay"><span>Step3:</span> Enter Reference No.</p>
-                                        </div>
+                                            <div class="payment-instructions">
+                                                <h4>Follow these steps:</h4>
+                                                <div class="instruction">
+                                                    <p class="step-pay"><span>Step1:</span> Scan QR Code or Go to GCash App and enter number 09999999999</p>
+                                                    <p class="step-pay"><span>Step2:</span> Upload receipt</p>
+                                                    <p class="step-pay"><span>Step3:</span> Enter Reference No.</p>
+                                                </div>
 
-                                        <div class="payment-form">
-                                            <label>Upload Receipt</label>
-                                            <input type="file" id="paymentProof" name="payment_proof" required>
-                                            <br><br>
-                                            <label>Enter Reference</label>
-                                            <input type="text" placeholder="Enter Reference Number" name="ref_num" class="reference-input">
-                                        </div>
-                                        <p class="security-note">**Payment - All transactions are secure and encrypted.</p>
+                                                <div class="payment-form">
+                                                    <label>Upload Receipt</label>
+                                                    <div class="upload-field">
+                                                        <input type="text" readonly placeholder="Choose file">
+                                                        <button class="browse-btn">Browse</button>
+                                                        <input type="file" id="paymentProof" name="payment_proof" hidden required>
+                                                    </div>
+                                                    <br>
+                                                    <label>Enter Reference</label>
+                                                    <input type="text" placeholder="Enter Reference Number" name="ref_num" class="reference-input">
+                                                </div>
+                                                <p class="security-note">**Payment - All transactions are secure and encrypted.</p>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
+
+                                <div class="payment-section">
+                                    <div class="payment-header">
+                                        <h3>Bank Transfer BDO</h3>
+                                        <span class="arrow"><i class="fa-solid fa-angle-down"></i></span>
+                                    </div>
+                                    <div class="payment-content">
+                                        <div class="payment-content-inner">
+                                            <div class="qr-code">
+                                                <img src="../picture/bdo.png" alt="QR Code">
+                                                <p><strong>Klarimel Gycia Moran</strong></p>
+                                                <p>008350162132</p>
+                                            </div>
+
+                                            <div class="payment-instructions">
+                                                <h4>Follow these steps:</h4>
+                                                <div class="instruction">
+                                                    <p class="step-pay"><span>Step1:</span> Scan QR Code or Go to BDO Online App</p>
+                                                    <p class="step-pay"><span>Step2:</span> Upload receipt</p>
+                                                    <p class="step-pay"><span>Step3:</span> Enter Transaction No.</p>
+                                                </div>
+
+                                                <div class="payment-form">
+                                                    <label>Upload Receipt</label>
+                                                    <div class="upload-field">
+                                                        <input type="text" readonly placeholder="Choose file">
+                                                        <button class="browse-btn">Browse</button>
+                                                        <input type="file" id="paymentProof"hidden>
+                                                    </div>
+                                                    <br>
+                                                    <label>Enter Transaction</label>
+                                                    <input type="text" placeholder="Enter Reference Number" class="reference-input">
+                                                </div>
+                                                <p class="security-note">**Payment - All transactions are secure and encrypted.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
 
                                 <div class="policy-section">
                                     <p><strong>POLICY</strong></p>
@@ -292,6 +337,30 @@ $_SESSION['selected_additional_services'] = $selected_additional_services;
                 </div>
             </div>
         </div>
+
+        <div id="consentPopup" class="consent-popup-overlay">
+            <div class="consent-popup-content">
+                <div class="success-icon">
+                    <i class="fa-regular fa-file-lines"></i>
+                </div>
+                <h3>Terms & Photo Agreement</h3>
+                <div class="consent-message">
+                    <p>By proceeding, you agree to share your information with ICSM CREATIVES.</p>
+                    <p>Photos taken during your event will be featured in our gallery section to showcase our services. We ensure to capture and display your special moments professionally.</p>
+                </div>
+                <button onclick="acceptConsent()" class="consent-btn">I Understand</button>
+            </div>
+        </div>
+
+        <div class="popup-overlay" id="popupOverlay" style="display: none;"></div>
+        <div class="error-popup" id="errorPopup" style="display: none;">
+            <div class="icon">
+                <i class="fas fa-times-circle"></i>
+            </div>
+            <div class="message" id="popupMessage"></div>
+            <button class="ok-btn" onclick="closeErrorPopup()">OK</button>
+        </div>
+
     </main>
 </body>
 <script>
@@ -387,22 +456,86 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-const termsCheckbox = document.getElementById('terms-checkbox');
-const requestBookingButton = document.getElementById('next');
+document.addEventListener('DOMContentLoaded', function () {
+    const termsCheckbox = document.getElementById('terms-checkbox');
+    const consentPopup = document.getElementById('consentPopup');
+    const requestBookingButton = document.getElementById('next');
 
-// Initially disable the button
-requestBookingButton.classList.add('disabled');
-requestBookingButton.disabled = true;
+    // Initially disable the button and hide the popup
+    requestBookingButton.classList.add('disabled');
+    requestBookingButton.disabled = true;
+    consentPopup.style.display = 'none';
 
-termsCheckbox.addEventListener('change', function() {
-    if (this.checked) {
-        requestBookingButton.classList.remove('disabled');
-        requestBookingButton.disabled = false;
-    } else {
-        requestBookingButton.classList.add('disabled');
-        requestBookingButton.disabled = true;
+    // Show popup when checkbox is clicked
+    termsCheckbox.addEventListener('change', function () {
+        if (this.checked) {
+            consentPopup.style.display = 'flex';
+            requestBookingButton.classList.remove('disabled');
+            requestBookingButton.disabled = false;
+        } else {
+            consentPopup.style.display = 'none';
+            requestBookingButton.classList.add('disabled');
+            requestBookingButton.disabled = true;
+        }
+    });
+});
+
+// Function to hide consent popup on acceptance
+function acceptConsent() {
+    document.getElementById('consentPopup').style.display = 'none';
+}
+
+document.querySelectorAll('.payment-header').forEach(header => {
+    header.addEventListener('click', () => {
+        const content = header.nextElementSibling;
+        const arrow = header.querySelector('.arrow');
+        
+        content.classList.toggle('active');
+        arrow.classList.toggle('active');
+        
+        document.querySelectorAll('.payment-content').forEach(otherContent => {
+            if (otherContent !== content && otherContent.classList.contains('active')) {
+                otherContent.classList.remove('active');
+                otherContent.previousElementSibling.querySelector('.arrow').classList.remove('active');
+            }
+        });
+    });
+});
+
+// File upload handling
+document.querySelectorAll('.browse-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const fileInput = btn.nextElementSibling;
+        const textInput = btn.previousElementSibling;
+        
+        fileInput.click();
+        
+        fileInput.addEventListener('change', () => {
+            textInput.value = fileInput.files[0] ? fileInput.files[0].name : '';
+        });
+    });
+});
+
+document.getElementById('next').addEventListener('click', function(event) {
+    const paymentProof = document.getElementById('paymentProof');
+    if (!paymentProof.files.length) {
+        event.preventDefault(); // Prevent form submission
+        showErrorPopup('Please upload your payment of proof to continue.');
     }
 });
+
+
+function showErrorPopup(message) {
+    document.getElementById('popupMessage').textContent = message;
+    document.getElementById('errorPopup').style.display = 'block';
+    document.getElementById('popupOverlay').style.display = 'block';
+}
+
+function closeErrorPopup() {
+    document.getElementById('errorPopup').style.display = 'none';
+    document.getElementById('popupOverlay').style.display = 'none';
+    window.location.href = '../client/payment.php'; // Redirect to payment page
+}
 
 
 </script>

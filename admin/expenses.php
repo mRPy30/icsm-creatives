@@ -53,36 +53,48 @@ if ($resultExpenses->num_rows > 0) {
     
 <body>
 
-    <section class="expenses">
-        <div class="row">
-            <h3 id="monthHeader">Month <?php echo date('Y'); ?></h3>
-            <div class="select">
-                <select id="monthSelect" onchange="showSelectedMonth()" placeholder="Select">
-                    <option value="" selected disabled>Select Month</option>
-                    <option value="January">January</option>
-                    <option value="February">February</option>
-                    <option value="March">March</option>
-                    <option value="April">April</option>
-                    <option value="May">May</option>
-                    <option value="June">June</option>
-                    <option value="July">July</option>
-                    <option value="August">August</option>
-                    <option value="September">September</option>
-                    <option value="October">October</option>
-                    <option value="November">November</option>
-                    <option value="December">December</option>
-                    <option value="<?php echo date('F'); ?>">Current Month</option>
-                </select>                       
-                <button><i class="fa-solid fa-print"></i> Print</button>
+    <section class="container-admin">
+    <div class="top-book">
+                <h4>Booking Details</h4>
+                <div class="search-bar">
+                    <input type="text" placeholder="Search Booking" id="booking-search" onkeyup="searchBooking()">
+                    <i class="fa-solid fa-magnifying-glass" type="button" title="Search Booking"></i>
+                </div>
             </div>
-        </div>
-        <div class="exp-box">
-            <button class="add-button"><i class="fa-solid fa-plus"></i> Add New</button>
-            <div class="search-bar">
-                <input type="text" placeholder="Search expenses " id="search">
-                  <i class="fa-solid fa-magnifying-glass" type="button" onclick="search()" title="Search"></i>
+            <div class="tabs">
+                <div class="sort">
+                    <button class="tab active" data-filter="all" onclick="filterBookings('all')">All (<span id="all-count">0</span>) |</button>
+                    <button class="tab" data-filter="pending" onclick="filterBookings('pending')">Pending (<span id="pending-count">0</span>) |</button>
+                    <button class="tab" data-filter="accepted" onclick="filterBookings('accepted')">Accepted (<span id="accepted-count">0</span>) |</button>
+                    <button class="tab" data-filter="declined" onclick="filterBookings('declined')">Declined (<span id="declined-count">0</span>)</button>
+                </div>
+                <div class="right-tab">
+                    <select id="year-select" onchange="filterByDate()">
+                        <option value="">All</option>
+                        <option value="2022">2022</option>
+                        <option value="2023">2023</option>
+                        <option value="2024">2024</option>
+                    </select>
+                    <select id="month-select" onchange="filterByDate()">
+                        <option value="">All Months</option>
+                        <option value="1">January</option>
+                        <option value="2">February</option>
+                        <option value="3">March</option>
+                        <option value="4">April</option>
+                        <option value="5">May</option>
+                        <option value="6">June</option>
+                        <option value="7">July</option>
+                        <option value="8">August</option>
+                        <option value="9">September</option>
+                        <option value="10">October</option>
+                        <option value="11">November</option>
+                        <option value="12">December</option>
+                    </select>
+                    <button id="download-btn"><i class="fa-regular fa-file"></i> Download</button>
+                    <button id="unavailability-btn">Unavailability</button>
+                </div>
             </div>
-            <div class="exp-tbl">
+            <div class="tbl-container">
                 <table class="header-table">
                     <thead>
                         <tr>
@@ -94,9 +106,6 @@ if ($resultExpenses->num_rows > 0) {
                             <th>Actions</th>
                         </tr>
                     </thead>
-                </table>
-                <div class="data-container">
-                    <table class="data-table">
                     <tbody>
                         <?php if (empty($expensesData)) : ?>
                             <tr>
@@ -120,12 +129,10 @@ if ($resultExpenses->num_rows > 0) {
                             <?php endforeach; ?>
                         <?php endif; ?>
                     </tbody>
-                    </table>
-                </div>
+                </table>
             </div>
             <!-- Popup -->
-            <div id="popup" class="modal">
-                <div class="modal-content">
+                <div id="popup" class="popup">
                     <span class="close" onclick="hidePopup()">&times;</span>
                     <div class="form-container">
                         <form method="post" action="" id="expensesForm">
@@ -151,10 +158,10 @@ if ($resultExpenses->num_rows > 0) {
                         </form>
                     </div>
                 </div>
-            </div> 
+             
         </div>
         <div class="popupDelete" id="deleteExpensePopup">
-            <div class="modal">
+            <div class="popup">
                 <p>Do you want to delete this expenses report?</p>
                 <button id="deleteNo">No</button>
                 <button id="deleteYes">Yes</button>
@@ -308,32 +315,6 @@ if ($resultExpenses->num_rows > 0) {
         // Remove currency symbol, comma, and period
         return parseFloat(amount.replace(/[^\d]/g, ''));
     }
-
-    
-    // Add the following script to periodically check for inactivity and logout
-    var inactivityTimeout = 900; // 15 minutes in seconds
-
-function checkInactivity() {
-    setTimeout(function () {
-        window.location.href = '../login.php'; // Replace 'logout.php' with the actual logout page
-    }, inactivityTimeout * 1000);
-}
-
-// Start checking for inactivity when the page loads
-document.addEventListener('DOMContentLoaded', function () {
-    checkInactivity();
-});
-
-// Reset the inactivity timer when there's user activity
-document.addEventListener('mousemove', function () {
-    clearTimeout(checkInactivity);
-    checkInactivity();
-});
-
-document.addEventListener('keypress', function () {
-    clearTimeout(checkInactivity);
-    checkInactivity();
-});
 
         function search() {
             var searchValue = document.getElementById("search").value.toLowerCase().trim();

@@ -57,7 +57,7 @@ if ($result->num_rows > 0) {
 }
 
 $sqlPendingBookings = "
-    SELECT client.name, booking.eventDate, booking.start_time, booking.end_time, booking.status 
+    SELECT client.name, booking.eventDate, booking.event_time, booking.status 
     FROM booking 
     JOIN client ON booking.clientID = client.clientID 
     WHERE booking.status = 'pending'";
@@ -194,9 +194,8 @@ $page = $components[2];
                                         <td>
                                             <?php
                                             $eventDate = date('F d, Y', strtotime($booking['eventDate']));
-                                            $startTime = date('g:i A', strtotime($booking['start_time']));
-                                            $endTime = date('g:i A', strtotime($booking['end_time']));
-                                            echo $eventDate . ' ' . $startTime . ' - ' . $endTime;
+                                            $eventTime = date('g:i A', strtotime($booking['event_time']));
+                                            echo $eventDate . ' ' . $eventTime;
                                             ?>
                                         </td>
                                         <td><?php echo htmlspecialchars($booking['status']); ?></td> 

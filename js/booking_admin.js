@@ -1,3 +1,15 @@
+function showSuccessPopup(message) {
+    document.getElementById('popupMessage').textContent = message;
+    document.getElementById('successPopup').style.display = 'block';
+    document.getElementById('popupOverlay').style.display = 'block';
+}
+
+function closeSuccessPopup() {
+    document.getElementById('successPopup').style.display = 'none';
+    document.getElementById('popupOverlay').style.display = 'none';
+    location.reload(); // Reload to refresh the data
+}
+
 
 function openDeclinePopup(bookingId) {
     document.getElementById('declinePopup').style.display = 'block';
@@ -13,19 +25,24 @@ function declineBooking() {
     var reasonSelect = document.getElementById('declineReason');
     var reason = reasonSelect.options[reasonSelect.selectedIndex].value;
 
+    if (!reason) {
+        alert('Please select a reason for declining');
+        return;
+    }
+
     var xhr = new XMLHttpRequest();
     xhr.open('POST', '../backend/status.php', true);
     xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
     xhr.onreadystatechange = function () {
         if (xhr.readyState == 4 && xhr.status == 200) {
-            console.log(xhr.responseText);
             closeDeclinePopup();
-            window.location.reload();
+            showSuccessPopup('Booking successfully declined!');
         }
     };
 
     xhr.send('schedule_id=' + bookingId + '&decline=1&reason=' + encodeURIComponent(reason));
 }
+
 
 
 
@@ -68,9 +85,8 @@ function submitAssignStaff(event) {
     .then(response => response.json())
     .then(data => {
         if (data.status === 'success') {
-            alert('Staff assigned successfully!');
-            closeAssignStaffModal();  
-            location.reload();  
+            closeAssignStaffModal();
+            showSuccessPopup('Staff successfully assigned!');
         } else {
             alert('Failed to assign staff.');
         }
@@ -80,6 +96,8 @@ function submitAssignStaff(event) {
         alert('There was an error assigning staff.');
     });
 }
+
+
 
 let bookings = []; // Holds all bookings data
 let currentFilter = 'all'; // Current status filter
@@ -208,9 +226,8 @@ function acceptBooking() {
     xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
     xhr.onreadystatechange = function () {
         if (xhr.readyState == 4 && xhr.status == 200) {
-            console.log(xhr.responseText);
-            closeAcceptPopup(); // Close the popup after successful booking acceptance
-            window.location.reload();
+            closeAcceptPopup();
+            showSuccessPopup('Booking successfully accepted!');
         }
     };
 
@@ -237,6 +254,13 @@ document.getElementById('month-select').addEventListener('change', filterByDate)
 
 // Start the SSE connection
 startSSE();
+
+document.getElementById('popupOverlay').addEventListener('click', closeSuccessPopup);
+document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape') {
+        closeSuccessPopup();
+    }
+});
 
 const downloadBtn = document.getElementById('download-btn');
 
@@ -460,13 +484,36 @@ window.addEventListener('click', function(event) {
     }
 });
 
-// Hide modal when clicking the save button or close button (if any added)
-document.getElementById('save-unavailability').addEventListener('click', function() {
-    // Add your save logic here if needed
-    unavailabilityModal.style.display = 'none';
+document.getElementById("save-unavailability").addEventListener("click", function() {
+    const title = document.getElementById("unavailable-title").value;
+    const date = document.getElementById("unavailable-date").value;
+    const description = document.getElementById("unavailable-description").value;
+
+    if (title && date && description) {
+        const xhr = new XMLHttpRequest();
+        xhr.open("POST", "../backend/save_unavailability.php", true);
+        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                const response = JSON.parse(xhr.responseText);
+                if (response.status === "success") {
+                    showSuccessPopup(response.message); // Display success message
+                    closeUnavailabilityModal(); // Close modal after saving
+                } else {
+                    alert("Error: " + response.message);
+                }
+            }
+        };
+        xhr.send(`title=${title}&date=${date}&description=${description}`);
+    } else {
+        alert("Please fill in all fields.");
+    }
 });
 
+
 function closeUnavailabilityModal() {
-    unavailabilityModal.style.display = 'none';
+    document.getElementById("unavailability-modal").style.display = "none";
+    document.getElementById("popupOverlay").style.display = "none";
 }
 

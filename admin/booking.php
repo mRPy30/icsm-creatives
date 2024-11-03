@@ -52,8 +52,8 @@ $page = $components[2];
         include '../admin/navbar.php';
     ?>   
     
-    <section class="booking-box">
-        <div class="table-booking">
+    <section class="container-admin">
+        <div class="table-admin">
             <div class="top-book">
                 <h4>Booking Details</h4>
                 <div class="search-bar">
@@ -117,7 +117,7 @@ $page = $components[2];
                 </table>
             </div>
     
-        <div id="assign-staff-modal" class="popup-staff">
+        <div id="assign-staff-modal" class="popup-admin">
             <span class="close-btn" onclick="closeAssignStaffModal()">&times;</span>
             <div id="recommended-staff">
                 <h4>Recommended</h4>
@@ -196,7 +196,7 @@ $page = $components[2];
                         </div>
 
                         <input type="hidden" id="bookingId" name="bookingId">
-                        <button class="save-btn" type="submit">Save Assigned staff</button>
+                        <button class="submit-btn" type="submit">Save Assigned staff</button>
                     </div>
                 </form>
             </div>
@@ -242,21 +242,38 @@ $page = $components[2];
             </div>
         </div>
 
-    <!-- Unavailability Modal -->
-        <div id="unavailability-modal" class="popup">
-            <span class="close-btn" onclick="closeUnavailabilityModal()">&times;</span> <!-- Close Button -->
-            <h2>Add Unavailability</h2>
-            <label for="unavailable-title">Title:</label>
-            <input type="text" id="unavailable-title" placeholder="Add title">
-
-            <label for="unavailable-date">Date:</label>
-            <input type="date" id="unavailable-date">
-
-            <label for="unavailable-description">Description:</label>
-            <textarea id="unavailable-description" rows="4"></textarea>
-
-            <button id="save-unavailability">Save</button>
+        <div id="unavailability-modal" class="popup-admin">
+            <span class="close-btn" onclick="closeUnavailabilityModal()">&times;</span>
+            <h3>Add Unavailability</h3>
+            <div class="form-group">
+                <label for="unavailable-title">Title:</label>
+                <input type="text" id="unavailable-title" placeholder="Add title">
+            </div>
+                                
+            <div class="form-group">
+                <label for="unavailable-date">Date:</label>
+                <input type="date" id="unavailable-date">
+            </div>
+                                
+            <div class="form-group">
+                <label for="unavailable-description">Description:</label>
+                <textarea id="unavailable-description" rows="4"></textarea>
+            </div>
+                                
+            <div class="form-group">
+                <button class="submit-btn" id="save-unavailability">Save</button>
+            </div>
         </div>
+
+        <div class="popup-overlay" id="popupOverlay"></div>
+        <div class="success-popup" id="successPopup">
+            <div class="icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <div class="message" id="popupMessage"></div>
+            <button class="ok-btn" onclick="closeSuccessPopup()">OK</button>
+        </div>
+
 
 
     </section>

@@ -12,13 +12,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $clientID = $_SESSION['clientID'];
     $clientName = $_SESSION['name'];
     $eventDate = $_SESSION['booking']['event_date'];
-    $startTime = $_SESSION['booking']['start_time'];
-    $endTime = $_SESSION['booking']['end_time'];
+    $eventTime = $_SESSION['booking']['event_time'];
     $eventLocation = $_SESSION['booking']['event_location'];
     $title_event = $_SESSION['booking']['title_event'];
     $selectedServiceIDs = isset($_SESSION['service_ids']) ? $_SESSION['service_ids'] : [];
     $service_package = !empty($selectedServiceIDs) ? $selectedServiceIDs[0] : null;
-    $additional_services = isset($_SESSION['selected_additional_services']) ? $_SESSION['selected_additional_services'] : [];
+    $additional_services = isset($_SESSION['selected_additional_services']) ? $_SESSION['selected_additional_services'] : true;
     $additional = json_encode($additional_services);
     $pax = $_SESSION['booking']['pax'];
     $total_cost = $_SESSION['total_cost'];
@@ -57,15 +56,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
      // Prepare the SQL statement with proof_payment
-     $sql = "INSERT INTO booking (clientID, eventDate, start_time, end_time, eventLocation, eventID, 
+     $sql = "INSERT INTO booking (clientID, eventDate, event_time, eventLocation, eventID, 
      title_event, service_package, additional, pax, total_cost, proof_payment, payment_option, 
      remaining_balance, status, ref_num, created_at)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Pending', ?, CURRENT_TIMESTAMP)";
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Pending', ?, CURRENT_TIMESTAMP)";
 
     $stmt = $conn->prepare($sql);
     if ($stmt) {
-     $stmt->bind_param("issssisssidssis", 
-         $clientID, $eventDate, $startTime, $endTime, $eventLocation, $eventID, 
+     $stmt->bind_param("isssisssidssis", 
+         $clientID, $eventDate, $eventTime, $eventLocation, $eventID, 
          $title_event, $service_package, $additional, $pax, $total_cost, 
          $proof_payment, $payment_option, $remaining_balance, $ref_num
      );
@@ -79,8 +78,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
          $body = "A new booking request has been submitted.\n\n";
          $body .= "Booking ID: $bookingId\n";
          $body .= "Booking Date: $eventDate\n";
-         $body .= "Start Time: $startTime\n";
-         $body .= "End Time: $endTime\n";
+         $body .= "End Time: $eventTime\n";
          $body .= "Event ID: $eventID\n";
          $body .= "Event Name: $title_event\n";
          $body .= "Event Location: $eventLocation\n";

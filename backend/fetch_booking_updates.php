@@ -13,7 +13,7 @@ $endTime = time() + $timeout;
 while (time() <= $endTime) {
     // Modify query to join booking, client, services, booking_staff, and staff tables
     $sql = "
-    SELECT b.bookingId, b.clientID, b.eventLocation, b.proof_payment, b.status, b.service_package, b.eventDate, b.start_time, b.end_time, b.payment_option, b.remaining_balance,
+    SELECT b.bookingId, b.clientID, b.eventLocation, b.proof_payment, b.status, b.service_package, b.eventDate, b.event_time, b.payment_option, b.remaining_balance,
            c.name as client_name, s.service_name
     FROM booking b
     LEFT JOIN client c ON b.clientID = c.clientID
@@ -28,14 +28,13 @@ while (time() <= $endTime) {
         // Convert the image data to base64
         $row['proof_payment'] = $row['proof_payment'] ? base64_encode($row['proof_payment']) : null;
 
-        // Format the eventDate, start_time, and end_time
+        // Format the eventDate, event_time
         $formattedEventDate = date('F j, Y', strtotime($row['eventDate']));
-        $formattedStartTime = date('h:i A', strtotime($row['start_time']));
-        $formattedEndTime = date('h:i A', strtotime($row['end_time']));
+        $formattedStartTime = date('h:i A', strtotime($row['event_time']));
 
         // Add formatted dates and times to the row
         $row['formattedEventDate'] = $formattedEventDate;
-        $row['formattedTimeRange'] = "$formattedStartTime - $formattedEndTime";
+        $row['formattedTimeRange'] = "$formattedStartTime";
 
         // Add service name to the row (fetched from the services table)
         $row['service_name'] = $row['service_name'] ? $row['service_name'] : 'Unknown Service';

@@ -74,7 +74,7 @@ if (isset($_POST['delete'])) {
     ?>   
 
 
-    <section class="booking-box">
+    <section class="container-admin">
         <div class="table-booking">
             <h4>Client Details</h4>
             <div class="search-bar">
@@ -90,12 +90,8 @@ if (isset($_POST['delete'])) {
                         <th>Actions</th>
                     </tr>
                 </thead>
-            </table>
 
-            <!-- Data Table -->
-            <div class="data-table-container">
-                <table class="data-table client">
-                    <tbody>
+                <tbody>
                     <?php
                         foreach ($clientData as $client) {
                             echo '<tr>';
@@ -112,8 +108,7 @@ if (isset($_POST['delete'])) {
                         }
                     ?>
                     </tbody>
-                </table>
-            </div>
+            </table>
         </div>
         <div class="popup" id="deletePopup">
             <div class="popup-content">
