@@ -2,59 +2,44 @@
 //Connection
 include '../backend/dbcon.php';
 
-$staffID = $_SESSION['id'];
+$staffID = $_SESSION['staff_ID'];
 
 
-$sql = "SELECT name, profile FROM staff WHERE staffID = '$staffID'";
+$sql = "SELECT staff_name, profile_picture, role FROM staff WHERE staff_ID = '$staffID'";
 
 $result = $conn->query($sql);
 
 if ($result->num_rows > 0) {
     $row = $result->fetch_assoc();
-    $name = $row["name"];
-    $profile = base64_encode($row["profile"]); // Corrected: Use base64_encode here
+    $name = $row["staff_name"];
+    $profile = base64_encode($row["profile_picture"]);
+    $role = $row["role"];
 } else {
-    // Handle the case where no data is found
-    $name = "Name Not Found";
-    $profile = "default_profile.jpg"; // Provide a default profile image
+    echo "<script>
+            alert('No staff account found, please login');
+            window.location.href = '../staff/login.php';
+          </script>";
+    exit();
 }
-
 
 $pageTitles = array(
     "dashboard.php" => "Staff Dashboard",
-    "booking.php" => "Booking Event",
-    "calendar.php" => "Calendar Details",
-    "folders.php" => "Client albums",
-    "gallery.php" => "My Gallery",
+    "booking.php" => "Booking Management",
+    "gallery.php" => "Client Name Gallery",
+    "feedback.php" => "Feedback Management",
+    "details.php" => "Feedback details",
+    "production.php" => "Production Management"
 );
 
 $currentPage = basename($_SERVER['SCRIPT_NAME']); 
 
-$pageTitle = isset($pageTitles[$currentPage]) ? $pageTitles[$currentPage] : "Booking Event";
+$pageTitle = isset($pageTitles[$currentPage]) ? $pageTitles[$currentPage] : "Staff Dashboard";
 ?>
 <style>
-    
-    /***dark Mode */
-    body.dark-mode .navbar {
-        background-color: #444444; 
-        color: #fff; 
-    }
-    body.dark-mode .navbar .nav-right i{
-        color: #FCF6F6;
-    }
-    body.dark-mode .navbar .nav-left i{
-        color: #FCF6F6;
-    }
-    body.dark-mode .navbar .nav-left h3{
-        color: #FCF6F6;
-    }
-    body.dark-mode .navbar .profile_info {
-        color: #FCF6F6;
-    }
 
     .navbar {
         width: 100%;
-        height: 10%;
+        height: 8.5%;
         background-color: #EEEEEE;
         display: flex;
         justify-content: space-between;
@@ -69,7 +54,7 @@ $pageTitle = isset($pageTitles[$currentPage]) ? $pageTitles[$currentPage] : "Boo
     }
 
     .nav-left {
-        margin: 0% 0% 0% 15%;
+        margin: 0% 0% 0% 8%;
     }
 
     .nav-left h3 {
@@ -99,6 +84,63 @@ $pageTitle = isset($pageTitles[$currentPage]) ? $pageTitles[$currentPage] : "Boo
         display: flex;
         flex-direction: row;
     }
+
+    .fa-bell:hover{
+        color: #C2BE63;
+        transition: all .3s ease;
+    }
+
+    .fa-comment-dots:hover{
+        color: #C2BE63;
+        transition: all .3s ease;
+    }
+
+    .fa-moon:hover{
+        color: #C2BE63;
+        transition: all .3s ease;
+    }
+
+    .notification-dropdown {
+        position: relative;
+        display: inline-block;
+    }   
+
+    .notification-dropdown-content {
+        display: none;
+        position: absolute;
+        background-color: #fcf6fc;
+        min-width: 280px;
+        box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+        z-index: 1;
+        top: 30px;
+        right: 0;
+        height: 300px;
+    }
+
+    .notification-dropdown-content.show {
+        display: block;
+    }
+
+    .notification-dropdown-content .top_notif {
+        padding: 12px 16px;
+        font: normal 600 17px/20px 'Poppins';
+        color: #1c1c1c;
+        border-bottom: 1px solid #BCB4B5;
+        width: 100%;
+    }
+
+    .notification-dropdown-content .notification{
+        padding: 12px 16px;
+        text-decoration: none;
+        display: block;
+        font: normal 600 14px/20px 'Poppins';
+        color: #1c1c1c;
+    }
+
+    .notification-dropdown-content .notification:hover {
+        background-color: #f1f1f1;
+    }
+
     .profile_info {
         text-align: right;
         color: #1c1c1c;
@@ -274,7 +316,6 @@ $pageTitle = isset($pageTitles[$currentPage]) ? $pageTitles[$currentPage] : "Boo
             transform: rotate(0deg);
         }
     }
-
 </style>
 
 <header class="navbar">
@@ -283,110 +324,50 @@ $pageTitle = isset($pageTitles[$currentPage]) ? $pageTitles[$currentPage] : "Boo
     </div>
     <div class="profile_dropdown">
         <div class="nav-right">
-            <div class="icons">
-                <i class="far fa-bell"></i> 
-                <i class="far fa-envelope"></i>
-                <div class="dark-mode-toggle" onclick="toggleDarkMode()">
-                    <i class="fas fa-moon"></i>
-                </div>
-            </div>
-            <div class="divider"></div>
             <div class="profile_info">
                 <h3><?php echo $name; ?></h3>
-                <p>Staff</p>
-                <div class="profile_dropdown-content">
-                    <a href="account.php">Profile</a>
-                    <a type="text" id="logoutButton" class="btn-logout" onclick="goBack()">Logout</a>
-                </div>
+                <p><?php echo $role; ?></p>
             </div>
             <div class="profile_pic">
                 <img src="data:image/jpeg;base64,<?php echo $profile; ?>" alt="staff image">
+            </div>
+            <div class="divider"></div>
+            <div class="icons">
+                <i class="fa-solid fa-power-off" id="logoutIcon" title="Logout"></i>
             </div>
         </div>
     </div>
 </header>
 
 <body>
-    <!-----popup confirmation logout------>
+    <!-- Popup Confirmation for Logout -->
     <div id="logoutPopup" class="popup">
         <div class="popup-content">
             <p>Are you sure you want to logout?</p>
             <button id="logoutNo">No</button>
             <button id="logoutYes">Yes</button>
         </div>
+    </div>
 
-        <div id="loadingOverlay">
-            <div class="loading-circle"></div>
-        </div>
+    <div id="loadingOverlay">
+        <div class="loading-circle"></div>
     </div>
 </body>
 
 <script>
-    
+    document.getElementById('logoutIcon').addEventListener('click', function() {
+    document.getElementById('logoutPopup').style.display = 'block';
+});
 
-    document.addEventListener("DOMContentLoaded", function () {
-            document.querySelectorAll(".btn-logout").forEach(function (btn) {
-                btn.addEventListener("click", openPopup);
-            });
+document.getElementById('logoutNo').addEventListener('click', function() {
+    document.getElementById('logoutPopup').style.display = 'none';
+});
 
-            document.getElementById("logoutNo").addEventListener("click", closePopup);
-            document.getElementById("logoutButton").addEventListener("click", openPopup);
+document.getElementById('logoutYes').addEventListener('click', function() {
+    document.getElementById('loadingOverlay').style.display = 'flex';
 
-            document.getElementById("logoutYes").addEventListener("click", handleLogout);
-        });
-
-        function openPopup() {
-            document.getElementById("logoutPopup").style.display = "block";
-        }
-
-        function closePopup() {
-            document.getElementById("logoutPopup").style.display = "none";
-        }
-
-        function handleLogout() {
-            document.getElementById("loadingOverlay").style.display = "flex";
-
-            setTimeout(function () {
-                document.getElementById("loadingOverlay").style.display = "none";
-
-                window.location.href = "../login.php";
-            }, 3000);
-        }
-
-    //Dark Mode
-    function toggleDarkMode() {
-        const body = document.body;
-        const isDarkMode = body.classList.toggle('dark-mode');
-        const moonIcon = document.querySelector('.dark-mode-toggle i');
-
-        if (isDarkMode) {
-            moonIcon.className = 'fas fa-sun';
-
-            moonIcon.classList.add('sun-transition');
-            setTimeout(() => {
-                moonIcon.classList.remove('sun-transition');
-            }, 1000);
-        } else {
-            moonIcon.className = 'fas fa-moon';
-
-            moonIcon.classList.add('moon-transition');
-            setTimeout(() => {
-                moonIcon.classList.remove('moon-transition');
-            }, 1000);
-        }
-
-        localStorage.setItem('darkMode', isDarkMode);
-    }
-
-    document.addEventListener('DOMContentLoaded', function () {
-        const body = document.body;
-        const savedDarkMode = localStorage.getItem('darkMode');
-
-        if (savedDarkMode === 'true') {
-            body.classList.add('dark-mode');
-            toggleDarkMode(); 
-        }
-    });
-
-
+    setTimeout(function() {
+        window.location.href = '../staff/login.php';
+    }, 2000); 
+});
 </script>

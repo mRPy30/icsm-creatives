@@ -45,6 +45,10 @@ body, html {
     text-align: left;
 }
 
+.credentials{
+    margin: 30px 50px 15px 50px;
+}
+
 .logo {
     width: 20%;
 }

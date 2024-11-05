@@ -22,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 // Fetch all bookings with 'Accepted' status
-$sql = "SELECT eventDate, start_time, end_time FROM booking WHERE status = 'Accepted' ORDER BY eventDate, start_time";
+$sql = "SELECT eventDate, event_time FROM booking WHERE status = 'Accepted' ORDER BY eventDate, event_time";
 $result = $conn->query($sql);
 $bookings = [];
 $fullyBookedDates = [];
@@ -31,7 +31,7 @@ while ($row = $result->fetch_assoc()) {
     if (!isset($bookings[$date])) {
         $bookings[$date] = [];
     }
-    $bookings[$date][] = ['start_time' => $row['start_time'], 'end_time' => $row['end_time']];
+    $bookings[$date][] = $row['event_time'];
     
     // If the date has 2 or more 'Accepted' bookings, consider it fully booked
     if (count($bookings[$date]) >= 2) {
@@ -60,7 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 // Fetch the current user's bookings
-$sql = "SELECT bookingID, title_event, eventDate, start_time, end_time, status FROM booking WHERE clientID = ? ORDER BY bookingID DESC";
+$sql = "SELECT bookingID, title_event, eventDate, eventLocation, event_time, status FROM booking WHERE clientID = ? ORDER BY bookingID DESC";
 $stmt = $conn->prepare($sql);
 if ($stmt) {
     $stmt->bind_param("i", $clientID);
@@ -70,6 +70,19 @@ if ($stmt) {
     echo "Error preparing statement: " . $conn->error;
     exit();
 }
+
+// Fetch all unavailable dates from the unavailability table
+$sql = "SELECT date FROM unavailability";
+$unavailableResult = $conn->query($sql);
+$unavailableDates = [];
+
+while ($row = $unavailableResult->fetch_assoc()) {
+    $unavailableDates[] = $row['date'];
+}
+
+// Merge fully booked dates and unavailable dates
+$allUnavailableDates = array_merge($fullyBookedDates, $unavailableDates);
+
 ?>
 
 <!DOCTYPE html>
@@ -98,6 +111,7 @@ if ($stmt) {
     <!---Date picker--->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    
 
 </head>
 
@@ -119,155 +133,137 @@ if ($stmt) {
         </section>
 
         <section class="booking-feed">
-            <div class="content">
-                <div class="fillup-book">
-                    <div class="form-book">
-                        <div class="top-book">
-                            <div class="title">
-                                <h3>Start an Event with us!</h3>
-                            </div>
-                            <div class="steps">
-                                <div class="step1">
-                                    <div class="progress-line <?php echo basename($_SERVER['PHP_SELF']) != 'booking.php' ? 'active current' : ''; ?>"></div>
-                                    <div class="circle <?php echo basename($_SERVER['PHP_SELF']) == 'booking.php' ? 'active current' : (basename($_SERVER['PHP_SELF']) == 'service.php' || basename($_SERVER['PHP_SELF']) == 'payment.php' ? 'active' : ''); ?>">
-                                        <h4>1</h4>
-                                    </div>
-                                    <p>Fillup Booking</p>
-                                </div>
-                                <div class="step2">
-                                    <div class="progress-line <?php echo basename($_SERVER['PHP_SELF']) == 'service.php' ? 'active current ' : ''; ?>"></div>
-                                    <div class="circle <?php echo basename($_SERVER['PHP_SELF']) == 'service.php' ? 'active current' : (basename($_SERVER['PHP_SELF']) == 'payment.php' ? 'active' : ''); ?>">
-                                        <h4>2</h4>
-                                    </div>
-                                    <p>Choose Package</p>
-                                </div>
-                                <div class="step3">
-                                    <div class="progress-line"></div>
-                                    <div class="circle <?php echo basename($_SERVER['PHP_SELF']) == 'payment.php' ? 'active current' : ''; ?>">
-                                        <h4>3</h4>
-                                    </div>
-                                    <p>Payment</p>
-                                </div>
-                            </div>
+            <div class="fillup-book">
+                <div class="form-book">
+                    <div class="top-book">
+                        <div class="title">
+                            <h3>Start an Event with us!</h3>
                         </div>
-                        <form id="bookingForm" class="form-fillup needs-validation" method="POST" action="booking.php" onsubmit="return validateForm()">
-                                <div class="form-group">
-                                    <div class="left-info">
-                                        <label for="type_of_event">Type of Event:</label>
-                                        <div class="input-with-icon">
-                                            <i class="fa-solid fa-camera"></i>
-                                            <select id="type_of_event" name="type_of_event">
-                                                <?php while ($row = $eventResult->fetch_assoc()): ?>
-                                                    <option value="<?php echo htmlspecialchars($row['eventName']); ?>" 
-                                                        <?php echo ($row['eventName'] == $type_of_event) ? 'selected' : ''; ?>>
-                                                        <?php echo htmlspecialchars($row['eventName']); ?>
-                                                    </option>
-                                                <?php endwhile; ?>
-                                            </select> 
-                                        </div>
-                                        <br>
-                                        <label for="bookingDate">Date</label>
-                                        <div class="input-with-icon">
-                                            <i class="fa-regular fa-calendar-days"></i>
-                                            <input type="text" id="event_date" name="event_date" required>
-                                        </div>
-                                        <br>
-                                        <label for="event_location">Location:</label>
-                                        <div class="input-with-icon">
-                                            <i class="fa-solid fa-location-dot"></i>
-                                            <input type="text" id="event_location" name="event_location" required>
-                                        </div>
-                                    </div>   
-                                    <div class="right-info">
-                                        <label for="title_event">Event Name:</label>
-                                        <div class="input-with-icon">
-                                            <i class="fa-regular fa-pen-to-square"></i>
-                                            <input type="text" id="title_event" name="title_event" required>
-                                        </div>
-                                        <br>
-                                        <div class="time">
-                                            <div class="start">
-                                                <label for="start_time">Start Time</label>
-                                                <div class="input-with-icon">
-                                                    <i class="fa-regular fa-clock"></i>
-                                                    <select id="start_time" name="start_time" required></select>
-                                                </div>
-                                            </div>
-                                            <br>
-                                            <div class="end">
-                                                <label for="end_time">End Time</label>
-                                                <div class="input-with-icon">
-                                                    <i class="fa-regular fa-clock"></i>
-                                                    <select id="end_time" name="end_time" required></select>  
-                                                </div>
-                                            </div>
-                                        </div>                                     
-                                        <br>
-                                        <label for="pax">Pax</label>
-                                        <input type="text" id="pax" name="pax" required>
-                                    </div>
-                                    <div class="info">
-                                        <label for="eventDescription">Additional Info</label>
-                                        <input type="text" id="eventDescription" name="eventDescription" placeholder="(Tell us more about your booking (Eq. Theme is Safari, This is our first time hiring photo and video teams.)">
-                                    </div>
+                        <div class="steps">
+                            <div class="step1">
+                                <div class="progress-line <?php echo basename($_SERVER['PHP_SELF']) != 'booking.php' ? 'active current' : ''; ?>"></div>
+                                <div class="circle <?php echo basename($_SERVER['PHP_SELF']) == 'booking.php' ? 'active current' : (basename($_SERVER['PHP_SELF']) == 'service.php' || basename($_SERVER['PHP_SELF']) == 'payment.php' ? 'active' : ''); ?>">
+                                    <h4>1</h4>
                                 </div>
+                                <p>Fillup Booking</p>
                             </div>
-                            <div class="buttons-book">
-                                <button id="next" type="submit">Next</button>
+                            <div class="step2">
+                                <div class="progress-line <?php echo basename($_SERVER['PHP_SELF']) == 'service.php' ? 'active current ' : ''; ?>"></div>
+                                <div class="circle <?php echo basename($_SERVER['PHP_SELF']) == 'service.php' ? 'active current' : (basename($_SERVER['PHP_SELF']) == 'payment.php' ? 'active' : ''); ?>">
+                                    <h4>2</h4>
+                                </div>
+                                <p>Choose Package</p>
                             </div>
-                        </form>
-                    </div>
-                </div>
-                <div class="mf">
-                    <div class="calendar-section">
-                        <div class="top">
-                            <p class="current-date"></p>
-                            <div class="icons-calendar">
-                                <i id="prev" class="fa-solid fa-chevron-left"></i>
-                                <i id="next" class="fa-solid fa-chevron-right"></i>
+                            <div class="step3">
+                                <div class="progress-line"></div>
+                                <div class="circle <?php echo basename($_SERVER['PHP_SELF']) == 'payment.php' ? 'active current' : ''; ?>">
+                                    <h4>3</h4>
+                                </div>
+                                <p>Payment</p>
                             </div>
-                        </div>
-                        <div class="calendar">
-                            <ul class="weeks">
-                                <li>Sun</li>
-                                <li>Mon</li>
-                                <li>Tue</li>
-                                <li>Wed</li>
-                                <li>Thu</li>
-                                <li>Fri</li>
-                                <li>Sat</li>
-                            </ul>
-                            <ul class="days"></ul>
                         </div>
                     </div>
-                    <!--<div class="pf">
-                        <div class="table-booking">
-                            <div class="title-bar">
-                                <h4>Upcoming Events</h4>
-                            </div>
-                            <table class="header-table">
-                                <thead>
-                                    <tr>
-                                        <th>Booking ID</th>
-                                        <th>Event Name</th>
-                                        <th>Event Date</th>
-                                        <th>Time</th>
-                                        <th>Status</th>
-                                    </tr>
-                                </thead>
-                            </table>
-                            <div class="data-table-container">
-                                <table class="data-table booking">
-                                    <tbody id="booking-table-body">
+                    <form id="bookingForm" class="form-fillup needs-validation" method="POST" action="booking.php" onsubmit="return validateForm()">
+                            <div class="form-group">
+                                <div class="left-info">
+                                    <label for="type_of_event">Type of Event:</label>
+                                    <div class="input-with-icon">
+                                        <i class="fa-solid fa-camera"></i>
+                                        <select id="type_of_event" name="type_of_event">
+                                            <?php while ($row = $eventResult->fetch_assoc()): ?>
+                                                <option value="<?php echo htmlspecialchars($row['eventName']); ?>" 
+                                                    <?php echo ($row['eventName'] == $type_of_event) ? 'selected' : ''; ?>>
+                                                    <?php echo htmlspecialchars($row['eventName']); ?>
+                                                </option>
+                                            <?php endwhile; ?>
+                                        </select> 
+                                    </div>
+                                    <br>
+                                    <label for="bookingDate">Date</label>
+                                    <div class="input-with-icon">
+                                        <i class="fa-regular fa-calendar-days"></i>
+                                        <input type="text" id="event_date" name="event_date" required>
+                                    </div>
+                                    <br>
+                                    <label for="event_location">Location:</label>
+                                    <div class="input-with-icon">
+                                        <i class="fa-solid fa-location-dot"></i>
+                                        <input type="text" id="event_location" name="event_location" required>
+                                    </div>
+                                </div>   
+                                <div class="right-info">
+                                    <label for="title_event">Event Name:</label>
+                                    <div class="input-with-icon">
+                                        <i class="fa-regular fa-pen-to-square"></i>
+                                        <input type="text" id="title_event" name="title_event" required>
+                                    </div>
+                                    <br>
+                                    <div class="time">
+                                        <div class="start">
+                                            <label for="event_time">Event Time</label>
+                                            <div class="input-with-icon">
+                                                <i class="fa-regular fa-clock"></i>
+                                                <select id="event_time" name="event_time" required></select>
+                                            </div>
+                                        </div>
+                                        <br>
                                         
-                                    </tbody>
-                                </table>
+                                    </div>                                     
+                                    <br>
+                                    <label for="pax">Pax</label>
+                                    <input type="text" id="pax" name="pax" required>
+                                </div>
+                                <div class="info">
+                                    <label for="eventDescription">Additional Info</label>
+                                    <input type="text" id="eventDescription" name="eventDescription" placeholder="(Tell us more about your booking (Eq. Theme is Safari, This is our first time hiring photo and video teams.)">
+                                </div>
                             </div>
                         </div>
-                    </div>
+                        <div class="buttons-book">
+                            <button id="next" type="submit">Next</button>
+                        </div>
+                    </form>
                 </div>
+                <h1>Stay updated in your booking status:</h1>
             </div>
         </section>
+
+        <section class="booking-status">
+            <div class="status-tabs">
+                <button class="status-tab active" data-status="Pending">Pending</button>
+                <button class="status-tab" data-status="Accepted">Upcoming</button>
+                <button class="status-tab" data-status="Declined">Declined</button>
+                <button class="status-tab" data-status="Completed">Completed</button> 
+            </div>
+            <div class="status-content">
+            <?php
+                $statuses = ['Pending', 'Accepted', 'Declined', 'Completed'];
+                $currentDate = date('Y-m-d');
+
+                foreach ($statuses as $status) {
+                    $headingText = $status == 'Accepted' ? 'Upcoming Events' : "{$status} Events";
+
+                    echo "<div class='status-panel" . ($status == 'Pending' ? ' active' : '') . "' id='{$status}-panel'>";
+                    echo "<h3>{$headingText}</h3>";
+
+                    if ($status == 'Pending') {
+                        echo "<p>Please wait for your booking response from ICSM Creatives.</p>";
+                    } elseif ($status == 'Accepted') {
+                        echo "<p>These are the special memories you`ll soon capture with ICSM Creatives.</p>";
+                    } elseif ($status == 'Declined') {
+                        echo "<p>Here`s your Declined bookings overview with ICSM Creatives.</p>";
+                    } elseif ($status == 'Completed') {
+                        echo "<p>Your completed events are here for you to cherish.</p>";
+                    }
+                
+                    echo "<div class='event-container' id='events-{$status}'>"; 
+                    echo "</div>"; 
+                    echo "</div>"; 
+                }
+                ?>
+            </div>
+        </section>
+
 
         <section class="container-credential">
             <div class="credit-info">
@@ -275,135 +271,195 @@ if ($stmt) {
                     <p>© 2023-2024 ICSMCREATIVES.COM ALL RIGHTS RESERVED. TERMS OF USE | PRIVACY POLICY</p>
                 </div>
             </div>
-        </section>-->
+        </section>
     </main>
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const eventDateInput = document.getElementById('event_date');
-        const startTimeSelect = document.getElementById('start_time');
-        const endTimeSelect = document.getElementById('end_time');
+    const eventTimeSelect = document.getElementById('event_time');
         const navbar = document.querySelector('.navbar');
-        const coverContent = document.querySelector('.cover-title');
+        const coverContent = document.querySelector('.cover-title h2');
         const daysTag = document.querySelector(".days"),
         currentDate = document.querySelector(".current-date"),
         prevNextIcon = document.querySelectorAll(".icons span");
 
-    // Populate time options (Assuming events can be booked on the hour from 8am to 8pm)
+    // Populate time options
     function populateTimeOptions(selectElement) {
         selectElement.innerHTML = '';
-        for (let hour = 8; hour <= 20; hour++) {
-            const hourString = hour.toString().padStart(2, '0') + ':00';
+        const timeSlots = [
+            '08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00',
+            '15:00', '16:00', '17:00', '18:00', '19:00', '20:00'
+        ];
+        
+        timeSlots.forEach(time => {
             const option = document.createElement('option');
-            option.value = hourString;
-            option.textContent = hourString;
+            option.value = time;
+            option.textContent = time;
             selectElement.appendChild(option);
-        }
-    }
-
-    populateTimeOptions(startTimeSelect);
-    populateTimeOptions(endTimeSelect);
-
-
-    const bookings = <?php echo json_encode($bookings); ?>;
-    const fullyBookedDates = <?php echo json_encode($fullyBookedDates); ?>;
-
-    flatpickr(eventDateInput, {
-        dateFormat: "Y-m-d",
-        minDate: "today",
-        disable: fullyBookedDates,
-        onChange: function (selectedDates, dateStr, instance) {
-            const selectedDate = dateStr;
-            const bookedTimes = bookings[selectedDate] || [];
-
-            // Reset the availability of time slots
-            for (let i = 0; i < startTimeSelect.options.length; i++) {
-                startTimeSelect.options[i].disabled = false;
-                endTimeSelect.options[i].disabled = false;
-            }
-
-            // Disable time slots that are already booked
-            bookedTimes.forEach(function (booking) {
-                const bookedStartTime = booking.start_time;
-                const bookedEndTime = booking.end_time;
-
-                for (let i = 0; i < startTimeSelect.options.length; i++) {
-                    const optionValue = startTimeSelect.options[i].value;
-                    if (optionValue >= bookedStartTime && optionValue < bookedEndTime) {
-                        startTimeSelect.options[i].disabled = true;
-                        endTimeSelect.options[i].disabled = true;
-                    }
-                }
-            });
-
-            startTimeSelect.selectedIndex = -1; // Reset the selected index
-            endTimeSelect.selectedIndex = -1;   // Reset the selected index
-        }
-    });
-
-    // Function to start SSE
-    function startSSE() {
-        var source = new EventSource("../backend/fetch.php");
-
-        source.onmessage = function(event) {
-            var bookings = JSON.parse(event.data);
-            var tableBody = document.querySelector('#booking-table-body'); // Ensure you use the correct ID or class
-            tableBody.innerHTML = '';
-
-            bookings.forEach(function(booking) {
-                var row = `<tr>
-                    <td>${booking.bookingID}</td>
-                    <td>${booking.title_event}</td>
-                    <td>${booking.eventDate}</td>
-                    <td>${booking.start_time} - ${booking.end_time}</td>
-                    <td>${booking.status}</td>
-                </tr>`;
-                tableBody.insertAdjacentHTML('beforeend', row);
-            });
-        };
-
-        source.addEventListener('close', function() {
-            console.log("Connection closed, reconnecting...");
-            setTimeout(startSSE, 100);  
         });
     }
 
-    startSSE();
+    populateTimeOptions(eventTimeSelect);
 
-    // getting new date, current year and month
-    let date = new Date(),
-    currYear = date.getFullYear(),
-    currMonth = date.getMonth();
+        const bookings = <?php echo json_encode($bookings); ?>;
+        const allUnavailableDates = <?php echo json_encode($allUnavailableDates); ?>;
 
-    // storing full name of all months in array
-    const months = ["January", "February", "March", "April", "May", "June", "July",
-                  "August", "September", "October", "November", "December"];
+        flatpickr(eventDateInput, {
+            dateFormat: "Y-m-d",
+            minDate: "today",
+            disable: allUnavailableDates, // Disable both fully booked and unavailable dates
+            onChange: function(selectedDates, dateStr, instance) {
+                const selectedDate = dateStr;
+                const bookedTimes = bookings[selectedDate] || [];
 
-    const renderCalendar = () => {
-        let firstDayofMonth = new Date(currYear, currMonth, 1).getDay(), // getting first day of month
-        lastDateofMonth = new Date(currYear, currMonth + 1, 0).getDate(), // getting last date of month
-        lastDayofMonth = new Date(currYear, currMonth, lastDateofMonth).getDay(), // getting last day of month
-        lastDateofLastMonth = new Date(currYear, currMonth, 0).getDate(); // getting last date of previous month
-        let liTag = "";
+                // Reset all time slots
+                Array.from(eventTimeSelect.options).forEach(option => {
+                    option.disabled = false;
+                });
 
-        for (let i = firstDayofMonth; i > 0; i--) { // creating li of previous month last days
-            liTag += `<li class="inactive">${lastDateofLastMonth - i + 1}</li>`;
-        }
+                // Disable booked time slots
+                bookedTimes.forEach(bookedTime => {
+                    Array.from(eventTimeSelect.options).forEach(option => {
+                        if (option.value === bookedTime) {
+                            option.disabled = true;
+                        }
+                    });
+                });
 
-        for (let i = 1; i <= lastDateofMonth; i++) { // creating li of all days of current month
-            // adding active class to li if the current day, month, and year matched
-            let isToday = i === date.getDate() && currMonth === new Date().getMonth() 
-                         && currYear === new Date().getFullYear() ? "active" : "";
-            liTag += `<li class="${isToday}">${i}</li>`;
-        }
+                eventTimeSelect.selectedIndex = -1; // Reset selection
+            }
+        });
 
-        for (let i = lastDayofMonth; i < 6; i++) { // creating li of next month first days
-            liTag += `<li class="inactive">${i - lastDayofMonth + 1}</li>`
-        }
-        currentDate.innerText = `${months[currMonth]} ${currYear}`; // passing current mon and yr as currentDate text
-        daysTag.innerHTML = liTag;
-    }
-    renderCalendar();
+
+
+        function startSSE() {
+    var source = new EventSource("../backend/fetch.php");
+
+    source.onmessage = function(event) {
+        var bookings = JSON.parse(event.data);
+        
+        // Clear existing events for all statuses
+        const statuses = ['Pending', 'Accepted', 'Declined', 'Completed'];
+        statuses.forEach(status => {
+            const eventContainer = document.querySelector(`#events-${status}`);
+            eventContainer.innerHTML = ''; // Clear events
+        });
+
+        // Track if there are bookings for each status
+        const bookingCount = {
+            Pending: 0,
+            Accepted: 0,
+            Declined: 0,
+            Completed: 0,
+        };
+
+        bookings.forEach(function(booking) {
+            var status = booking.status;
+            bookingCount[status]++;
+
+            // Construct the HTML for the event card based on the status
+            let eventCard = '';
+
+            if (status === 'Accepted' || status === 'Pending' || status === 'Declined') {
+                // Layout for Accepted, Pending, and Declined bookings
+                eventCard = `
+                    <div class='event-card'>
+                        <img src='${booking.picture}' alt='Event Image'>
+                        <div class='event-details'>
+                            <h5>${booking.title_event}</h5>
+                            <p><i class='fas fa-map-marker-alt'></i> ${booking.eventLocation}</p>
+                            <p><i class='far fa-calendar'></i> ${booking.formattedDate}</p>
+                            <p><i class='far fa-clock'></i> ${booking.formattedTime}</p>
+                            ${status === 'Accepted' ? `<div class="buttons-book"><a href="../client/details.php?bookingID=${booking.bookingID}" class="view-more-button">View Details</a></div>` : ''}
+                        </div>
+                    </div>
+                `;
+            } else if (status === 'Completed') {
+                // Layout for Completed bookings
+                eventCard = `
+                    <div class="completed">
+                        <div class='booking-header'>
+                            <h3>${booking.title_event}</h3>
+                            <button class='view-img-button'>View Photo</button>
+                        </div>
+                        <div class="summary">
+                            <div class="header-summary">
+                                <h4>Booking Details</h4>
+                            </div>
+                            <div class="details-grid">
+                                <div class="event-grid">
+                                    <p><i class='fas fa-map-marker-alt'></i> ${booking.eventLocation}</p>
+                                </div>
+                                <div class="event-grid">
+                                    <p><i class='far fa-calendar'></i> ${booking.formattedDate}</p>
+                                </div>
+                                <div class="event-grid">
+                                    <p><i class='far fa-clock'></i> ${booking.formattedTime}</p>
+                                </div>
+                                <div class="event-grid">
+                                    <p><strong>Service Package:</strong> ${booking.servicePackage}</p>
+                                </div>
+                                <div class="event-grid">
+                                    <p><strong>Additional Service:</strong> ${booking.additionalService}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Add the event card to the correct status container
+            document.querySelector(`#events-${status}`).insertAdjacentHTML('beforeend', eventCard);
+        });
+        
+        // Display default messages if no bookings were found
+        statuses.forEach(status => {
+            const eventContainer = document.querySelector(`#events-${status}`);
+            if (bookingCount[status] === 0) {
+                let defaultMessage = '';
+
+                if (status === 'Pending') {
+                    defaultMessage = "There is no Pending Booking now.";
+                } else if (status === 'Accepted') {
+                    defaultMessage = "There is no Upcoming Booking.";
+                } else if (status === 'Declined') {
+                    defaultMessage = "There is no Declined Booking.";
+                } else if (status === 'Completed') {
+                    defaultMessage = "There are no Completed Events.";
+                }
+
+                eventContainer.innerHTML = `<h6>${defaultMessage}</h6>`;
+            }
+        });
+    };
+
+    // Reconnect on close event
+    source.addEventListener('close', function() {
+        console.log("Connection closed, reconnecting...");
+        setTimeout(startSSE, 100);
+    });
+}
+
+startSSE();
+
+
+
+    // Tab switching functionality
+document.querySelectorAll('.status-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+        // Remove active class from all tabs and panels
+        document.querySelectorAll('.status-tab, .status-panel').forEach(el => el.classList.remove('active'));
+        
+        // Add active class to clicked tab
+        tab.classList.add('active');
+        
+        // Add active class to corresponding panel
+        const panelId = tab.getAttribute('data-status') + '-panel';
+        document.getElementById(panelId).classList.add('active');
+    });
+});
+
 
     // Inactivity timeout
     var inactivityTimeout;

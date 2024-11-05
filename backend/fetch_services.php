@@ -30,7 +30,7 @@ if (isset($_POST['selected_event'])) {
             $base64Image = base64_encode($row['image_url']);
             $mimeType = 'image/png'; // or image/jpeg, depending on the image type you're storing
 
-            echo '<div class="service-card" data-serviceid="'.$row['serviceID'].'" data-price="'.$row['price'].'" data-service="'.$row['service_name'].'">';
+            echo '<div class="service-card" data-serviceid="'.$row['serviceID'].'" data-price="'.$row['price'].'" data-service="'. htmlspecialchars($row['service_name']).'">';
             echo '<div class="service-image">';
             echo '<img src="data:' . $mimeType . ';base64,' . $base64Image . '" alt="'.$row['service_name'].'" />';
             echo '<div class="service-name-overlay">';

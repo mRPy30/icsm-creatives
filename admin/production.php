@@ -1,4 +1,5 @@
 <?php
+session_start();
 // Connection
 include '../backend/dbcon.php';
 
@@ -48,7 +49,7 @@ $resultAdmin = $conn->query($sqlAdmin);
 
 <body>
     
-    <section class="production">
+        <section class="container-admin">
             <div class="prod-box">
                     <button id="addButton" class="add-button"><i class="fa-solid fa-plus"></i> Add New</button>
                     <div class="search-bar">
@@ -66,9 +67,6 @@ $resultAdmin = $conn->query($sqlAdmin);
                                 <th>Actions</th>
                             </tr>
                         </thead>
-                    </table>
-                    <div class="data-container">
-                        <table class="data-table">
                         <tbody>
                             <?php
                             // Display data from the administrator table
@@ -110,50 +108,47 @@ $resultAdmin = $conn->query($sqlAdmin);
                             endif;
                             ?>
                         </tbody>
-                        </table>
-                    </div>
+                    </table>
                 </div>
                 <!-- Popup -->
-                <div id="popup" class="modal">
-                    <div class="modal-content">
-                        <span class="close" onclick="hidePopup()">&times;</span>
-                        <div class="form-container">
-                            <form method="post" action="../backend/production.php" id="addMemberForm">
-                                <input type="hidden" name="tableName" value="package"> <!-- Specify the table name -->
-                                <div class="form-group">
-                                    <label for="details">Name</label>
-                                    <input type="text" name="username" id="" class="form-control">
+                <div id="popup" class="popup">
+                    <span class="close" onclick="hidePopup()">&times;</span>
+                    <div class="form-container">
+                        <form method="post" action="../backend/production.php" id="addMemberForm">
+                            <input type="hidden" name="tableName" value="package"> <!-- Specify the table name -->
+                            <div class="form-group">
+                                <label for="details">Name</label>
+                                <input type="text" name="username" id="" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label for="category">Select Role</label>
+                                <select name="category" id="roleSelect" class="form-control" onchange="changeRole()">
+                                    <option value="Admin">Admin</option>
+                                    <option value="Staff">Staff</option>
+                                </select>
+                            </div>
+                            <div class="form-group" id="emailField">
+                                <label for="email">Email</label>
+                                <input type="text" name="email" id="email" class="form-control">
+                            </div>
+                            <div class="form-group" id="roleField">
+                                <label for="amount">Role</label>
+                                <div class="input-group">
+                                    <input type="text" name="role" id="role" class="form-control" oninput="formatAmount()">
                                 </div>
-                                <div class="form-group">
-                                    <label for="category">Select Role</label>
-                                    <select name="category" id="roleSelect" class="form-control" onchange="changeRole()">
-                                        <option value="Admin">Admin</option>
-                                        <option value="Staff">Staff</option>
-                                    </select>
-                                </div>
-                                <div class="form-group" id="emailField">
-                                    <label for="email">Email</label>
-                                    <input type="text" name="email" id="email" class="form-control">
-                                </div>
-                                <div class="form-group" id="roleField">
-                                    <label for="amount">Role</label>
-                                    <div class="input-group">
-                                        <input type="text" name="role" id="role" class="form-control" oninput="formatAmount()">
-                                    </div>
-                                </div>
-                                <div class="form-group" id="password">
-                                <label for="password">Password</label>
-                                    <input type="password" name="password" id="password" class="form-control">
-                                </div>
-                                <div class="form-group" id="passwordFields" style="display:none;">
-                                    <label for="confirmPassword">Confirm Password</label>
-                                    <input type="password" name="confirmPassword" id="confirmPassword" class="form-control">
-                                </div>
-                                <button type="submit" class="btn-save-event" id="submitBtn">Add Production Member</button>
-                            </form>
-                        </div>
+                            </div>
+                            <div class="form-group" id="password">
+                            <label for="password">Password</label>
+                                <input type="password" name="password" id="password" class="form-control">
+                            </div>
+                            <div class="form-group" id="passwordFields" style="display:none;">
+                                <label for="confirmPassword">Confirm Password</label>
+                                <input type="password" name="confirmPassword" id="confirmPassword" class="form-control">
+                            </div>
+                            <button type="submit" class="btn-save-event" id="submitBtn">Add Production Member</button>
+                        </form>
                     </div>
-                </div>  
+                </div>
                 <!-- Popup for confirmation -->
                 <div class="popup" id="deletePopup">
                     <div class="popup-content">

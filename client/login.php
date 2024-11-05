@@ -7,6 +7,11 @@ if (isset($_GET['event'])) {
     $_SESSION['selected_event'] = $_GET['event'];
 }
 
+if (isset($loginError) && $loginError === true) {
+    header("Location: login.php?error=invalid");
+    exit();
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -98,18 +103,14 @@ if (isset($_GET['event'])) {
             if (passwordField.type === 'password') {
                 passwordField.type = 'text';
                 toggleBtn.textContent = 'Hide';
-                passwordField.style.width = '100%';
-                passwordField.style.padding = '10px';
-                passwordField.style.margin = '10px 0';
+                passwordField.style.width = '97%';
                 passwordField.style.border = '1px solid #ddd';
                 passwordField.style.borderRadius = '4px';
                 passwordField.style.boxSizing = 'border-box';
             } else {
                 passwordField.type = 'password';
                 toggleBtn.textContent = 'Show';
-                passwordField.style.width = '100%';
-                passwordField.style.padding = '10px';
-                passwordField.style.margin = '10px 0';
+                passwordField.style.width = '97%';
                 passwordField.style.border = '1px solid #ddd';
                 passwordField.style.borderRadius = '4px';
                 passwordField.style.boxSizing = 'border-box';
@@ -117,35 +118,35 @@ if (isset($_GET['event'])) {
         });
 
         // Pre-fill email if passed in the URL
+
         window.onload = function () {
             const urlParams = new URLSearchParams(window.location.search);
             const email = urlParams.get('email');
+
 
             if (email) {
                 document.getElementById('email').value = email !== 'null' ? email : '';
             }
 
-            // Check if "Remember me" was selected before and pre-fill email and password
-            if (localStorage.getItem('remember') === 'true') {
-                document.getElementById('email').value = localStorage.getItem('email');
-                document.getElementById('password').value = localStorage.getItem('password');
-                document.getElementById('remember').checked = true;
-            }
-        };
+            // Show the popup with an error message if login error occurs
+            if (error === 'invalid') {
+                var popup = document.getElementById("popup");
+                var popupMessage = document.getElementById("popup-message");
 
-        // Store email and password if "Remember me" is checked
-        document.querySelector('form').addEventListener('submit', function () {
-            const remember = document.getElementById('remember').checked;
-            if (remember) {
-                localStorage.setItem('email', document.getElementById('email').value);
-                localStorage.setItem('password', document.getElementById('password').value);
-                localStorage.setItem('remember', 'true');
-            } else {
-                localStorage.removeItem('email');
-                localStorage.removeItem('password');
-                localStorage.removeItem('remember');
-            }
-        });
+                // Store email and password if "Remember me" is checked
+                document.querySelector('form').addEventListener('submit', function () {
+                    const remember = document.getElementById('remember').checked;
+                    if (remember) {
+                        localStorage.setItem('email', document.getElementById('email').value);
+                        localStorage.setItem('password', document.getElementById('password').value);
+                        localStorage.setItem('remember', 'true');
+                    } else {
+                        localStorage.removeItem('email');
+                        localStorage.removeItem('password');
+                        localStorage.removeItem('remember');
+                    }
+                });
+
 
 
     </script>

@@ -11,6 +11,8 @@
     --borderTble: #CCCCCC;
     --acceptColor: #00c72e;
     --declineColor: #ff3628;
+    --themeColor: #9D7651;
+    --HoverthemeColor: #BC8759;
 }
 
 body {
@@ -50,9 +52,44 @@ body {
     margin: 0; 
 }
 
+.metric-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.trend-indicator {
+    font: normal 13px/normal 'Poppins';
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-weight: 500;
+    animation: slideIn 0.3s ease-out;
+}
+
+.trend-indicator.positive {
+    background-color: rgba(34, 197, 94, 0.1);
+    color: var(--acceptColor);
+}
+
+.trend-indicator.negative {
+    background-color: rgba(239, 68, 68, 0.1);
+    color: var(--declineColor);
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
 .dashboard-item p {
     font: normal 15px/normal 'Poppins';
-    color: #555555;
+    color: var(--hoverDark);
     margin-bottom: 10px;
 }
 
@@ -134,11 +171,6 @@ body {
     margin: 10px; 
 }
 
-.table-container {
-    height: 38vh;
-    overflow-y: auto;
-}
-
 .prod-table {
     width: 100%;
     border-collapse: collapse;
@@ -166,6 +198,17 @@ body {
     transition: all .3s ease;
 }
 
+.table-container {
+    height: 38vh;
+    overflow-y: auto;
+}
+
+.pending-container {
+    height: 39vh;
+    overflow-y: auto;
+}
+
+
 .table-container::-webkit-scrollbar {
     width: 8px;
 }
@@ -179,7 +222,7 @@ body {
 }
 
 /*****Booking & Client*****/
-.booking-box {
+.container-admin {
     padding: 0px 0px 20px 0px;
     margin: 10% 0 0 10%;
     border-radius: 5px;
@@ -255,12 +298,11 @@ body {
 .top-book {
     display: flex;
     justify-content: space-between;
-    margin-top: 2%;
+    margin: 15px 18px;
 }
 
 .top-book h4 {
     font: normal 600 18px/normal 'Poppins';
-    margin-left: 20px;
 }
 
 .tabs {
@@ -291,6 +333,35 @@ body {
     background-color: #dcdcdc;
 }
 
+.date-filter {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.date-filter select {
+    padding: 8px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+    font-size: 14px;
+}
+
+.no-bookings-message {
+    text-align: center;
+    padding: 20px;
+    font-size: 16px;
+    color: #666;
+    font-style: italic;
+}
+ #year-select , #month-select{
+    padding: 4px 15px;
+    border: 1px solid #FCF6F6;;
+    border-radius: 5px;
+    box-sizing: border-box;
+    font: normal 400 13px/normal 'Poppins';
+    box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.25);
+}
+
 #unavailability-btn {
     padding: 7px 15px;
     background: linear-gradient(147deg, #BC8759 0%, #77563D 100%);
@@ -299,10 +370,37 @@ body {
     border-radius: 5px;
     cursor: pointer;
     margin: 0px 20px 10px 0px;
+    box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.2);
 }
 
 #unavailability-btn:hover {
     background: linear-gradient(147deg, #c8864c 0%, #7c5334 100%);
+}
+
+.btn-admin {
+    padding: 7px 15px;
+    background: linear-gradient(147deg, #BC8759 0%, #77563D 100%);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 0px 20px 10px 0px;
+    box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.2);
+}
+
+.btn-admin:hover {
+    background: linear-gradient(147deg, #c8864c 0%, #7c5334 100%);
+}
+
+#download-btn {
+    border: 2px solid var(--themeColor);
+    color: var(--themeColor);
+    padding: 3px 7px;
+    border-radius: 5px;
+    cursor: pointer;
+    font: normal 600 13px/normal 'Poppins';
+    box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.2);
+    background: var(--BgColor);
 }
 
 .search-bar #booking-search {
@@ -343,6 +441,7 @@ body {
 .tbl-container {
     height: 55vh;
     overflow-y: auto;
+    overflow-x: auto;
 }
 
 .header-table thead th {
@@ -388,7 +487,7 @@ th {
 
 
 td form button[name="delete"] {
-    background-color: #ff3628;
+    background-color: var(--declineColor);
     border-radius: 6px;
     font: normal 11px/normal 'Poppins';
     height: 5%;
@@ -405,6 +504,26 @@ td form button[name="delete"]:hover{
     background-color: rgb(172, 3, 0);
     transition: 0.4s;
 }
+
+.delete-admin {
+    background-color: var(--declineColor);
+    border-radius: 6px;
+    font: normal 11px/normal 'Poppins';
+    height: 5%;
+    color: #FFF;
+    border: none;
+    padding: 5px 10px;
+    text-align: center;
+    display: inline-block;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.delete-admin:hover{
+    background-color: rgb(172, 3, 0);
+    transition: 0.4s;
+}
+
 
 td .profile-image {
     width: 50px; 
@@ -428,14 +547,114 @@ td .profile-image {
     background-color: #e1e1e1; 
 }
 
-.staff-profile-img {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    object-fit: cover;
+.recommended-staff {
+    margin: 20px 0;
 }
 
+.popup-admin{
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-40%, -50%);
+    background: var(--BgColor);
+    padding: 20px;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 500px;
+    z-index: 1000;
+    box-shadow: 0px 0px 400px 900px rgba(0,0,0,0.28);
+    z-index: 10000;
+}
 
+.popup-admin h3{
+    font: normal 500 25px/normal 'Poppins';
+    margin-bottom: 10px;
+}
+
+.staff-card {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border: 1px solid var(--hoverDark);
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+
+.profile-pic {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 15px;
+}
+
+.staff-info {
+    flex-grow: 1;
+}
+
+.staff-name {
+    font-weight: bold;
+    margin-bottom: 2px;
+}
+
+.staff-role {
+    color: #666;
+    font-size: 0.9em;
+}
+
+.staff-selections {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin: 20px 0;
+}
+
+.select-wrapper select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    background-color: white;
+    font-size: 14px;
+}
+
+.submit-btn {
+    width: 100%;
+    padding: 12px;
+    background-color: var(--BgColor);
+    border: 2px solid var(--themeColor);
+    color: var(--themeColor);
+    border-radius: 6px;
+    cursor: pointer;
+    font: normal 400 14px / normal 'Poppins';
+    margin-top: 20px;
+}
+
+.submit-btn:hover {
+    background-color: var(--themeColor);
+    color: var(--tblColor);
+}
+
+.staff-profiles {
+    display: flex;
+    flex-direction: row;
+    max-width: 200px;
+}
+
+.staff-profile {
+    display: flex;
+    align-items: center;
+    border-radius: 4px;
+    background-color: #f5f5f5;
+}
+
+.staff-profile-pic {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid var(--DarkColor);
+}
 
 /*****Admin Calendar*****/
 .calendar {
@@ -543,7 +762,7 @@ td .profile-image {
     background-color: #f6f3ab;
 }
 
-.modal {
+.modal-content {
     display: none;
     position: fixed;
     top: 35%;
@@ -555,24 +774,6 @@ td .profile-image {
     border-radius: 5px;
     z-index: 9999;
     animation: slideIn 0.3s ease-in-out forwards;
-}
-
-@keyframes slideIn {
-    from {
-        top: -50%; 
-    }
-    to {
-        top: 35%; 
-    }
-}
-
-.modal-content {
-    background: #EEEE;
-    margin: 10% auto;
-    padding: 40px;
-    box-shadow: 0px 0px 400px 900px rgba(0,0,0,0.28);
-    width: 80%;
-    max-width: 600px;
 }
 
 @keyframes slideIn {
@@ -599,6 +800,63 @@ td .profile-image {
     text-decoration: none;
 }
 
+#receiptModal {
+    display: none;
+    position: fixed;
+    top: 35%;
+    left: 55%;
+    height: 54%;
+    width: 50%;
+    transform: translate(-50%, -50%);
+    padding: 20px;
+    border-radius: 5px;
+    z-index: 9999;
+    animation: slideIn 0.3s ease-in-out forwards;
+    
+}
+
+@keyframes slideIn {
+    from {
+        top: -40%; 
+    }
+    to {
+        top: 35%; 
+    }
+}
+
+.modal-receipt {
+    padding: 30px;
+    box-shadow: 0px 0px 400px 900px rgba(0,0,0,0.28);
+    width: 80%;
+    max-width: 600px;
+    background: var(--BgColor);
+}
+
+@keyframes slideIn {
+    from {
+        top: -50%; 
+    }
+    to {
+        top: 35%; 
+    }
+}
+
+.modal-receipt h2{
+    font: normal 600 20px/normal 'Poppins';
+}
+
+.receipt-image-container {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.receipt-image-container img {
+    max-width: 100%;
+    max-height: 70vh;
+    object-fit: contain;
+    border: 1px solid var(--DarkColor);
+}
+
 .form-group {
     margin-bottom: 15px;
 }
@@ -611,9 +869,11 @@ td .profile-image {
 }
 
 .form-group input[type="text"],
+.form-group input[type="number"],
 .form-group input[type="date"],
 .form-group input[type="password"],
-.form-group select {
+.form-group select, 
+.form-group textarea{
     width: 100%;
     padding: 8px;
     border: 1px solid #FCF6F6;;
@@ -888,6 +1148,59 @@ button#acceptNo:hover {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
 }
+
+.success-popup {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    text-align: center;
+    min-width: 300px;
+    animation: fadeIn 0.3s ease-out;
+    box-shadow: 0px 0px 400px 900px rgba(0, 0, 0, 0.28);
+    z-index: 10000;
+}
+
+.success-popup .icon {
+    font-size: 55px;
+    color: var(--acceptColor);
+    margin-bottom: 20px;
+}
+
+.success-popup .message {
+    color: #333;
+    margin-bottom: 20px;
+    font: normal 400 14px/15px 'Poppins';
+}
+
+.success-popup .ok-btn {
+    background: var(--HoverthemeColor);
+    color: white;
+    border: none;
+    padding: 10px 30px;
+    border-radius: 5px;
+    cursor: pointer;
+    font: normal 400 14px/15px 'Poppins';
+    transition: background 0.3s;
+}
+
+.success-popup .ok-btn:hover {
+    background: var(--themeColor);
+}
+
+.popup-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
 /**details feedback***/
 .feedbox-inner {
     display: flex;
@@ -1477,12 +1790,7 @@ form .profile-section p{
     flex-direction: column;
 }
 .exp-box{
-    padding: 20px 0px 50px 0px;
-    margin: 1% 0% 2% 0%;
-    background-color: #FBF4F4;
-    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
-    width: 101.2%;
-    height: 73vh;
+    
     border-radius: 10px;
 }
 
@@ -1556,22 +1864,29 @@ td form button[name="edit"]:hover{
     background-color: rgb(0, 62, 120);
     transition: 0.4s;
 }
-/*****production****/
-.production{
-    margin: 5% 0 0 13%;
-    padding: 1.8% 3% 0% 3%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+
+.edit-admin {
+    background-color: #17A1FA;
+    border-radius: 6px;
+    font: normal 11px/normal 'Poppins';
+    height: 5%;
+    color: #FFF;
+    border: none;
+    padding: 5px 10px;
+    text-align: center;
+    display: inline-block;
+    cursor: pointer;
+    text-decoration: none;
 }
+
+.edit-admin:hover{
+    background-color: rgb(0, 62, 120);
+    transition: 0.4s;
+}
+/*****production****/
+
 .prod-box{
     padding: 20px 0px 50px 0px;
-    margin: 1% 0% 2.3% 0%;
-    background-color: #FBF4F4;
-    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
-    width: 101.2%;
-    height: 78vh;
-    border-radius: 10px;
 }
 
 

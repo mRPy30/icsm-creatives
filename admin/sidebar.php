@@ -51,6 +51,10 @@
         text-decoration: none;	
     }
 
+    .side_bar .side_bar_bottom ul .nav-link a i{
+        font-size: larger;
+    }
+
     .side_bar .side_bar_bottom ul .nav-link.active a{
         background-color: #000000;
         background-image: linear-gradient(147deg, #000000 0%, #434343 74%);
@@ -197,15 +201,24 @@
                     } ?> "><i class="fa-solid fa-chart-line"></i></a>
                     <span class="bottom_curve"></span>
                 </li>
-                <!--<li class="nav-link">
+                <li class="nav-link">
                     <span class="top_curve"></span>
-                    <a href="finance.php" class="<?php if ($page == "..admin/finance.php") {
+                    <a href="services.php" title="Service Ratings Management" class="<?php if ($page == "..admin/services.php") {
+                        echo "nav-link active";
+                    } else {
+                        echo "nav-link";
+                    } ?> "><i class="fa-solid fa-hand-holding"></i></a>
+                    <span class="bottom_curve"></span>
+                </li>
+                <li class="nav-link">
+                    <span class="top_curve"></span>
+                    <a href="expenses.php" title="Expenses Budget" class="<?php if ($page == "..admin/expenses.php") {
                         echo "nav-link active";
                     } else {
                         echo "nav-link";
                     } ?> "><i class="fa-solid fa-money-bill-trend-up"></i></a>
                     <span class="bottom_curve"></span>
-                </li>-->
+                </li>
                 <li class="nav-link">
                     <span class="top_curve"></span>
                     <a href="folders.php" title="Uploading Gallery" class="<?php if ($page == "..admin/folders.php") {

@@ -111,20 +111,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             </a>
         </div>
         <div class="right-section">
+            <p class="credentials">Login As Administrator</p>
             <div class="bottom-con">
-                <div class="welcome-text">
-                    <p>Login As Administrator</p>
-                </div>
                 <form class="login-form" method="POST" onsubmit="return validateForm()">
                     <div class="fillup">
                         <label>Email</label>
                         <input type="text" class="form" placeholder="Enter your Email" name="email" required>
                     </div>
                     <div class="fillup">
-                        <label>Password</label>
-                        <input type="password" class="form" placeholder="Enter your Password" name="password" id="password" required>
+                        <div class="password-wrapper">
+                            <label for="password">Password:</label>
+                            <input type="password" placeholder="Password" id="password" name="password" required>
+                            <button type="button" id="toggle-password" class="eye-toggle">Show</button><br>
+                        </div>
                     </div>
-                    <p><a href="forgotpassword.php">Forget Password?</a><p>
                     <div id="popup" class="popup">
                         <p id="popup-message"></p>
                     </div>
@@ -138,43 +138,54 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     </main>
 
     <script>
-        // Eye view hide
-        let isPasswordVisible = false;
+         document.addEventListener("DOMContentLoaded", function () {
+    // Toggle password visibility
+    document.getElementById('toggle-password').addEventListener('click', function() {
         const passwordField = document.getElementById('password');
-        const passwordToggle = document.getElementById('password-toggle');
+        const toggleBtn = this; // Reference to the button itself
 
-        function togglePassword() {
-            isPasswordVisible = !isPasswordVisible;
-            passwordField.type = isPasswordVisible ? 'text' : 'password';
-            passwordToggle.className = isPasswordVisible ? 'fa-solid fa-eye' : 'fa-solid fa-eye-slash';
+        // Toggle field type and button text
+        if (passwordField.type === 'password') {
+            passwordField.type = 'text';
+            toggleBtn.textContent = 'Hide';
+        } else {
+            passwordField.type = 'password';
+            toggleBtn.textContent = 'Show';
         }
 
-         document.addEventListener("DOMContentLoaded", function () {
+        // Common styling for password field
+        passwordField.style.width = '97%';
+        passwordField.style.border = '1px solid #ddd';
+        passwordField.style.borderRadius = '4px';
+        passwordField.style.boxSizing = 'border-box';
+    });
 
-            // Display popup if login was unsuccessful
-            <?php if ($loginError): ?>
-                var popup = document.getElementById("popup");
-                var popupMessage = document.getElementById("popup-message");
+    // Display popup if login was unsuccessful
+    const loginError = <?php echo json_encode($loginError); ?>; // Pass PHP variable to JavaScript
 
-                // Set the error message
-                popupMessage.innerText = "Wrong credentials. Invalid email or password.";
+    if (loginError) {
+        const popup = document.getElementById("popup");
+        const popupMessage = document.getElementById("popup-message");
 
-                // Style the popup
-                popup.style.display = "block";
-                popup.style.backgroundColor = '#f8d7da';
-                popup.style.color = '#842029';
-                popup.style.border = '2px solid #f5c2c7';
-                popup.style.padding = '10px';
-                popup.style.font = 'normal 500 13px/normal "Poppins"';
-                popup.style.borderRadius = '5px';
-                popup.style.textAlign = 'center';
+        popupMessage.innerText = "Wrong credentials. Invalid email or password.";
 
-                // Close the popup after 3 seconds
-                setTimeout(function () {
-                    popup.style.display = "none";
-                }, 7000);
-            <?php endif; ?>
-        });
+        // Style the popup
+        popup.style.display = "block";
+        popup.style.backgroundColor = '#f8d7da';
+        popup.style.color = '#842029';
+        popup.style.border = '2px solid #f5c2c7';
+        popup.style.padding = '10px';
+        popup.style.font = 'normal 500 13px/normal "Poppins"';
+        popup.style.borderRadius = '5px';
+        popup.style.textAlign = 'center';
+
+        // Close the popup after 7 seconds
+        setTimeout(function () {
+            popup.style.display = "none";
+        }, 7000);
+    }
+});
+
     </script>
 </body>
 
