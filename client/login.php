@@ -118,11 +118,10 @@ if (isset($loginError) && $loginError === true) {
         });
 
         // Pre-fill email if passed in the URL
-
         window.onload = function () {
             const urlParams = new URLSearchParams(window.location.search);
             const email = urlParams.get('email');
-
+            const error = urlParams.get('error');
 
             if (email) {
                 document.getElementById('email').value = email !== 'null' ? email : '';
@@ -133,21 +132,46 @@ if (isset($loginError) && $loginError === true) {
                 var popup = document.getElementById("popup");
                 var popupMessage = document.getElementById("popup-message");
 
-                // Store email and password if "Remember me" is checked
-                document.querySelector('form').addEventListener('submit', function () {
-                    const remember = document.getElementById('remember').checked;
-                    if (remember) {
-                        localStorage.setItem('email', document.getElementById('email').value);
-                        localStorage.setItem('password', document.getElementById('password').value);
-                        localStorage.setItem('remember', 'true');
-                    } else {
-                        localStorage.removeItem('email');
-                        localStorage.removeItem('password');
-                        localStorage.removeItem('remember');
-                    }
-                });
+                // Set the error message
+                popupMessage.innerText = "Wrong credentials. Invalid email or password.";
 
+                // Style the popup
+                popup.style.display = "block";
+                popup.style.backgroundColor = '#f8d7da';
+                popup.style.color = '#842029';
+                popup.style.border = '2px solid #f5c2c7';
+                popup.style.padding = '10px';
+                popup.style.font = 'normal 500 13px/normal "Poppins"';
+                popup.style.borderRadius = '5px';
+                popup.style.textAlign = 'center';
 
+                // Close the popup after 7 seconds
+                setTimeout(function () {
+                    popup.style.display = "none";
+                }, 7000);
+            }
+
+            // Check if "Remember me" was selected before and pre-fill email and password
+            if (localStorage.getItem('remember') === 'true') {
+                document.getElementById('email').value = localStorage.getItem('email');
+                document.getElementById('password').value = localStorage.getItem('password');
+                document.getElementById('remember').checked = true;
+            }
+        };
+
+        // Store email and password if "Remember me" is checked
+        document.querySelector('form').addEventListener('submit', function () {
+            const remember = document.getElementById('remember').checked;
+            if (remember) {
+                localStorage.setItem('email', document.getElementById('email').value);
+                localStorage.setItem('password', document.getElementById('password').value);
+                localStorage.setItem('remember', 'true');
+            } else {
+                localStorage.removeItem('email');
+                localStorage.removeItem('password');
+                localStorage.removeItem('remember');
+            }
+        });
 
     </script>
 </body>
