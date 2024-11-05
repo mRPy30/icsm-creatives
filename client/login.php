@@ -11,6 +11,7 @@ if (isset($_GET['event'])) {
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -20,15 +21,16 @@ if (isset($_GET['event'])) {
     </title>
     <link rel="stylesheet" href="../css/style.css">
 </head>
+
 <body>
     <main class="main-container">
         <div class="left-section">
             <a href="../homepage/homepage.php">
-                <img src="../picture/logo.png" alt="Icsm Creatives logo" class="logo">
+                <img src="../picture/logoDark.png" alt="Icsm Creatives logo" class="logo">
             </a>
             <div class="welcome-text">
-                <h1>Welcome to<br>ICSM Production</h1>
-                <p>We poured out our undying dedications In Capturing Sweet Memories.</p>
+                <h1>Welcome to<br>ICSM CREATIVES.</h1>
+                <p>Our passion for preserving your sweetest memories drives us to capture every precious detail.</p>
             </div>
         </div>
         <div class="right-section">
@@ -48,7 +50,7 @@ if (isset($_GET['event'])) {
                 <form class="login-form" action="" method="POST" onsubmit="return validateForm()">
                     <div class="fillup">
                         <label for="email">Email:</label>
-                        <input type="email" placeholder="Enter your Email"  id="email" name="email" required>
+                        <input type="email" placeholder="Enter your Email" id="email" name="email" required>
                     </div>
 
                     <div class="fillup">
@@ -64,7 +66,7 @@ if (isset($_GET['event'])) {
                             <input type="checkbox" id="remember" name="remember"> Remember me
                         </label>
                         <a href="../forgotpassword.php">Forgot Password?</a>
-                    </div>                
+                    </div>
 
                     <div id="popup" class="popup">
                         <p id="popup-message"></p>
@@ -85,14 +87,14 @@ if (isset($_GET['event'])) {
                 <p>Don't have an account? <a href="register.php">Register here</a></p>
             </div>
         </div>
-    </main>                
+    </main>
 
     <script>
         // Toggle Password Visibility
-        document.getElementById('toggle-password').addEventListener('click', function() {
+        document.getElementById('toggle-password').addEventListener('click', function () {
             const passwordField = document.getElementById('password');
             const toggleBtn = document.getElementById('toggle-password');
-            
+
             if (passwordField.type === 'password') {
                 passwordField.type = 'text';
                 toggleBtn.textContent = 'Hide';
@@ -115,7 +117,7 @@ if (isset($_GET['event'])) {
         });
 
         // Pre-fill email if passed in the URL
-        window.onload = function() {
+        window.onload = function () {
             const urlParams = new URLSearchParams(window.location.search);
             const email = urlParams.get('email');
 
@@ -132,7 +134,7 @@ if (isset($_GET['event'])) {
         };
 
         // Store email and password if "Remember me" is checked
-        document.querySelector('form').addEventListener('submit', function() {
+        document.querySelector('form').addEventListener('submit', function () {
             const remember = document.getElementById('remember').checked;
             if (remember) {
                 localStorage.setItem('email', document.getElementById('email').value);
@@ -145,7 +147,8 @@ if (isset($_GET['event'])) {
             }
         });
 
-        
+
     </script>
 </body>
+
 </html>

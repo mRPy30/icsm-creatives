@@ -116,9 +116,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     <img src="../picture/coverpage5.jpg" alt="coverpage">
                     <img src="../picture/family.jpg" alt="coverpage">
                 </div>
-                <div class="text">
-                    <h2>Capture every precious moment through our lenses </h2>
-                    <p>Get expert photographers and amazing photos, and <br>videos, starting from just PHP 2,500.</p>
+                <div class="Center-text">
+                    <h2>Capture Every Precious Moments, Through our Lenses </h2>
+                    <p>Customize Your Package with Flexible Options and Budget-Friendly Add-Ons That Fits Your
+                        Unique
+                        Style and Budget.</p>
                     <button id="book-now-btn" class="btn-cover">Book Now</button>
                 </div>
                 <div class="carousel-page-numbers">
@@ -130,290 +132,528 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 
 
-        <section class="portfolio">
-            <div class="portfolio-title">
-                <hr class="horizontal-line1">
-                <h2>Explore Portfolio</h2>
-                <hr class="horizontal-line2">
-            </div>
 
-            <!--<div class="box-section">
-                <div class="box1">
-                    <div class="box4">
-                        <div class="portfolio-content1">
-                            <a href="portfolio.php">
-                                <img src="../picture/wed.jpg" alt="Wedding-Engagement">
-                            </a>
-                            <h2>Wedding + Engagement</h2>
-
-                        </div>
-                    </div>
-                </div>
-                <div class="box2">
-                    <div class="box5">
-                        <div class="portfolio-content2">
-                            <a href="portfolio.php">
-                                <img src="../picture/birthday.jpg" alt="Birthday">
-                            </a>
-                            <h2>Birthday</h2>
-                        </div>
-                    </div>
-                </div>
-                <div class="box3">
-                    <div class="box6">
-                        <div class="portfolio-content3">
-                            <a href="portfolio.php">
-                                <img src="../picture/portrait.jpg" alt="Portrait">
-                            </a>
-                            <h2>Portrait + Family</h2>
-                        </div>
-                    </div>
-                </div>
+        <section class="milestone-gallery">
+            <div class="milestone-header">
+                <h2>Capture for Every Milestone</h2>
+                <p>Make every occasion unforgettable—start creating your perfect moment today.</p>
             </div>
-        </section>-->
+            <div class="milestone-grid">
+                <div class="milestone-card" onclick="location.href='events/birthday.php'">
+                    <a href="events/birthday.php" class="icon-link">
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                    <h3>Birthdays:</h3>
+                    <p>Every year is a reason to celebrate.</p>
+                    <img src="../picture/cake.png" alt="Birthday Cake">
+                </div>
 
-            <!--<section class="services">
-            <div class="services-title">
-                <h2>Check out these special deals!</h2>
-                <h6>The ICSM price ratings</h6>
-            </div>
-            <div class="services-box-section">
-                <div class="service-box" style="padding-bottom:130px;">
-                    <div class="package-name">
-                        <h6>Package A</h6>
-                        <p>Photoshoot</p>
-                    </div>
-                    <div class="price">
-                        <h2>₱ 2,500</h2>
-                    </div>
-                    <div class="feature">
-                        <h4>Things what you get:</h4>
-                    </div>
-                    <div class="price-details">
-                        <div class="top">
-                            <i class="fa-solid fa-check"></i>
-                            <p>1 Hour Photoshoot</p>
-                        </div>
-                        <div class="bottom">
-                            <i class="fa-solid fa-check"></i>
-                            <p>100 pieces photo edited</p>
-                        </div>
-                    </div>
+                <div class="milestone-card" onclick="location.href='events/marriage.php'">
+                    <a href="events/marriage.php" class="icon-link">
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                    <h3>Marriage:</h3>
+                    <p>Capturing every step of your journey to love.</p>
+                    <img src="../picture/marriage-ring.png" alt="Marriage">
                 </div>
-                <div class="service-box" style="padding-bottom:130px;">
-                    <div class="package-name">
-                        <h6>Package B</h6>
-                        <p>Video</p>
-                    </div>
-                    <div class="price">
-                        <h2>₱ 30,000</h2>
-                    </div>
-                    <div class="feature">
-                        <h4>Things what you get:</h4>
-                    </div>
-                    <div class="price-details">
-                        <div class="top">
-                            <i class="fa-solid fa-check"></i>
-                            <p>Same day Edit</p>
-                        </div>
-                        <div class="bottom">
-                            <i class="fa-solid fa-check"></i>
-                            <p>10 minutes max video duration</p>
-                        </div>
-                    </div>
+
+                <div class="milestone-card" onclick="location.href='events/family-portrait.php'">
+                    <a href="events/family-portrait.php" class="icon-link">
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                    <h3>Family Portraits:</h3>
+                    <p>Highlight your growing family.</p>
+                    <img src="../picture/family.png" alt="Family Portraits">
                 </div>
-                <div class="service-box">
-                    <div class="package-name">
-                        <h6>Package C</h6>
-                        <p>Wedding Package</p>
-                    </div>
-                    <div class="price">
-                        <h2>₱ 50,000</h2>
-                    </div>
-                    <div class="feature">
-                        <h4>Things what you get:</h4>
-                    </div>
-                    <div class="price-details">
-                        <div class="top">
-                            <i class="fa-solid fa-check"></i>
-                            <p>Same day Edit</p>
-                        </div>
-                        <div class="top">
-                            <i class="fa-solid fa-check"></i>
-                            <p>Unlimited Photoshoot</p>
-                        </div>
-                        <div class="bottom">
-                            <i class="fa-solid fa-check"></i>
-                            <p>Prenup Photoshoot</p>
-                        </div>
-                        <div class="bottom">
-                            <i class="fa-solid fa-check"></i>
-                            <p>Prenup Video
-                        </div>
-                        <div class="bottom">
-                            <i class="fa-solid fa-check"></i>
-                            <p>Video Highlights</p>
-                        </div>
-                    </div>
+
+                <div class="milestone-card" onclick="location.href='events/graduation.php'">
+                    <a href="events/graduation.php" class="icon-link">
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                    <h3>Graduation:</h3>
+                    <p>Capture your academic achievements.</p>
+                    <img src="../picture/graduation.png" alt="Graduation">
+                </div>
+
+                <div class="milestone-card" onclick="location.href='events/christening.php'">
+                    <a href="events/christening.php" class="icon-link">
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                    <h3>Baby:</h3>
+                    <p>Capture the precious moments of your baby's early days.</p>
+                    <img src="../picture/baby.png" alt="Baby">
+                </div>
+
+                <div class="milestone-card" onclick="location.href='events/corporate.php'">
+                    <a href="events/corporate.php" class="icon-link">
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                    <h3>Corporate Events:</h3>
+                    <p>Showcase your business milestones and team achievements.</p>
+                    <img src="../picture/business.png" alt="Corporate Events">
+                </div>
+
+                <div class="milestone-card" onclick="location.href='events/adventure.php'">
+                    <a href="events/adventure.php" class="icon-link">
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                    <h3>Outdoor Adventures:</h3>
+                    <p>Capture the thrill of your outdoor experiences.</p>
+                    <img src="../picture/adventure.png" alt="Outdoor Adventures">
+                </div>
+
+                <div class="milestone-card" onclick="location.href='event.php'">
+                    <a href="event.php" class="icon-link">
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                    <h3>Browse Other Occasions:</h3>
+                    <p>For every moment, we are here.</p>
                 </div>
             </div>
-            <button class="button-services-section" id="view-more-btn">View More</button>
-        </section>-->
+        </section>
 
-            <!--<section class="review">
-            <div class="review-part">
-                <div class="review-left">
-                    <img src="../picture/review.jpg" alt="">
-                </div>
-                <div class="review-right">
-                    <div class="testimonial">
-                        <h5> Testimonial</h5>
-                        <h4>"Hands down one of our best decisions in our wedding planning
-                            process!"</h4>
 
-                        <p>"Where do I even begin with these two!? Such amazing photographers -
-                            so amazing for our
-                            wedding. They are amazing at communicating their vision and aligning
-                            it with yours, and
-                            make sure it comes alive on your wedding day. They were patient and
-                            fun and personable,
-                            and felt more like friends than photographers on the big day. Their
-                            images are striking,
-                            being able to capture both beautiful posed shots as well as
-                            heartfelt candids. Truly
-                            amazing photos and we feel so lucky that they were there to capture
-                            such a great and
-                            memorable day."<br><br>
-                            <i>- Kathryn Bernardo & Daniel Padilla </i>
-                        </p>
-                        <div class="testimonial-arrow"><i class="fa-solid fa-arrow-left"></i>
-                            <i class="fa-solid fa-arrow-right" style="margin-left:10px;"></i>
+
+
+        <section class="why-choose">
+            <div class="choose-us-section">
+                <h2>Why Choose Us?</h2>
+                <div class="features-grid">
+                    <div class="feature-box">
+                        <div class="choose-us-icon"><img src="../picture/folder.png" alt="Budget Friendly Icon">
+                        </div>
+                        <div class="choose-us-box-right">
+                            <h3>Budget Friendly</h3>
+                            <p>We believe great photography and videography should be accessible to everyone. That’s
+                                why
+                                we offer affordable packages that fit your budget while still delivering amazing
+                                results.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="feature-box">
+                        <div class="choose-us-icon"><img src="../picture/hassle-free.png" alt="Hassle Free Icon">
+                        </div>
+                        <div class="choose-us-box-right">
+                            <h3>Hassle-Free Booking</h3>
+                            <p>Simply select a package and a photographer will be assigned to you shortly.</p>
+                        </div>
+                    </div>
+
+                    <div class="feature-box">
+                        <div class="choose-us-icon"><img src="../picture/fast-delivery.png" alt="Fast Delivery Icon">
+                        </div>
+                        <div class="choose-us-box-right">
+                            <h3>Fast Delivery</h3>
+                            <p>You won’t have to wait long to relive your special moments. We ensure quick delivery
+                                of
+                                your
+                                photos and videos, so you can start enjoying and sharing them as soon as possible.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="feature-box">
+                        <div class="choose-us-icon"><img src="../picture/camera.png" alt="Great Photographers Icon">
+                        </div>
+                        <div class="choose-us-box-right">
+                            <h3>Great Photographers</h3>
+                            <p>Our photographers and videographers are passionate about capturing your story. They
+                                know
+                                how to make you feel comfortable and bring out the best in every shot.</p>
+                        </div>
+                    </div>
+
+                    <div class="feature-box">
+                        <div class="choose-us-icon"><img src="../picture/picture.png" alt="Great Photos Icon"></div>
+                        <div class="choose-us-box-right">
+                            <h3>Great Photos</h3>
+                            <p>We don’t just take pictures—we capture emotions, details, and memories that will last
+                                a
+                                lifetime. Our high-quality photos will make you smile every time you look at them.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="feature-box">
+                        <div class="choose-us-icon"><img src="../picture/peace-of-mind.png" alt="Peace of Mind Icon">
+                        </div>
+                        <div class="choose-us-box-right">
+                            <h3>Peace of Mind</h3>
+                            <p>When you book with us, you can relax knowing everything is in good hands. We take
+                                care of
+                                all the details, so you can focus on enjoying your day while we capture every
+                                special
+                                moment.
+                            </p>
                         </div>
                     </div>
                 </div>
             </div>
-        </section>-->
+        </section>
 
 
-            <section class="about">
-                <div class="about-page">
-                    <div class="about-left-content">
-                        <div class="about-title">
-                            <h1>Our Mission</h1>
-                            <h5>is to make Life Memorable</h5>
+
+
+
+        <section class="how-it-works">
+            <div class="how-it-works__container">
+                <h2 class="how-it-works__title">How it Works?</h2>
+
+                <div class="how-it-works__steps-wrapper">
+
+                    <div class="how-it-works__step-box">
+                        <div class="how-it-works__step-content">
+                            <span class="how-it-works__step-number">01</span>
+                            <h3 class="how-it-works__step-heading">Book</h3>
+                            <p class="how-it-works__step-text">We don't just take pictures—we capture emotions,
+                                stories,
+                                and memories that will last a lifetime. Our high-quality photos will make you smile
+                                every time you look at them.</p>
                         </div>
-                        <div class="about-description">
-                            <p><B>We capture any occasion, easy and fast.</B><br>
-                                Our days are shaped by moments; joyful moments, big important life achievements, but
-                                also
+                    </div>
+
+                    <div class="how-it-works__step-box">
+                        <div class="how-it-works__step-content">
+                            <span class="how-it-works__step-number">02</span>
+                            <h3 class="how-it-works__step-heading">Plan</h3>
+                            <p class="how-it-works__step-text">We don't just take pictures—we capture emotions,
+                                stories,
+                                and memories that will last a lifetime. Our high-quality photos will make you smile
+                                every time you look at them.</p>
+                        </div>
+                    </div>
+
+                    <div class="how-it-works__step-box">
+                        <div class="how-it-works__step-content">
+                            <span class="how-it-works__step-number">03</span>
+                            <h3 class="how-it-works__step-heading">Shoot</h3>
+                            <p class="how-it-works__step-text">We don't just take pictures—we capture emotions,
+                                stories,
+                                and memories that will last a lifetime. Our high-quality photos will make you smile
+                                every time you look at them.</p>
+                        </div>
+                    </div>
+
+                    <div class="how-it-works__step-box">
+                        <div class="how-it-works__step-content">
+                            <span class="how-it-works__step-number">04</span>
+                            <h3 class="how-it-works__step-heading">Download</h3>
+                            <p class="how-it-works__step-text">We don't just take pictures—we capture emotions,
+                                stories,
+                                and memories that will last a lifetime. Our high-quality photos will make you smile
+                                every time you look at them.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="how-it-works__cta">
+                    <a href="#" class="how-it-works__link">Learn how it works! →</a>
+                </div>
+            </div>
+        </section>
+
+
+
+
+        <section class="faq-section">
+            <div class="faq-section__container">
+                <!-- Left Side - Image and Title -->
+                <div class="faq-section__left">
+                    <h2 class="faq-section__title">
+                        <span>Have</span>
+                        <span>Questions?</span>
+                    </h2>
+                    <div class="faq-section__image">
+                        <img src="../picture/faq-image.png" alt="FAQ Illustration">
+                    </div>
+                </div>
+
+                <!-- Right Side - Accordion -->
+                <div class="faq-section__right">
+                    <!-- FAQ Item 1 -->
+                    <div class="faq-section__item">
+                        <div class="faq-section_question">
+                            What types of photography do you do?
+                            <span class="arrow"><i class="fa-solid fa-angle-down"></i></span>
+                        </div>
+                        <div class="faq-section_answer">
+                            <p>Hiring a photographer is a great idea because they capture important moments with
+                                professional quality and a creative touch. Whether it's a special event, personal
+                                milestone,
+                                or business need, photographers have the skills, equipment, and expertise to produce
+                                stunning images that tell your story or enhance your brand. Plus, they handle all
                                 the
-                                ordinary, everyday moments. Anything could be special when you do it with the people
-                                closest
-                                to
-                                you. But sometimes, these moments pass you by.<br><br>
-                                Looking forward to work with you.</p>
-                        </div>
-                        <div class="more-button">
-                            <a href="../homepage/about.php"><button>About Us</button></a>
+                                details, from planning and shooting to editing, saving you time and ensuring you get
+                                beautiful, high-quality photos that you'll cherish or can use to boost your
+                                business.</p>
                         </div>
                     </div>
 
-
-                    <div class="about-right-content">
-                        <div class="image1">
-                            <img src="../picture/team.jpg" alt="Team-Picture">
+                    <!-- FAQ Item 2 -->
+                    <div class="faq-section__item">
+                        <div class="faq-section_question">
+                            Why should I hire a ICSM Creatives ?
+                            <span class="arrow"><i class="fa-solid fa-angle-down"></i></span>
                         </div>
-                        <div class="image2">
-                            <img src="../picture/behind-the-cam.jpg" alt="Behind-the-cam">
+                        <div class="faq-section_answer">
+                            <p>Hiring a photographer is a great idea because they capture important moments with
+                                professional quality and a creative touch. Whether it's a special event, personal
+                                milestone,
+                                or business need, photographers have the skills, equipment, and expertise to produce
+                                stunning images that tell your story or enhance your brand. Plus, they handle all
+                                the
+                                details, from planning and shooting to editing, saving you time and ensuring you get
+                                beautiful, high-quality photos that you'll cherish or can use to boost your
+                                business.</p>
+                        </div>
+                    </div>
+
+                    <!-- FAQ Item 3 -->
+                    <div class="faq-section__item">
+                        <div class="faq-section_question">
+                            What's your cancellation/rescheduling policy?
+                            <span class="arrow"><i class="fa-solid fa-angle-down"></i></span>
+                        </div>
+                        <div class="faq-section_answer">
+                            <p>Hiring a photographer is a great idea because they capture important moments with
+                                professional quality and a creative touch. Whether it's a special event, personal
+                                milestone,
+                                or business need, photographers have the skills, equipment, and expertise to produce
+                                stunning images that tell your story or enhance your brand. Plus, they handle all
+                                the
+                                details, from planning and shooting to editing, saving you time and ensuring you get
+                                beautiful, high-quality photos that you'll cherish or can use to boost your
+                                business.
+                            </p>
+
+                        </div>
+                    </div>
+
+                    <!-- FAQ Item 4 -->
+                    <div class="faq-section__item">
+                        <div class="faq-section_question">
+                            Are my payment refundable?
+                            <span class="arrow"><i class="fa-solid fa-angle-down"></i></span>
+                        </div>
+                        <div class="faq-section_answer">
+                            <p>Hiring a photographer is a great idea because they capture important moments with
+                                professional quality and a creative touch. Whether it's a special event, personal
+                                milestone,
+                                or business need, photographers have the skills, equipment, and expertise to produce
+                                stunning images that tell your story or enhance your brand. Plus, they handle all
+                                the
+                                details, from planning and shooting to editing, saving you time and ensuring you get
+                                beautiful, high-quality photos that you'll cherish or can use to boost your
+                                business.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- FAQ Item 5 -->
+                    <div class="faq-section__item">
+                        <div class="faq-section_question">
+                            Do you have props?
+                            <span class="arrow"><i class="fa-solid fa-angle-down"></i></span>
+                        </div>
+                        <div class="faq-section_answer">
+                            <p>Hiring a photographer is a great idea because they capture important moments with
+                                professional quality and a creative touch. Whether it's a special event, personal
+                                milestone,
+                                or business need, photographers have the skills, equipment, and expertise to produce
+                                stunning images that tell your story or enhance your brand. Plus, they handle all
+                                the
+                                details, from planning and shooting to editing, saving you time and ensuring you get
+                                beautiful, high-quality photos that you'll cherish or can use to boost your
+                                business.
+                            </p>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+
+
+
+        <section class="ms-testimonials">
+            <h2 class="ms-testimonials-title">What our clients say about us.</h2>
+            <div class="ms-testimonials-wrapper">
+                <div class="ms-testimonial">
+                    <i class="fa-solid fa-quote-left"></i>
+                    <p class="ms-testimonial-quote">“We had them capture our engagement photos, and they were amazing!
+                        The team made the whole experience fun and relaxed. The photos came out even better than we
+                        imagined. We're so happy with the results and can't wait to book them for our wedding!”</p>
+                    <p class="ms-testimonial-author">Kyarah & Agie</p>
+                    <div class="ms-testimonial-stars">★★★★★</div>
+                </div>
+                <div class="ms-testimonial">
+                    <i class="fa-solid fa-quote-left"></i>
+                    <p class="ms-testimonial-quote">“We booked their photography and videography for our baby shower,
+                        and they went above and beyond. Every moment was beautifully captured, and the quality of the
+                        photos and videos was stunning. The team was so friendly and made everything feel effortless.
+                        We're so glad we chose them!”</p>
+                    <p class="ms-testimonial-author">Kath & David</p>
+                    <div class="ms-testimonial-stars">★★★★★</div>
+                </div>
+                <div class="ms-testimonial">
+                    <i class="fa-solid fa-quote-left"></i>
+                    <p class="ms-testimonial-quote">“They did an incredible job with our wedding video! They were
+                        professional and easy to work with, and the final video truly captured the emotion of our day.
+                        We've watched it so many times already. Their work is top-notch, and we couldn't be happier!”
+                    </p>
+                    <p class="ms-testimonial-author">Anna & James</p>
+                    <div class="ms-testimonial-stars">★★★★★</div>
+                </div>
+            </div>
+        </section>
+
+
+
+
+
+
+        <section class="about">
+            <div class="about-page">
+                <div class="about-left-content">
+                    <div class="about-title">
+                        <h1>Our Mission</h1>
+                        <h5>is to make Life Memorable</h5>
+                    </div>
+                    <div class="about-description">
+                        <p><B>We capture any occasion, easy and fast.</B><br>
+                            Our days are shaped by moments; joyful moments, big important life achievements, but
+                            also
+                            the
+                            ordinary, everyday moments. Anything could be special when you do it with the people
+                            closest
+                            to
+                            you. But sometimes, these moments pass you by.<br><br>
+                            Looking forward to work with you.</p>
+                    </div>
+                    <div class="more-button">
+                        <a href="../homepage/about.php"><button>About Us</button></a>
+                    </div>
+                </div>
+
+
+                <div class="about-right-content">
+                    <div class="image1">
+                        <img src="../picture/team.jpg" alt="Team-Picture">
+                    </div>
+                    <div class="image2">
+                        <img src="../picture/behind-the-cam.jpg" alt="Behind-the-cam">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+
+        <section class="call-to-attention">
+            <div class="banner-homepage">
+                <div class="banner-image">
+                    <img src="../picture/CTAcover.jpg" alt="coverpage">
+                </div>
+                <div class="banner-content">
+                    <div class="banner-inner-content">
+                        <h1>Let's make something incredible together</h1>
+                        <div class="CTA-button">
+                            <a href="../homepage/events.php"><button>Inquire about your date </button></a>
                         </div>
                     </div>
                 </div>
-            </section>
+            </div>
+        </section>
 
-            <section class="call-to-attention">
-                <div class="banner-homepage">
-                    <div class="banner-image">
-                        <img src="../picture/CTAcover.jpg" alt="coverpage">
-                    </div>
-                    <div class="banner-content">
-                        <div class="banner-inner-content">
-                            <h1>Let's make something incredible together</h1>
-                            <div class="CTA-button">
-                                <a href="../homepage/events.php"><button>Inquire about your date </button></a>
+
+        <section class="footer-page">
+            <div class="footer">
+                <div class="footer-row">
+                    <ul class="footer-left-link">
+                        <li><a href="../client/login.php">Login</a></li>
+                        <li><a href="../homepage/about.php">About</a></li>
+                        <li><a href="../homepage/events.php">Offer Events</a></li>
+                        <li><a href="../homepage/contact.php">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="vertical-line-left"></div>
+                <div class="footer-center-content">
+
+                    <div class="footer-center">
+                        <h6>About ICSM Creatives</h6>
+                        <p>We are dedicated to serving women of color in an underrepresented bridal market. All
+                            brides
+                            will find inspiration on our blog, in our digital publication, on our social circuit and
+                            at
+                            our national bridal events.</p>
+
+                        <div class="social-meadia-links">
+                            <h6>Connect with us</h6>
+                            <div class="icons">
+                                <a class="facebook" href="https://www.facebook.com/icsmcreatives" target="_blank"><i
+                                        class="fa-brands fa-facebook"></i>
+                                </a>
+                                <a class="mail" href="https://www.facebook.com/cvsuimusofficialpage" target="_blank"><i
+                                        class="fa-solid fa-envelope"></i>
+                                </a>
+                                <a class="instagram" href="https://www.instagram.com/icsmcreatives">
+                                    <i class=" fa-brands fa-instagram"></i>
+                                </a>
+                                <a class="tiktok" href="https://www.tiktok.com/@icsm.creatives">
+                                    <i class="fa-brands fa-tiktok"></i>
+                                </a>
                             </div>
                         </div>
                     </div>
                 </div>
-            </section>
-
-
-            <section class="footer-page">
-                <div class="footer">
-                    <div class="footer-row">
-                        <ul class="footer-left-link">
-                            <li><a href="../client/login.php">Login</a></li>
-                            <li><a href="../homepage/about.php">About</a></li>
-                            <li><a href="../homepage/events.php">Offer Events</a></li>
-                            <li><a href="../homepage/contact.php">Contact</a></li>
-                        </ul>
-                    </div>
-                    <div class="vertical-line-left"></div>
-                    <div class="footer-center-content">
-
-                        <div class="footer-center">
-                            <h6>About ICSM Creatives</h6>
-                            <p>We are dedicated to serving women of color in an underrepresented bridal market. All
-                                brides
-                                will find inspiration on our blog, in our digital publication, on our social circuit and
-                                at
-                                our national bridal events.</p>
-
-                            <div class="social-meadia-links">
-                                <h6>Connect with us</h6>
-                                <div class="icons">
-                                    <a class="facebook" href="https://www.facebook.com/icsmcreatives" target="_blank"><i
-                                            class="fa-brands fa-facebook"></i>
-                                    </a>
-                                    <a class="mail" href="https://www.facebook.com/cvsuimusofficialpage"
-                                        target="_blank"><i class="fa-solid fa-envelope"></i>
-                                    </a>
-                                    <a class="instagram" href="https://www.instagram.com/icsmcreatives">
-                                        <i class=" fa-brands fa-instagram"></i>
-                                    </a>
-                                    <a class="tiktok" href="https://www.tiktok.com/@icsm.creatives">
-                                        <i class="fa-brands fa-tiktok"></i>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="vertical-line-right"></div>
-                    <div class="footer-logo">
-                        <a href="../homepage/homepage.php">
-                            <img src="../picture/logo.png" alt="logo">
-                        </a>
-                    </div>
+                <div class="vertical-line-right"></div>
+                <div class="footer-logo">
+                    <a href="../homepage/homepage.php">
+                        <img src="../picture/logo.png" alt="logo">
+                    </a>
                 </div>
-            </section>
+            </div>
+        </section>
 
-            <section class="going-back">
-                <div class="arrow-up-button back-to-top-hidden">
-                    <button class="back-to-top" onclick="scrollToTop()"><i class="fas fa-arrow-up"></i></button>
-                </div>
-            </section>
+        <section class="going-back">
+            <div class="arrow-up-button back-to-top-hidden">
+                <button class="back-to-top" onclick="scrollToTop()"><i class="fas fa-arrow-up"></i></button>
+            </div>
+        </section>
 
-            <section class="container-credential">
-                <div class="credit-info">
-                    <div class="rights-definition">
-                        <p>© 2023-2024 ICSMCREATIVES.COM ALL RIGHTS RESERVED. TERMS OF USE | PRIVACY POLICY</p>
-                    </div>
+        <section class="container-credential">
+            <div class="credit-info">
+                <div class="rights-definition">
+                    <p>© 2023-2024 ICSMCREATIVES.COM ALL RIGHTS RESERVED. TERMS OF USE | PRIVACY POLICY</p>
                 </div>
-            </section>
+            </div>
+        </section>
     </main>
 
 
 
     <script>
+
+        document.querySelectorAll('.faq-section_question').forEach(header => {
+            header.addEventListener('click', () => {
+                const content = header.nextElementSibling;
+                const arrow = header.querySelector('.arrow');
+
+                content.classList.toggle('active');
+                arrow.classList.toggle('active');
+
+                document.querySelectorAll('.faq-section_answer').forEach(otherContent => {
+                    if (otherContent !== content && otherContent.classList.contains('active')) {
+                        otherContent.classList.remove('active');
+                        otherContent.previousElementSibling.querySelector('.arrow').classList.remove('active');
+                    }
+                });
+            });
+        });
 
         const images = document.querySelectorAll('.carousel img');
         const pageNumbers = document.querySelectorAll('.carousel-page-numbers .page-number');
@@ -486,7 +726,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         document.addEventListener('DOMContentLoaded', function () {
             const headerSection = document.querySelector('.header-section');
             const coverContent = document.querySelector('.cover-content');
-            const portfolioSection = document.querySelector('.portfolio');
+            const portfolioSection = document.querySelector('.milestone-gallery');
 
             function handleScroll() {
                 const coverContentRect = coverContent.getBoundingClientRect();
@@ -518,6 +758,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         document.getElementById("register").addEventListener("click", function () {
             window.location.href = "../client/register.php";
         });
+
+
+
+
+
+
+
+
+
+
+
 
     </script>
 </body>

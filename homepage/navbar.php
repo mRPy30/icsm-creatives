@@ -21,8 +21,7 @@
     }
 
     .cover-content-style .register button {
-        background-color: #fcf6f6;
-        color: #1c1c1d;
+        color: #FCF6F6;
     }
 
     .cover-content-style .nav-item a:hover {
@@ -95,7 +94,7 @@
         filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
         display: inline-block;
         cursor: pointer;
-        background: #1C1C1D;
+        background-image: linear-gradient(147deg, #BC8759 0%, #77563D 100%);
         border-radius: 25px;
         padding: 3px 17px;
         transition: background-color 0.3s;

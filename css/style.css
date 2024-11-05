@@ -20,17 +20,21 @@ body, html {
     display: flex;
     height: 100%;
 }
+
+
 /******Left Section****/
 .left-section {
     flex: 1.5;
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    align-items: flex-start;
     background: url('../picture/login-photo.jpg') no-repeat center center;
     background-size: cover;
-    text-align: left;
 }
+
+.left-section a{
+    margin: 50px 0 0px 70px;
+}
+
 
 .admin-login-section {
     flex: 1.5;
@@ -42,21 +46,26 @@ body, html {
 }
 
 .logo {
-    width: 30%;
-    margin-bottom: 40px;
+    width: 20%;
 }
 
 .welcome-text h1 {
-    font-size: 3.5em;
+    font-size: 3.5em ;
+    font-family: 'Poppins';
     margin-bottom: 20px;
     color: #fbfbfb;;
-    line-height: 1.2;
+    line-height: 1.4;
+    letter-spacing: 1px;
+    margin: 100px 0 20px 70px;
 }
 
 .welcome-text p {
-    font-size: 1em;
-    color: var(--DarkColor);
-    text-align: start;
+    font-size: 1.0em;
+    font-family:'Poppins';
+    letter-spacing: 1px;
+    margin: 20px 0 18px 70px;
+    color:#fbfbfb;
+    width: 50%;
 }
 
 /******Form Section****/
@@ -110,6 +119,11 @@ body, html {
     flex-direction: column;
     align-items: center;
 }
+.bottom-con p{
+    font-size: 14px;
+}
+
+
 .login-form {
     width: 80%;
     max-width: 400px;
@@ -206,12 +220,16 @@ body, html {
     margin: 0 auto;
 }
 
+.auth-btn-container a {
+    font-size: 90%;
+}
+
 .auth-button {
     display: flex;
     align-items: center;
     justify-content: center;
     width: 70%;
-    padding: 5px;
+    padding: 9px;
     margin: 18px 0;
     font: normal 500 13px/normal 'Poppins';
     border: none;
@@ -233,7 +251,8 @@ body, html {
 
 .auth-button img{
     margin-right: 10px;
-    width: 8%;
+    width: 10%;
+    height: 50%;
 }
 
 .separator {

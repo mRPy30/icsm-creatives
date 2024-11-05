@@ -10,6 +10,7 @@ if (isset($_GET['event'])) {
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -19,15 +20,16 @@ if (isset($_GET['event'])) {
     </title>
     <link rel="stylesheet" href="../css/style.css">
 </head>
+
 <body>
     <main class="main-container">
         <div class="left-section">
             <a href="../homepage/homepage.php">
-                <img src="../picture/logo.png" alt="Icsm Creatives logo" class="logo">
+                <img src="../picture/logoDark.png" alt="Icsm Creatives logo" class="logo">
             </a>
             <div class="welcome-text">
-                <h1>Welcome to<br>ICSM Production</h1>
-                <p>We poured out our undying dedications In Capturing Sweet Memories.</p>
+                <h1>Welcome to<br>ICSM CREATIVES.</h1>
+                <p>Our passion for preserving your sweetest memories drives us to capture every precious detail.</p>
             </div>
         </div>
         <div class="right-section">
@@ -45,13 +47,14 @@ if (isset($_GET['event'])) {
             </div>
             <div class="bottom-con">
                 <form class="login-form" action="" method="POST">
-                    <div class="fillup">        
+                    <div class="fillup">
                         <label for="email">Email:</label>
                         <input type="email" placeholder="Enter your Email" id="email" name="email" required><br>
                     </div>
                     <div class="fillup">
                         <label for="cellphone">Cellphone Number:</label>
-                        <input type="tel" id="cellphone" name="cellphone" placeholder="+63" value="+63" pattern="\+63[0-9]{10}" maxlength="13" required><br>
+                        <input type="tel" id="cellphone" name="cellphone" placeholder="+63" value="+63"
+                            pattern="\+63[0-9]{10}" maxlength="13" required><br>
                     </div>
                     <div class="fillup">
                         <div class="password-wrapper">
@@ -66,11 +69,12 @@ if (isset($_GET['event'])) {
                     <div class="fillup">
                         <div class="password-wrapper">
                             <label for="confirm_password">Confirm Password:</label>
-                            <input type="password" placeholder="Enter your Confirm Password" id="confirm_password" name="confirm_password" required>
+                            <input type="password" placeholder="Enter your Confirm Password" id="confirm_password"
+                                name="confirm_password" required>
                             <button type="button" id="toggle-password" class="eye-toggle">Show</button><br>
                         </div>
                     </div>
-                    
+
                     <button class="btn" type="submit">Register</button>
 
                     <div class="separator">
@@ -85,8 +89,8 @@ if (isset($_GET['event'])) {
                     </div>
                 </form>
                 <p>Already have an account? <a href="login.php">Login here</a></p>
-                </div>
-            </div>  
+            </div>
+        </div>
         </div>
         <div id="continue" class="continue" style="display: none;">
             <h2>You already created this account</h2>
@@ -104,21 +108,21 @@ if (isset($_GET['event'])) {
             field.setAttribute("type", type);
         }
 
-            document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const cellphoneInput = document.getElementById('cellphone');
 
             // Set initial value to +63
             cellphoneInput.value = "+63";
 
             // Prevent removing +63 prefix
-            cellphoneInput.addEventListener('input', function() {
+            cellphoneInput.addEventListener('input', function () {
                 if (!cellphoneInput.value.startsWith("+63")) {
                     cellphoneInput.value = "+63";
                 }
             });
 
             // Enforce 10 digits after +63
-            cellphoneInput.addEventListener('keypress', function(e) {
+            cellphoneInput.addEventListener('keypress', function (e) {
                 const currentLength = cellphoneInput.value.length;
                 if (currentLength >= 13 && e.key !== 'Backspace') { // Max length is 13 (+63 + 10 digits)
                     e.preventDefault();
@@ -126,32 +130,33 @@ if (isset($_GET['event'])) {
             });
 
             // Optional: Prevent copying/pasting invalid numbers
-            cellphoneInput.addEventListener('paste', function(e) {
+            cellphoneInput.addEventListener('paste', function (e) {
                 e.preventDefault();
             });
         });
 
         function showPopup(name, profileImage, email) {
-        document.getElementById('profile-image').src = profileImage;
-        document.getElementById('continue-button').textContent = 'Continue as ' + name;
-        document.getElementById('continue').style.display = 'block';
+            document.getElementById('profile-image').src = profileImage;
+            document.getElementById('continue-button').textContent = 'Continue as ' + name;
+            document.getElementById('continue').style.display = 'block';
 
-        // Add click event to the "Continue as" button to redirect to login.php with the email
-        document.getElementById('continue-button').onclick = function() {
-            window.location.href = `login.php?email=${email}`; // Pass email in the URL
-        };
-    }
-
-    window.onload = function() {
-        // Check if there's a query parameter for an existing email
-        const urlParams = new URLSearchParams(window.location.search);
-        const name = urlParams.get('name');
-        const profileImage = urlParams.get('profile');
-        const email = urlParams.get('email');  // Get email if passed
-        if (name && profileImage && email) {
-            showPopup(name, profileImage, email);
+            // Add click event to the "Continue as" button to redirect to login.php with the email
+            document.getElementById('continue-button').onclick = function () {
+                window.location.href = `login.php?email=${email}`; // Pass email in the URL
+            };
         }
-    };
+
+        window.onload = function () {
+            // Check if there's a query parameter for an existing email
+            const urlParams = new URLSearchParams(window.location.search);
+            const name = urlParams.get('name');
+            const profileImage = urlParams.get('profile');
+            const email = urlParams.get('email');  // Get email if passed
+            if (name && profileImage && email) {
+                showPopup(name, profileImage, email);
+            }
+        };
     </script>
 </body>
+
 </html>
