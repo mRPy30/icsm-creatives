@@ -31,7 +31,7 @@ $page = $components[2];
     <!---WEB TITLE--->
     <link rel="short icon" href="../picture/shortcut-logo.png" type="x-icon">
     <title>
-        <?php echo "Staff | Dashboard"; ?>
+        <?php echo "Albums | Dashboard"; ?>
     </title>
 
     <!---CSS--->
@@ -65,6 +65,22 @@ $page = $components[2];
         include '../staff/sidebar.php';
         include '../staff/navbar.php';
     ?>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     <script>
         
 

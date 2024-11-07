@@ -25,7 +25,7 @@ if ($result->num_rows > 0) {
 $pageTitles = array(
     "dashboard.php" => "Staff Dashboard",
     "booking.php" => "Booking Management",
-    "gallery.php" => "Client Name Gallery",
+    "albums.php" => "Client's Albums",
     "feedback.php" => "Feedback Management",
     "details.php" => "Feedback details",
     "production.php" => "Production Management"
