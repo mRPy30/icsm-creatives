@@ -10,7 +10,7 @@ if (isset($_SESSION['LAST_ACTIVITY']) && (time() - $_SESSION['LAST_ACTIVITY'] > 
     session_unset();     
     session_destroy();   
 }
-$_SESSION['LAST_ACTIVITY'] = time(); 
+$_SESSION['LAST_ACTIVITY'] = time(); // This should come after the timeout check
 
 // Active Page
 $directoryURI = $_SERVER['REQUEST_URI'];
@@ -63,62 +63,61 @@ $page = $components[2];
             font-weight: bold;
         }
         .upload-btn:hover {
-            
             text-decoration: underline;
         }
     </style>
 </head>
     
-<bo>
-    <!----Main Content----->
+<body>
+    <!----Main Content-----> 
     <main>
-        <!----Navbar & Sidebar----->
+        <!----Navbar & Sidebar-----> 
         <?php 
             include '../staff/sidebar.php';
             include '../staff/navbar.php';
         ?>
 
         <!-- Client Details Table with Action -->
-         <section class="container-staff">
-        <h2>Client Details</h2>
-        <table class="header-table">
-            <thead>
-                <tr>
-                    <th>Client ID</th>
-                    <th>Full Name</th>
-                    <th>Action</th> <!-- Action column -->
-                </tr>
-            </thead>
-            <tbody>
-                <?php
-                // Example data retrieval from database
-                $sql = "SELECT clientID, name, email, cellphone FROM client";
-                $result = mysqli_query($conn, $sql);
+        <section class="container-staff">
+            <h2>Client Details</h2>
+            <table class="header-table">
+                <thead>
+                    <tr>
+                        <th>Client ID</th>
+                        <th>Full Name</th>
+                        <th>Action</th> <!-- Action column -->
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    // Example data retrieval from database
+                    $sql = "SELECT clientID, name, email, cellphone FROM client";
+                    $result = mysqli_query($conn, $sql);
 
-                if ($result && mysqli_num_rows($result) > 0) {
-                    while($row = mysqli_fetch_assoc($result)) {
-                        echo "<tr>";
-                        echo "<td>" . htmlspecialchars($row['clientID']) . "</td>";
-                        echo "<td>" . htmlspecialchars($row['name']) . "</td>";
+                    if ($result && mysqli_num_rows($result) > 0) {
+                        while($row = mysqli_fetch_assoc($result)) {
+                            echo "<tr>";
+                            echo "<td>" . htmlspecialchars($row['clientID']) . "</td>";
+                            echo "<td>" . htmlspecialchars($row['name']) . "</td>";
 
-                        echo "<td><a class='upload-btn' href='upload_image.php?client_id=" . urlencode($row['clientID']) . "'>Upload Image</a></td>"; // Action button
-                        echo "</tr>";
+                            echo "<td><a class='upload-btn' href='upload_image.php?client_id=" . urlencode($row['clientID']) . "'>Upload Image</a></td>"; // Action button
+                            echo "</tr>";
+                        }
+                    } else {
+                        echo "<tr><td colspan='7'>No clients found</td></tr>";
                     }
-                } else {
-                    echo "<tr><td colspan='7'>No clients found</td></tr>";
-                }
-                ?>
-            </tbody>
-        </table>
-    </main>
+                    ?>
+                </tbody>
+            </table>
         </section>
+    </main>
 
     <script>
-        var inactivityTimeout = 1000; 
+        var inactivityTimeout = 1000; // You can adjust the inactivity timeout duration
 
         function checkInactivity() {
             setTimeout(function () {
-                window.location.href = '../login.php'; 
+                window.location.href = '../login.php'; // Redirect to login page after timeout
             }, inactivityTimeout * 1100);
         }
 
@@ -127,12 +126,12 @@ $page = $components[2];
         });
 
         document.addEventListener('mousemove', function () {
-            clearTimeout(checkInactivity);
+            clearTimeout(inactivityTimeout);
             checkInactivity();
         });
 
         document.addEventListener('keypress', function () {
-            clearTimeout(checkInactivity);
+            clearTimeout(inactivityTimeout);
             checkInactivity();
         });
 
