@@ -1,18 +1,21 @@
 <?php 
-// logout Automatically
+session_start(); // Start the session
+
+// Include necessary files
 include '../backend/logout.php';
-// Connection
 include '../backend/dbcon.php';
 
-// Set the last activity time
+// Session timeout management
 if (isset($_SESSION['LAST_ACTIVITY']) && (time() - $_SESSION['LAST_ACTIVITY'] > 600)) {
     // Last request was more than 10 minutes ago
     session_unset();     
     session_destroy();   
+    session_start(); // Start a new session after destroying the old one
+    session_regenerate_id(true); // Regenerate session ID to prevent fixation attacks
 }
-$_SESSION['LAST_ACTIVITY'] = time(); // This should come after the timeout check
+$_SESSION['LAST_ACTIVITY'] = time(); // Update last activity time
 
-// Active Page
+// Determine the active page
 $directoryURI = $_SERVER['REQUEST_URI'];
 $path = parse_url($directoryURI, PHP_URL_PATH);
 $components = explode('/', $path);
@@ -26,20 +29,15 @@ $page = $components[2];
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!---WEB TITLE--->
-    <link rel="short icon" href="../picture/shortcut-logo.png" type="x-icon">
+    <!-- Web Title and Favicon -->
+    <link rel="shortcut icon" href="../picture/shortcut-logo.png" type="image/x-icon">
     <title><?php echo "Albums | Dashboard"; ?></title>
 
-    <!---CSS--->
+    <!-- CSS -->
     <link rel="stylesheet" href="../css/staff.css">
-
-    <!--ICON LINKS-->
     <link rel="stylesheet" href="../font-awesome-6/css/all.css">
-
-    <!--FONT LINKS-->
     <link rel="stylesheet" href="../css/fonts.css">
 
-    <!----css---->
     <style>
         body {
             overflow-y: hidden;
@@ -65,13 +63,20 @@ $page = $components[2];
         .upload-btn:hover {
             text-decoration: underline;
         }
+        body.dark-mode {
+            background-color: #121212;
+            color: white;
+        }
+        .dark-mode .dashboard-item {
+            background-color: #333;
+        }
     </style>
 </head>
     
 <body>
-    <!----Main Content-----> 
+    <!-- Main Content -->
     <main>
-        <!----Navbar & Sidebar-----> 
+        <!-- Navbar & Sidebar -->
         <?php 
             include '../staff/sidebar.php';
             include '../staff/navbar.php';
@@ -85,27 +90,31 @@ $page = $components[2];
                     <tr>
                         <th>Client ID</th>
                         <th>Full Name</th>
-                        <th>Action</th> <!-- Action column -->
+                        <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php
-                    // Example data retrieval from database
-                    $sql = "SELECT clientID, name, email, cellphone FROM client";
-                    $result = mysqli_query($conn, $sql);
+                    // Retrieve client details from database using prepared statements
+                    $sql = "SELECT clientID, name FROM client";
+                    $stmt = $conn->prepare($sql);
+                    $stmt->execute();
+                    $result = $stmt->get_result();
 
-                    if ($result && mysqli_num_rows($result) > 0) {
-                        while($row = mysqli_fetch_assoc($result)) {
+                    if ($result && $result->num_rows > 0) {
+                        while ($row = $result->fetch_assoc()) {
                             echo "<tr>";
                             echo "<td>" . htmlspecialchars($row['clientID']) . "</td>";
                             echo "<td>" . htmlspecialchars($row['name']) . "</td>";
-
-                            echo "<td><a class='upload-btn' href='upload_image.php?client_id=" . urlencode($row['clientID']) . "'>Upload Image</a></td>"; // Action button
+                            echo "<td><a class='upload-btn' href='upload_image.php?client_id=" . urlencode($row['clientID']) . "' aria-label='Upload image for client " . htmlspecialchars($row['name']) . "'>Upload Image</a></td>";
                             echo "</tr>";
                         }
                     } else {
-                        echo "<tr><td colspan='7'>No clients found</td></tr>";
+                        echo "<tr><td colspan='3'>No clients found</td></tr>";
                     }
+
+                    $stmt->close();
+                    $conn->close();
                     ?>
                 </tbody>
             </table>
@@ -113,46 +122,35 @@ $page = $components[2];
     </main>
 
     <script>
-        var inactivityTimeout = 1000; // You can adjust the inactivity timeout duration
+        let inactivityTimeout;
 
         function checkInactivity() {
-            setTimeout(function () {
+            clearTimeout(inactivityTimeout); // Clear the previous timeout
+            inactivityTimeout = setTimeout(function () {
                 window.location.href = '../login.php'; // Redirect to login page after timeout
-            }, inactivityTimeout * 1100);
+            }, 600000); // 10 minutes in milliseconds
         }
 
         document.addEventListener('DOMContentLoaded', function () {
             checkInactivity();
         });
 
-        document.addEventListener('mousemove', function () {
-            clearTimeout(inactivityTimeout);
-            checkInactivity();
-        });
-
-        document.addEventListener('keypress', function () {
-            clearTimeout(inactivityTimeout);
-            checkInactivity();
-        });
+        document.addEventListener('mousemove', checkInactivity);
+        document.addEventListener('keypress', checkInactivity);
 
         // Dark Mode Toggle
         function toggleDarkMode() {
             const body = document.body;
             const isDarkMode = body.classList.toggle('dark-mode');
             const moonIcon = document.querySelector('.dark-mode-toggle i');
-
             const dashboardItems = document.querySelectorAll('.dashboard-item');
 
             if (isDarkMode) {
                 moonIcon.className = 'fas fa-sun';
-                dashboardItems.forEach(item => {
-                    item.classList.add('dark-mode');
-                });
+                dashboardItems.forEach(item => item.classList.add('dark-mode'));
             } else {
                 moonIcon.className = 'fas fa-moon';
-                dashboardItems.forEach(item => {
-                    item.classList.remove('dark-mode');
-                });
+                dashboardItems.forEach(item => item.classList.remove('dark-mode'));
             }
             localStorage.setItem('darkMode', isDarkMode);
         }
