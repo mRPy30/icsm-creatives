@@ -40,17 +40,15 @@ body, html {
     flex: 1.5;
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    align-items: flex-start;
-    text-align: left;
 }
 
 .credentials{
     margin: 30px 50px 15px 50px;
 }
 
-.logo {
+.logo-admin {
     width: 20%;
+    margin: 50px 0 0px 70px;
 }
 
 .welcome-text h1 {
@@ -69,6 +67,23 @@ body, html {
     letter-spacing: 1px;
     margin: 20px 0 18px 70px;
     color:#fbfbfb;
+    width: 50%;
+}
+
+.admin-welcome{
+    margin: 100px 0 20px 70px;
+}
+
+.admin-welcome h1 {
+    font: normal 700 3.5em/1.5 'Poppins';
+    margin-bottom: 20px;
+    color: #1C1C1D;;
+    letter-spacing: 1px;
+}
+
+.admin-welcome p {
+    font: normal 500 1.0em/1 'Poppins';
+    color: #1C1C1D;
     width: 50%;
 }
 

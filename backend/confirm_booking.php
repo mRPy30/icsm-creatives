@@ -25,6 +25,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $remaining_balance = $_POST['remaining_balance'];
     $ref_num = $_POST['ref_num'];
 
+    $validDate = DateTime::createFromFormat('Y-m-d', $eventDate);
+    if (!$validDate || $validDate->format('Y-m-d') !== $eventDate) {
+        $eventDate = date('Y-m-d'); 
+    }
+
+    $eventTime24 = date("H:i", strtotime($eventTime));
+
+
     // Handle file upload for payment proof
     if(isset($_FILES['payment_proof']) && $_FILES['payment_proof']['error'] === UPLOAD_ERR_OK) {
         $tmpName = $_FILES['payment_proof']['tmp_name'];

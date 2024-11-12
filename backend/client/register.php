@@ -1,11 +1,10 @@
 <?php
-session_start();
 include '../backend/dbcon.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = $conn->real_escape_string($_POST['email']);
-    $password = $_POST['password'];
-    $confirm_password = $_POST['confirm_password'];
+    $password = mysqli_real_escape_string($conn, md5($_POST["password"]));
+    $confirm_password = mysqli_real_escape_string($conn, md5($_POST['confirm_password']));
     $cellphone = $conn->real_escape_string($_POST['cellphone']);
     
     // Check if passwords match
@@ -17,40 +16,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!preg_match('/^\+63[0-9]{10}$/', $cellphone)) {
         die("Invalid cellphone number format. It must be in the format +63 followed by 10 digits.");
     }
+
+        // Generate a 5-digit customer ID
+        $clientID = sprintf("%05d", mt_rand(1, 99999));
     
     // Check if email already exists
     $sql_check = "SELECT * FROM client WHERE email='$email'";
     $result = $conn->query($sql_check);
 
     if ($result->num_rows > 0) {
-        // Email exists
-        $row = $result->fetch_assoc();
-        $name = $row['name'];
-        $profile = $row['profile'];
-        $email = $row['email'];
-        header("Location: ../client/register.php?name=" . urlencode($name) . "&profile=" . urlencode($profile) . "&email=" . urlencode($email));  // Include email in the URL
-    exit();
+        die("Email already exists. Please log in or use a different email.");
     } else {
         // Generate a random first name based on the email
         function generateFirstName($email) {
             $name_part = strstr($email, '@', true); // Extract part before '@'
             $name_part = preg_replace('/[^a-zA-Z]/', '', $name_part); // Remove non-alphabet characters
-            $name_part = ucfirst(strtolower($name_part)); // Capitalize the first letter
-        
-            // If the extracted part is too short, append random letters
-            if (strlen($name_part) < 3) {
-                $name_part .= chr(rand(65, 90)) . chr(rand(97, 122)); // Random uppercase and lowercase letters
-            }
-        
-            return $name_part;
+            return ucfirst(strtolower($name_part)); // Capitalize the first letter
         }
         
         $name = generateFirstName($email);
-        $profile = '../picture/default_profile.png'; // Path to the default profile picture
         
-        // Insert data into the database including confirm_password
-        $sql = "INSERT INTO client (name, email, password, cellphone, profile) 
-                VALUES ('$name', '$email', '$password', '$cellphone', '$profile')";
+        // Insert data into the database without profile
+        $sql = "INSERT INTO client (name, email, password, cellphone, google_id) 
+                VALUES ('$name', '$email', '$password', '$cellphone', NULL)";
         
         if ($conn->query($sql) === TRUE) {
             echo "Registration successful!";

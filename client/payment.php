@@ -72,6 +72,9 @@ $_SESSION['selected_additional_services'] = $selected_additional_services;
     <link rel="stylesheet" href="../css/client.css">
     <link rel="stylesheet" href="../font-awesome-6/css/all.css">
     <link rel="stylesheet" href="../css/fonts.css">
+
+    <script src="https://www.paypal.com/sdk/js?client-id=AYxfBFJZ00ltfER7C43lf4d1F68bm2gHTBgeY25sTzr5APmdHZ09p-Om0EkWfmiVf_9Wisx-gIlFQ2K-"></script>
+
 </head>
 
 <body>
@@ -216,6 +219,16 @@ $_SESSION['selected_additional_services'] = $selected_additional_services;
                                 </div>
                             </div>
                             <div class="bottom">
+                                <div class="payment-section">
+                                    <div class="payment-header">
+                                        <h3>PayPal Payment</h3>
+                                        <span class="arrow"><i class="fa-solid fa-angle-down"></i></span>
+                                    </div>
+                                    <div class="payment-content">
+                                        <div id="paypal-button-container"></div> <!-- PayPal button will be rendered here -->
+                                        <p class="security-note">**Payment - All transactions are secure and encrypted.</p>
+                                    </div>
+                                </div>
                                 <div class="payment-section">
                                     <div class="payment-header">
                                         <h3>E-Wallet GCash</h3>
@@ -537,7 +550,31 @@ function closeErrorPopup() {
     window.location.href = '../client/payment.php'; // Redirect to payment page
 }
 
-
+// PayPal button integration
+paypal.Buttons({
+        createOrder: function(data, actions) {
+            return actions.order.create({
+                purchase_units: [{
+                    amount: {
+                        value: '<?php echo $_SESSION['total_cost']; ?>' // Use the total cost from PHP session
+                    }
+                }]
+            });
+        },
+        onApprove: function(data, actions) {
+            return actions.order.capture().then(function(details) {
+                // Show a success message to the buyer
+                alert('Transaction completed by ' + details.payer.name.given_name);
+                
+                // Optionally, submit the form to confirm the booking
+                document.querySelector('.payment').submit(); // Submitting the form
+            });
+        },
+        onError: function(err) {
+            console.error(err);
+            alert('An error occurred during the transaction. Please try again.');
+        }
+    }).render('#paypal-button-container');
 </script>
 
 </html>

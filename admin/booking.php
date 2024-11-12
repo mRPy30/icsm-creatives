@@ -2,6 +2,7 @@
 session_start();
 // Connection
 include '../backend/dbcon.php';
+include '../backend/semaphore_sms.php';
 
 
 // Active Page
@@ -101,6 +102,8 @@ $page = $components[2];
                             <th>Booking Id</th>
                             <th>Status</th>
                             <th>Service Package</th>
+                            <th>Addtional Services</th>
+                            <th>Specified Services</th>
                             <th>Assigned Staff</th>
                             <th>Booked by</th>
                             <th>Date & Time</th>
@@ -109,6 +112,7 @@ $page = $components[2];
                             <th>Remaining Balance</th>
                             <th>Payment Receipt</th>
                             <th>Actions</th>
+                            <th>Message</th>
                         </tr>
                     </thead>
                     <tbody id="booking-table-body">
@@ -119,16 +123,16 @@ $page = $components[2];
     
         <div id="assign-staff-modal" class="popup-admin">
             <span class="close-btn" onclick="closeAssignStaffModal()">&times;</span>
-            <div id="recommended-staff">
+            <div id="recommendedStaff">
                 <h4>Recommended</h4>
                 <div class="recommended-staff">
                     <?php
                     // Fetch recommended staff
-                    $recommendedQuery = "SELECT staff_ID, staff_name, role, profile_picture FROM staff WHERE role IN ('photographer', 'videographer') LIMIT 2";
+                    $recommendedQuery = "SELECT staff_ID, staff_name, role, profile_picture FROM staff WHERE role IN ('photographer', 'videographer', 'editor') LIMIT 2";
                     $recommendedResult = mysqli_query($conn, $recommendedQuery);
                     while ($staff = mysqli_fetch_assoc($recommendedResult)) {
                         echo "<div class='staff-card'>";
-                        echo "<img src='" . htmlspecialchars($staff['profile_picture']) . "' alt='Profile' class='profile-pic'>";
+                        echo "<img src='data:image/jpeg;base64," . base64_encode($staff['profile_picture']) . "' alt='Profile' class='profile-pic'>";
                         echo "<div class='staff-info'>";
                         echo "<div class='staff-name'>" . htmlspecialchars($staff['staff_name']) . "</div>";
                         echo "<div class='staff-role'>" . htmlspecialchars(ucfirst($staff['role'])) . "</div>";
@@ -142,8 +146,8 @@ $page = $components[2];
                 <h2>Assign Staff to Booking <span id="booking-id"></span></h2>
                 <form id="assign-staff-form" onsubmit="submitAssignStaff(event)">
                     <div class="staff-selections">
-                        <div class="select-wrapper">
-                        <label for="staff-select">Photographer:</label>
+                        <div class="form-group">
+                            <label for="staff-select">Photographer:</label>
                             <select id="staff-select" name="photographerId">
                                 <option value="">Select Photographer</option>
                                 <?php
@@ -156,7 +160,7 @@ $page = $components[2];
                             </select>
                         </div>
                             
-                        <div class="select-wrapper">
+                        <div class="form-group">
                         <label for="staff-select-videographer">Videographer:</label>
                             <select id="staff-select-videographer" name="videographerId">
                                 <option value="">Select Videographer</option>
@@ -170,8 +174,8 @@ $page = $components[2];
                             </select>
                         </div>
                             
-                        <div class="select-wrapper">
-                        <label for="staff-select-editor">Editor:</label>
+                        <div class="form-group">
+                            <label for="staff-select-editor">Editor:</label>
                             <select id="staff-select-editor" name="editorId">
                                <option value="">Select Editor</option>
                                <?php
@@ -184,13 +188,7 @@ $page = $components[2];
                             </select>
                         </div>
 
-                        <div class="select-wrapper">
-                            <select name="outsource" id="outsource">
-                                <option value="">Outsources</option>
-                            </select>
-                        </div>
-                        
-                        <div class="select-wrapper">
+                        <div class="form-group">
                             <label for="deadline">Task Deadline:</label>
                             <input type="date" id="deadline" name="deadline">
                         </div>
@@ -200,6 +198,24 @@ $page = $components[2];
                     </div>
                 </form>
             </div>
+        </div>
+
+        <!-- Inside the main container -->
+        <div id="messageModal" class="popup-admin">
+            <span class="close-btn" onclick="closeMessageModal()">&times;</span>
+            <h3>Send Message to Client</h3>
+            <form id="message-form" onsubmit="sendMessage(event)">
+                <input type="hidden" id="bookingId" name="bookingId">
+                <div class="form-group">
+                    <label for="cellphone-number">Client Contact Number:</label>
+                    <input type="number" id="cellphone-number" name="cellphone-number">
+                </div>
+                <div class="form-group">
+                    <label for="message-text">Message:</label>
+                    <textarea id="message-text" name="message" rows="4" required></textarea>
+                </div>
+                <button class="submit-btn" type="submit">Send Message</button>
+            </form>
         </div>
    
 

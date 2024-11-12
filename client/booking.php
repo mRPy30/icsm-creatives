@@ -50,14 +50,14 @@ if ($eventResult === false) {
 // Process form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Capture the start time and end time from the form
-    $startTime = $_POST['start_time'];
-    $endTime = $_POST['end_time'];
+    $evwntTime = $_POST['event_time'];
     
     // Add your validation logic here for start and end times, and then save the data
     $_SESSION['booking'] = $_POST;
     header("Location: service.php");
     exit();
 }
+
 
 // Fetch the current user's bookings
 $sql = "SELECT bookingID, title_event, eventDate, eventLocation, event_time, status FROM booking WHERE clientID = ? ORDER BY bookingID DESC";
@@ -234,10 +234,11 @@ $allUnavailableDates = array_merge($fullyBookedDates, $unavailableDates);
                 <button class="status-tab" data-status="Accepted">Upcoming</button>
                 <button class="status-tab" data-status="Declined">Declined</button>
                 <button class="status-tab" data-status="Completed">Completed</button> 
+                <button class="status-tab" data-status="Cancelled">Cancelled</button> 
             </div>
             <div class="status-content">
             <?php
-                $statuses = ['Pending', 'Accepted', 'Declined', 'Completed'];
+                $statuses = ['Pending', 'Accepted', 'Declined', 'Cancelled', 'Completed'];
                 $currentDate = date('Y-m-d');
 
                 foreach ($statuses as $status) {
@@ -252,9 +253,11 @@ $allUnavailableDates = array_merge($fullyBookedDates, $unavailableDates);
                         echo "<p>These are the special memories you`ll soon capture with ICSM Creatives.</p>";
                     } elseif ($status == 'Declined') {
                         echo "<p>Here`s your Declined bookings overview with ICSM Creatives.</p>";
+                    } elseif ($status == 'Cancelled') {
+                        echo "<p>List of your cancell bookings</p>";
                     } elseif ($status == 'Completed') {
                         echo "<p>Your completed events are here for you to cherish.</p>";
-                    }
+                    } 
                 
                     echo "<div class='event-container' id='events-{$status}'>"; 
                     echo "</div>"; 
@@ -277,59 +280,75 @@ $allUnavailableDates = array_merge($fullyBookedDates, $unavailableDates);
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const eventDateInput = document.getElementById('event_date');
-    const eventTimeSelect = document.getElementById('event_time');
+        const eventTimeSelect = document.getElementById('event_time');
         const navbar = document.querySelector('.navbar');
         const coverContent = document.querySelector('.cover-title h2');
         const daysTag = document.querySelector(".days"),
         currentDate = document.querySelector(".current-date"),
         prevNextIcon = document.querySelectorAll(".icons span");
 
-    // Populate time options
     function populateTimeOptions(selectElement) {
-        selectElement.innerHTML = '';
-        const timeSlots = [
-            '08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00',
-            '15:00', '16:00', '17:00', '18:00', '19:00', '20:00'
-        ];
-        
-        timeSlots.forEach(time => {
-            const option = document.createElement('option');
-            option.value = time;
-            option.textContent = time;
-            selectElement.appendChild(option);
-        });
+       selectElement.innerHTML = '';
+       const timeSlots = [
+           '08:00 AM', '09:00 AM', '10:00 AM', '11:00 AM', '12:00 PM', '01:00 PM', '02:00 PM',
+           '03:00 PM', '04:00 PM', '05:00 PM', '06:00 PM', '07:00 PM', '08:00 PM'
+       ];
+       timeSlots.forEach(time => {
+           const option = document.createElement('option');
+           option.value = time;
+           option.textContent = time;
+           selectElement.appendChild(option);
+       });
     }
 
     populateTimeOptions(eventTimeSelect);
 
-        const bookings = <?php echo json_encode($bookings); ?>;
-        const allUnavailableDates = <?php echo json_encode($allUnavailableDates); ?>;
+    const bookings = <?php echo json_encode($bookings); ?>;
+    const allUnavailableDates = <?php echo json_encode($allUnavailableDates); ?>;
 
-        flatpickr(eventDateInput, {
-            dateFormat: "Y-m-d",
-            minDate: "today",
-            disable: allUnavailableDates, // Disable both fully booked and unavailable dates
-            onChange: function(selectedDates, dateStr, instance) {
-                const selectedDate = dateStr;
-                const bookedTimes = bookings[selectedDate] || [];
 
-                // Reset all time slots
+    flatpickr(eventDateInput, {
+        dateFormat: "Y-m-d",
+        minDate: new Date().setDate(new Date().getDate() + 3),
+        altInput: true,
+        altFormat: "F j, Y",
+        disable:  allUnavailableDates,
+        onDayCreate: function(dObj, dStr, fp, dayElem) {
+            if (dayElem.classList.contains("flatpickr-disabled")) {
+                const hoverMessage = "Fully Booked or Unavailble Date";
+                dayElem.title = hoverMessage;
+            } 
+        },
+
+        onChange: function(selectedDates, dateStr, instance) {
+            const selectedDate = dateStr;
+            const bookedTimes = bookings[selectedDate] || [];
+
+            Array.from(eventTimeSelect.options).forEach(option => {
+                option.disabled = false;
+            });
+
+            // Disable booked time slots and their +4 hour blocks
+            bookedTimes.forEach(bookedTime => {
+                const bookedStartTime = new Date(`${selectedDate} ${bookedTime}`);
+                const bookedEndTime = new Date(bookedStartTime.getTime() + 5 * 60 * 60 * 1000);
+                const bookedStartHour = bookedStartTime.getHours();
+                const bookedEndHour = bookedEndTime.getHours();
+
                 Array.from(eventTimeSelect.options).forEach(option => {
-                    option.disabled = false;
-                });
+                    const optionTime = new Date(`${selectedDate} ${option.value}`);
+                    const optionHour = optionTime.getHours();
 
-                // Disable booked time slots
-                bookedTimes.forEach(bookedTime => {
-                    Array.from(eventTimeSelect.options).forEach(option => {
-                        if (option.value === bookedTime) {
-                            option.disabled = true;
-                        }
-                    });
+                    if (optionHour >= bookedStartHour && optionHour < bookedEndHour) {
+                        option.disabled = true;
+                        option.title = "Already booked this time"; // Add hover message
+                    }
                 });
+            });
 
-                eventTimeSelect.selectedIndex = -1; // Reset selection
-            }
-        });
+            eventTimeSelect.selectedIndex = -1; // Reset selection
+        }
+    });
 
 
 
@@ -340,7 +359,7 @@ $allUnavailableDates = array_merge($fullyBookedDates, $unavailableDates);
         var bookings = JSON.parse(event.data);
         
         // Clear existing events for all statuses
-        const statuses = ['Pending', 'Accepted', 'Declined', 'Completed'];
+        const statuses = ['Pending', 'Accepted', 'Declined', 'Completed' , 'Cancelled'];
         statuses.forEach(status => {
             const eventContainer = document.querySelector(`#events-${status}`);
             eventContainer.innerHTML = ''; // Clear events
@@ -361,7 +380,7 @@ $allUnavailableDates = array_merge($fullyBookedDates, $unavailableDates);
             // Construct the HTML for the event card based on the status
             let eventCard = '';
 
-            if (status === 'Accepted' || status === 'Pending' || status === 'Declined') {
+            if (status === 'Accepted' || status === 'Pending' || status === 'Declined' || status === 'Cancelled') {
                 // Layout for Accepted, Pending, and Declined bookings
                 eventCard = `
                     <div class='event-card'>
@@ -425,6 +444,8 @@ $allUnavailableDates = array_merge($fullyBookedDates, $unavailableDates);
                     defaultMessage = "There is no Upcoming Booking.";
                 } else if (status === 'Declined') {
                     defaultMessage = "There is no Declined Booking.";
+                } else if (status === 'Cancelled') {
+                    defaultMessage = "There are no Cancelled Events.";
                 } else if (status === 'Completed') {
                     defaultMessage = "There are no Completed Events.";
                 }

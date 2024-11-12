@@ -6,7 +6,7 @@ if (isset($_POST['selected_event'])) {
     $budget = isset($_POST['budget']) ? $_POST['budget'] : null;
 
     // Query to fetch services based on selected event
-    $query = "SELECT serviceID, service_name, price, image_url, inclusions FROM services WHERE eventID = (SELECT eventID FROM event WHERE eventName = ?)";
+    $query = "SELECT serviceID, service_name, specified_service, price, image_url, inclusions FROM services WHERE eventID = (SELECT eventID FROM event WHERE eventName = ?)";
 
     if ($budget !== null && $budget !== '') {
         $query .= " AND price <= ?";
@@ -34,6 +34,7 @@ if (isset($_POST['selected_event'])) {
             echo '<div class="service-image">';
             echo '<img src="data:' . $mimeType . ';base64,' . $base64Image . '" alt="'.$row['service_name'].'" />';
             echo '<div class="service-name-overlay">';
+            echo '<p>' . $row['specified_service'] . '</p>';
             echo '<h3>' . $row['service_name'] . '</h3>';
             echo '</div>';
             echo '</div>';

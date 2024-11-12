@@ -107,11 +107,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <main class="main-container">
         <div class="admin-login-section">
             <a href="">
-                <img src="../picture/logo.png" alt="Icsm Creatives logo" class="logo">
+                <img src="../picture/logo.png" alt="Icsm Creatives logo" class="logo-admin">
             </a>
+            <div class="admin-welcome">
+                <h1>Welcome to Admin Panel <br>of ICSM CREATIVES.</h1>
+                <p>Let's make today productive!</p>
+            </div>
         </div>
         <div class="right-section">
-            <p class="credentials">Login As Administrator</p>
+            <p class="credentials">Login As Admin</p>
             <div class="bottom-con">
                 <form class="login-form" method="POST" onsubmit="return validateForm()">
                     <div class="fillup">

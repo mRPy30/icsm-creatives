@@ -108,6 +108,50 @@ if (isset($_GET['event'])) {
             field.setAttribute("type", type);
         }
 
+                // Toggle Password Visibility
+        document.getElementById('toggle-password').addEventListener('click', function () {
+            const passwordField = document.getElementById('password');
+            const toggleBtn = document.getElementById('toggle-password');
+
+            if (passwordField.type === 'password') {
+                passwordField.type = 'text';
+                toggleBtn.textContent = 'Hide';
+                passwordField.style.width = '97%';
+                passwordField.style.border = '1px solid #ddd';
+                passwordField.style.borderRadius = '4px';
+                passwordField.style.boxSizing = 'border-box';
+            } else {
+                passwordField.type = 'password';
+                toggleBtn.textContent = 'Show';
+                passwordField.style.width = '97%';
+                passwordField.style.border = '1px solid #ddd';
+                passwordField.style.borderRadius = '4px';
+                passwordField.style.boxSizing = 'border-box';
+            }
+        });
+
+        function showPopup(name, profileImage, email) {
+            document.getElementById('profile-image').src = profileImage;
+            document.getElementById('continue-button').textContent = 'Continue as ' + name;
+            document.getElementById('continue').style.display = 'block';
+
+            // Add click event to the "Continue as" button to redirect to login.php with the email
+            document.getElementById('continue-button').onclick = function () {
+                window.location.href = `login.php?email=${email}`; // Pass email in the URL
+            };
+        }
+
+        window.onload = function () {
+            // Check if there's a query parameter for an existing email
+            const urlParams = new URLSearchParams(window.location.search);
+            const name = urlParams.get('name');
+            const profileImage = urlParams.get('profile');
+            const email = urlParams.get('email');  // Get email if passed
+            if (name && profileImage && email) {
+                showPopup(name, profileImage, email);
+            }
+        };
+
         document.addEventListener('DOMContentLoaded', function () {
             const cellphoneInput = document.getElementById('cellphone');
 
@@ -134,28 +178,6 @@ if (isset($_GET['event'])) {
                 e.preventDefault();
             });
         });
-
-        function showPopup(name, profileImage, email) {
-            document.getElementById('profile-image').src = profileImage;
-            document.getElementById('continue-button').textContent = 'Continue as ' + name;
-            document.getElementById('continue').style.display = 'block';
-
-            // Add click event to the "Continue as" button to redirect to login.php with the email
-            document.getElementById('continue-button').onclick = function () {
-                window.location.href = `login.php?email=${email}`; // Pass email in the URL
-            };
-        }
-
-        window.onload = function () {
-            // Check if there's a query parameter for an existing email
-            const urlParams = new URLSearchParams(window.location.search);
-            const name = urlParams.get('name');
-            const profileImage = urlParams.get('profile');
-            const email = urlParams.get('email');  // Get email if passed
-            if (name && profileImage && email) {
-                showPopup(name, profileImage, email);
-            }
-        };
     </script>
 </body>
 

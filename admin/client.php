@@ -10,7 +10,7 @@ $components = explode('/', $path);
 $page = $components[2];
 
 // Fetch client data from the database
-$sql = "SELECT clientID, profile, name FROM client";
+$sql = "SELECT clientID, profile, name, cellphone, created_at FROM client";
 $result = $conn->query($sql);
 
 // Check if there's a result
@@ -87,6 +87,8 @@ if (isset($_POST['delete'])) {
                         <th>Client ID</th>
                         <th>Profile</th>
                         <th>Name</th>
+                        <th>Starting at</th>
+                        <th>Cellphone Number</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -95,9 +97,11 @@ if (isset($_POST['delete'])) {
                     <?php
                         foreach ($clientData as $client) {
                             echo '<tr>';
-                            echo '<td onclick="window.location.href=\'../admin/folders.php\';" style="cursor: pointer;">' . $client['clientID'] . '</td>';
-                            echo '<td onclick="window.location.href=\'../admin/folders.php\';" style="cursor: pointer;"><img src="data:image/jpeg;base64,' . base64_encode($client['profile']) . '" class="profile-image"></td>';
-                            echo '<td onclick="window.location.href=\'../admin/folders.php\';">' . $client['name'] . '</td>';
+                            echo '<td style="cursor: pointer;">' . $client['clientID'] . '</td>';
+                            echo '<td style="cursor: pointer;"><img src="data:image/jpeg;base64,' . base64_encode($client['profile']) . '" class="profile-image"></td>';
+                            echo '<td>' . $client['name'] . '</td>';
+                            echo '<td>' . date('F j, Y | g:i A', strtotime($client['created_at'])) . '</td>';
+                            echo '<td>' . $client['cellphone'] . '</td>';
                             echo '<td>
                                     <form method="POST" action="../admin/client.php">
                                         <input type="hidden" name="client_id" value="' . $client['clientID'] . '">

@@ -45,7 +45,7 @@ if (isset($_POST['delete']) && isset($_POST['expensesID'])) {
 
     if ($stmt->execute()) {
         // You may redirect or display a success message here
-        header("Location: ../admin/expenses.php");
+        header("Location: ../admin/analytics.php");
         exit();
     } else {
         // Handle errors

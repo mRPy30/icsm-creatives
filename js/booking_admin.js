@@ -126,14 +126,14 @@ let selectedMonth = ''; // Selected month filter
 
         tableBody.innerHTML = ''; 
 
-        // Filter bookings based on current status, year, and month
-        const filteredBookings = bookings.filter(booking => {
-            const bookingDate = new Date(booking.eventDate);
-            const matchesStatus = currentFilter === 'all' || booking.status.toLowerCase() === currentFilter;
-            const matchesYear = !selectedYear || bookingDate.getFullYear() === parseInt(selectedYear);
-            const matchesMonth = !selectedMonth || (bookingDate.getMonth() + 1) === parseInt(selectedMonth);
+    // Filter bookings based on current status, year, and month
+    const filteredBookings = bookings.filter(booking => {
+        const bookingDate = new Date(booking.eventDate);
+        const matchesStatus = currentFilter === 'all' || booking.status.toLowerCase() === currentFilter;
+        const matchesYear = !selectedYear || bookingDate.getFullYear() === parseInt(selectedYear);
+        const matchesMonth = !selectedMonth || (bookingDate.getMonth() + 1) === parseInt(selectedMonth);
 
-            return matchesStatus && matchesYear && matchesMonth;
+        return matchesStatus && matchesYear && matchesMonth;
     });
 
     // Update booking counts
@@ -168,34 +168,39 @@ let selectedMonth = ''; // Selected month filter
             `<a href="javascript:void(0);" onclick="seeReceipt('${booking.bookingId}', '${booking.proof_payment}')">See Receipt</a>` :
             'No Receipt';
 
-            const assignStaffButton = booking.assignedStaff && booking.assignedStaff.length > 0
+        const assignStaffButton = booking.assignedStaff && booking.assignedStaff.length > 0
             ? `<div class="staff-profiles">
-         ${booking.assignedStaff.map(staff => `
-           <div class="staff-profile">
-             ${staff.profile_picture 
-               ? `<img src="data:image/jpeg;base64,${staff.profile_picture}" 
-                      alt="${staff.staff_name || 'Staff Member'}" 
-                      class="staff-profile-pic">`
-               : `<div class="staff-profile-placeholder">
-                    ${(staff.staff_name || '?').charAt(0).toUpperCase()}
-                  </div>`
-             }
-             
-           </div>
-         `).join('')}
-       </div>`
-    : (booking.status === 'Accepted' 
-       ? `<button class="assign-btn" onclick="openAssignStaffModal('${booking.bookingId}', '${booking.service_package}')">
-            <i class="fa-solid fa-user-plus"></i>
-          </button>` 
-       : '');
+                ${booking.assignedStaff.map(staff => `
+                    <div class="staff-profile">
+                        ${staff.profile_picture 
+                            ? `<img src="data:image/jpeg;base64,${staff.profile_picture}" 
+                                   alt="${staff.staff_name || 'Staff Member'}" 
+                                   class="staff-profile-pic">`
+                            : `<div class="staff-profile-placeholder">
+                                 ${(staff.staff_name || '?').charAt(0).toUpperCase()}
+                               </div>`
+                        }
+                    </div>
+                `).join('')}
+              </div>`
+            : (booking.status === 'Accepted' 
+               ? `<button class="assign-btn" onclick="openAssignStaffModal('${booking.bookingId}', '${booking.service_package}')">
+                    <i class="fa-solid fa-user-plus"></i>
+                  </button>` 
+               : '');
 
+        // Add "Send SMS" button next to status buttons
+        const sendSmsButton = `
+            <button class="send-sms" onclick="openMessageModal('${booking.bookingId}')">Send SMS</button>
+        `;
 
         const row = `
             <tr>
                 <td>${booking.bookingId}</td>
                 <td>${statusCircle}</td>
                 <td>${booking.service_name}</td>
+                <td>${booking.additional}</td>
+                <td>${booking.specified_service}</td>
                 <td>${assignStaffButton}</td>
                 <td>${booking.client_name}</td>
                 <td>${booking.formattedEventDate} ${booking.formattedTimeRange}</td>
@@ -204,10 +209,70 @@ let selectedMonth = ''; // Selected month filter
                 <td>${booking.remaining_balance}</td>
                 <td>${receiptLink}</td>
                 <td>${statusButtons}</td>
+                <td>${sendSmsButton}</td>
             </tr>`;
         tableBody.insertAdjacentHTML('beforeend', row);
     });
 }
+
+function openMessageModal(bookingId) {
+    // Show the message modal and populate the bookingId field
+    document.getElementById('bookingId').value = bookingId;
+    document.getElementById('messageModal').style.display = 'block';
+    document.getElementById('popupOverlay').style.display = 'block';
+}
+
+function closeMessageModal() {
+    // Hide the message modal
+    document.getElementById('messageModal').style.display = 'none';
+    document.getElementById('popupOverlay').style.display = 'none';
+}
+
+function sendMessage(event) {
+    event.preventDefault();
+    // Get the form data
+    let bookingId = document.getElementById('bookingId').value;
+    let messageText = document.getElementById('message-text').value;
+
+    // Send the message, e.g., using AJAX or Semaphore SMS
+    // Replace the following with your actual implementation
+    sendMessageToCustomer(bookingId, messageText)
+        .then(() => {
+            closeMessageModal();
+            showSuccessPopup('Message sent successfully!');
+        })
+        .catch((error) => {
+            console.error('Error sending message:', error);
+            alert('Failed to send message. Please try again later.');
+        });
+}
+
+// Example implementation using AJAX
+function sendMessageToCustomer(bookingId, message) {
+    return new Promise((resolve, reject) => {
+        // Make an AJAX request to the backend to send the message
+        // Using the Fetch API for example
+        fetch('../backend/semaphore_sms.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: `booking_id=${bookingId}&message=${encodeURIComponent(message)}`
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                resolve();
+            } else {
+                reject(new Error('Failed to send message'));
+            }
+        })
+        .catch(error => {
+            reject(error);
+        });
+    });
+}
+
 
 function openAcceptPopup(bookingId) {
     document.getElementById('customPopup').style.display = 'block';
@@ -285,8 +350,6 @@ function generatePDF() {
             
             // Add company name under logo
             doc.setFontSize(20);
-            doc.text('ICSM Creatives', 60, 20); // Adjust positioning as needed
-
             let yPos = 40;
 
             // Add other content (title, date, etc.)

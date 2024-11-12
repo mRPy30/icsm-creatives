@@ -443,7 +443,7 @@
 }
 
 .flatpickr-day {
-    font: normal 500 12px/normal 'Poppins' !important;
+    font: normal 800 12px / normal 'Poppins' !important;
     color: var(--DarkColor) !important;
     border-radius: 50% !important;
     padding: 10px 0 !important;
@@ -466,7 +466,7 @@
 }
 
 .flatpickr-disabled {
-    color: gray !important;
+    color: rgb(136, 136, 136) !important;
     cursor: not-allowed !important;         
     opacity: 0.5 !important; 
 }

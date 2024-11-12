@@ -23,7 +23,7 @@ body {
 /****Dashboard*****/
 
 .dashboard {
-    margin: 6% 0 0 7%;
+    margin: 6% 1.5% 0 8%;
     padding: 1.5%; 
     display: flex;
     justify-content: space-between;
@@ -130,7 +130,7 @@ body {
 }
 
 .dashboard-bottom {
-    margin: 0% 0 0 7%;
+    margin: 0% 1.5% 0 8%;
     padding: 1% 2% 0% 1.8%; 
     display: flex;
     justify-content: space-between;
@@ -164,6 +164,8 @@ body {
     color: var(--tblColor);
     padding: 5px;
     border-radius: 10px 10px 0 0;
+    display: flex;
+    justify-content: space-between;
 }
 
 .tbl-prod h4 {
@@ -223,21 +225,51 @@ body {
 
 /*****Booking & Client*****/
 .container-admin {
-    padding: 0px 0px 20px 0px;
-    margin: 10% 0 0 10%;
+    padding: 10px 0px 20px 0px;
+    margin: 8% 0% 2% 10%;
     border-radius: 5px;
     background-color: var(--tblColor);
     height: 70%;
-    position: absolute;
     box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25), 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
     width: 87%;
+}
+
+.container-bottom {
+    margin: 0% 1.5% 0 8%;
+    padding: 1% 2% 0% 1.8%; 
+    display: flex;
+    justify-content: space-between;
+}
+
+.tbl-admin{
+    flex: 1 1 calc(47.666% - 10px);
+    background-color: var(--tblColor);
+    border-radius: 10px;
+    height: 47vh;
+    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+    margin: 0px 20px 0px 5px;
+}
+
+.tbl-admin1 {
+    flex: 1 1 calc(33.333% - 10px);
+    background-color: var(--tblColor); 
+    padding: 0px 0px 50px 0px;
+    height: 47vh;
+    border-radius: 10px;
+    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+}
+
+.title-bar {
+    background-color: var(--hoverDark);
+    color: var(--tblColor);
+    padding: 15px;
+    border-radius: 10px 10px 0 0;
+    font: normal 600 15px/normal 'Poppins';
 }
 
 .accept-decline-form {
     display: inline-block; 
 }
-
-
 
 .accept{
     background-color: var(--acceptColor);
@@ -384,7 +416,6 @@ body {
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    margin: 0px 20px 10px 0px;
     box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.2);
 }
 
@@ -393,6 +424,17 @@ body {
 }
 
 #download-btn {
+    border: 2px solid var(--themeColor);
+    color: var(--themeColor);
+    padding: 3px 7px;
+    border-radius: 5px;
+    cursor: pointer;
+    font: normal 600 13px/normal 'Poppins';
+    box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.2);
+    background: var(--BgColor);
+}
+
+.send-sms {
     border: 2px solid var(--themeColor);
     color: var(--themeColor);
     padding: 3px 7px;
@@ -547,8 +589,72 @@ td .profile-image {
     background-color: #e1e1e1; 
 }
 
-.recommended-staff {
-    margin: 20px 0;
+#recommendedStaff h4{
+    font: normal 500 18px/normal 'Poppins';
+}
+
+.recommended-staff{
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    justify-content: center;
+    padding: 10px 0;
+}
+
+.staff-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    padding: 10px;
+    width: 15vw;    
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.staff-card img{
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 10px;
+    border: 1px solid var(--borderTble)
+}
+
+.staff-name{
+    font: normal 600 15px/normal 'Poppins';
+}
+
+.staff-role{
+    font: normal 400 12px/normal 'Poppins';
+    color: var(--hoverDark);
+}
+
+.form-staff h2{
+    font: normal 500 20px/normal 'Poppins';
+    text-align: center;
+    margin: 10px 0;
+}
+
+.staff-profile-pic {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 10px;
+}
+.staff-profile-placeholder {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background-color: #ccc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    color: #fff;
+    margin-bottom: 10px;
 }
 
 .popup-admin{
@@ -570,43 +676,6 @@ td .profile-image {
 .popup-admin h3{
     font: normal 500 25px/normal 'Poppins';
     margin-bottom: 10px;
-}
-
-.staff-card {
-    display: flex;
-    align-items: center;
-    padding: 10px;
-    border: 1px solid var(--hoverDark);
-    border-radius: 8px;
-    margin-bottom: 10px;
-}
-
-.profile-pic {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    margin-right: 15px;
-}
-
-.staff-info {
-    flex-grow: 1;
-}
-
-.staff-name {
-    font-weight: bold;
-    margin-bottom: 2px;
-}
-
-.staff-role {
-    color: #666;
-    font-size: 0.9em;
-}
-
-.staff-selections {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    margin: 20px 0;
 }
 
 .select-wrapper select {
@@ -1340,7 +1409,7 @@ button#acceptNo:hover {
 
 /******Admin Account*******/
 .account {
-    margin: 4.5% 0 0 14%;
+    margin: 5% 0% 0% 8%;
     padding: 3%;
     display: flex;
     justify-content: space-between;
@@ -1511,107 +1580,111 @@ form .profile-section p{
 }
 
 /********analytics*******/
-.analytics {
-    margin: 5% 0 0 14%;
-    padding: 1.8% 3% 0% 3%;
-    display: flex;
-    flex-direction: column;
+.layout-admin {
+    margin: 8% 0% 0% 10%;
+    height: 70%;
+    width: 87%;
 }
 
-.row {
-    display: flex;
-    flex-direction: row;
-    width: 100%;
-    justify-content: space-between;
-    margin-bottom: 15px; 
-}
-
-.row h3{
-    font: normal 600 19px/normal 'Poppins';
-}
-.row .select{
-    display: flex;
-    flex-direction: row;
-}
-.row .select button{
-    border: none;
-    border-radius: 10px;
-    background: #FFF;
-    width: 50%;
-    margin-left: 20px;
-    font: normal 500 13px/normal 'Poppins';
-    transition: background-color 0.3s ease-in-out;
-    padding: 0 20px;
-}
-.row .select button:hover{
-    background-color: #f5f3b8;
-}
-.row button i{
-    background-color: none;
-    font-size: small;
-    margin-right: 2px;
-}
-
-.row .select #monthSelect{
-    border: none;
-    border-radius: 10px;
-    background: #FFF;
-}
-.row .select #monthSelectt:focus{
-    outline: none;
-}
-.middle-section {
+.top-analytics{
     display: flex;
     flex-direction: row;
     justify-content: space-between;
 }
 
-.column {
-    padding-top: 7px;
-    width: 30%; 
-}
-.col-box {
-    margin-bottom: 7%;
-    height: 22.5vh;
+.analytics-item {
     flex: 1;
-    background-color: #FCF6F6;
-    width: 100%;
+    background-color: var(--hoverDark);
+    padding: 20px;
     border-radius: 10px;
-    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.2);
     display: flex;
+    margin-right: 10px;
     align-items: center;
-    padding: 30px;
+    cursor: pointer;
+    transition: all .5s ease;
 }
-.col-box h2 {
-    font: normal 700 35px/normal 'Poppins';
-    color: #1c1c1c;
+
+.analytics-item-content {
+    flex: 1;
+}
+
+.analytics-item h2 {
+    font: normal 700 28px/normal 'Poppins';
+    color: var(--tblColor);
     margin: 0; 
 }
 
-.col-box p {
-    font: normal 15px/normal 'Poppins';
-    color: #555555;
+.analytics-item p {
+    font: normal 12px/normal 'Poppins';
+    color: var(--tblColor);
     margin-bottom: 10px;
 }
 
-.databox {
-    padding-top: 7px;
-    width: 65%;
+.expense-info, .revenue-info {
+    background-color: #333;
+    color: #fff;
+    padding: 10px;
+    border-radius: 5px;
+    text-align: center;
 }
 
-.graphs{
-    padding: 20px 20px 50px 20px;
-    margin-bottom: 2.3%;
-    background-color: #FCF6F6;
-    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+.left-analytics {
+    display: flex;
+    margin-bottom: 20px;
+    flex-direction: column;
+}
+
+.container-items{
+    display: flex;
+    flex-direction: row;
+    width: 43vw;
+}
+
+.total-bookings {
     width: 100%;
-    height: 36vh;
-}
-.graphs h4{
-    font: normal 700 15px/normal 'Poppins';
-    color: #1c1c1c;
+    background-color: var(--tblColor);
+    border-radius: 5px;
+    margin-top: 20px;
+    border-radius: 5px;
+    background-color: var(--tblColor);
+    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25), 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+    height: 35vh;
 }
 
+.services-bar-graph {
+    width: 48%;
+    background-color: var(--tblColor);
+    padding: 10px;
+    border-radius: 5px;
+    background-color: var(--tblColor);
+    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25), 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+    height: 52vh;
+}
+
+.total-bookings table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.total-bookings th, .total-bookings td {
+    padding: 8px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.client-pie-chart {
+    width: 47.5%;
+    background-color: var(--tblColor);
+    padding: 10px;
+    border-radius: 5px;
+    background-color: var(--tblColor);
+    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25), 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+}
+
+#servicesBarGraph , #clientPieChart{
+    max-height: 280px;
+}
 /******Finance********/
 .finance{
     margin: 5% 0 0 14%;

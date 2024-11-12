@@ -9,33 +9,48 @@ use PHPMailer\PHPMailer\Exception;
 require '../vendor/autoload.php';
 
 // Function to send acceptance email
-function sendAcceptanceEmail($to) {
+function sendAcceptanceEmail($clientEmail) {
     $subject = 'Booking Accepted';
-    $body = "Your booking has been accepted. Thank you for choosing our service.";
-    return sendEmail($to, $subject, $body);
+    $body = 
+    "Dear Ma'm and Sir, <br><br>"
+
+    . " Thank you for choosing ICSM Creatives! We are excited to confirm your booking for [Event Type:] Your event is scheduled for Date, at Location: <br><br>"
+
+      . "  Important Information: <br><br>"
+        . "  Terms and Conditions: Please review our Terms and Conditions for event service agreements. <br>"
+           ." Cancellation and Refund Policy: For details on changes or cancellations, see our Cancellation and Refund Policy. <br>"
+
+            ."For changes or questions, feel free to contact us at +63 934567899. We can't wait to capture your special moments!<br>"
+            ."Warm regards, <br>"
+            ."Gycia Moran Client <br>"
+            ."Relations Manager <br>"
+            ."ICSM Creatives[Website] | [Phone Number] | [Email]<br>"
+            ."Follow us on: <br>"
+            ."[Instagram] <br>"
+            ."[Facebook] <br>"
+            ."[Twitter]<br>";
+    return sendEmail($clientEmail, $subject, $body);
 }
 
 // Function to send decline email
-function sendDeclineEmail($to, $reason) {
+function sendDeclineEmail($clientEmail, $reason) {
     $subject = 'Booking Declined';
     $body = "We regret to inform you that your booking has been declined due to the following reason: $reason. Please contact us for further assistance.";
-    return sendEmail($to, $subject, $body);
+    return sendEmail($clientEmail, $subject, $body);
 }
 
 // Function to send email
 function sendEmail($to, $subject, $body) {
-    $mail = new PHPMailer(true); // Set to true for exceptions
-
+    $mail = new PHPMailer(true); 
     try {
         // Server settings
-        $mail->SMTPDebug = SMTP::DEBUG_SERVER; // Enable verbose debug output
-        $mail->isSMTP(); // Send using SMTP
-        $mail->Host       = 'smtp.gmail.com'; // Set the SMTP server to send through
-        $mail->SMTPAuth   = true; // Enable SMTP authentication
-        $mail->Username   = 'icsm230510@gmail.com'; // SMTP username
-        $mail->Password   = 'ptls kdfd prcs mngd'; // SMTP password
-        $mail->SMTPSecure = 'ssl'; // Enable implicit TLS encryption
-        $mail->Port       = 465; // TCP port to connect to; use 587 if you have set `SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS`
+        $mail->isSMTP(); 
+        $mail->Host       = 'smtp.gmail.com'; 
+        $mail->SMTPAuth   = true; 
+        $mail->Username   = 'icsm230510@gmail.com'; 
+        $mail->Password   = 'ptls kdfd prcs mngd'; 
+        $mail->SMTPSecure = 'ssl'; 
+        $mail->Port       = 465; 
 
         // Recipients
         $mail->setFrom('araquejanvier@gmail.com');
@@ -63,13 +78,21 @@ if (isset($_POST['accept'])) {
 
     if ($conn->query($updateSql) === true) {
         // Retrieve client's email
-        $getEmailQuery = "SELECT c.email FROM booking AS b LEFT JOIN client AS c ON b.clientID = c.id WHERE b.bookingId = $scheduleId";
+        $getEmailQuery = "SELECT c.email FROM booking AS b JOIN client AS c ON b.clientID = c.clientID WHERE b.bookingId = $scheduleId";
         $result = $conn->query($getEmailQuery);
         if ($result->num_rows > 0) {
             $row = $result->fetch_assoc();
             $clientEmail = $row['email'];
-            // Send acceptance email
-            sendAcceptanceEmail($clientEmail);
+            if (!empty($clientEmail)) {
+                // Send acceptance email
+                if (!sendAcceptanceEmail($clientEmail)) {
+                    // Log the error if email sending fails
+                    error_log("Error sending acceptance email to: $clientEmail");
+                }
+            } else {
+                // Log the error if client email is not available
+                error_log("Client email not available for booking ID: $scheduleId");
+            }
         }
 
         // Booking has been accepted
@@ -92,13 +115,21 @@ elseif (isset($_POST['decline'])) {
 
     if ($conn->query($updateSql) === true) {
         // Retrieve client's email
-        $getEmailQuery = "SELECT c.email FROM booking AS b LEFT JOIN client AS c ON b.clientID = c.id WHERE b.bookingId = $scheduleId";
+        $getEmailQuery = "SELECT c.email FROM booking AS b JOIN client AS c ON b.clientID = c.clientID WHERE b.bookingId = $scheduleId";
         $result = $conn->query($getEmailQuery);
         if ($result->num_rows > 0) {
             $row = $result->fetch_assoc();
             $clientEmail = $row['email'];
-            // Send decline email
-            sendDeclineEmail($clientEmail, $reason);
+            if (!empty($clientEmail)) {
+                // Send decline email
+                if (!sendDeclineEmail($clientEmail, $reason)) {
+                    // Log the error if email sending fails
+                    error_log("Error sending decline email to: $clientEmail");
+                }
+            } else {
+                // Log the error if client email is not available
+                error_log("Client email not available for booking ID: $scheduleId");
+            }
         }
 
         header("Location: ../admin/booking.php");

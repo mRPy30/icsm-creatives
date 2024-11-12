@@ -2,6 +2,18 @@
 session_start();
 include '../backend/dbcon.php';
 
+// Query to fetch additional services
+$sqlAdditionalServices = "SELECT additionalID, add_name, price, add_at FROM service_add";
+$resultAdditionalServices = $conn->query($sqlAdditionalServices);
+
+// Array to store the data
+$additionalServices = array();
+if ($resultAdditionalServices->num_rows > 0) {
+    while ($row = $resultAdditionalServices->fetch_assoc()) {
+        $additionalServices[] = $row;
+    }
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -44,9 +56,6 @@ include '../backend/dbcon.php';
             <h4>Service Ratings</h4> 
             <button class="btn-admin" onclick="openAddServiceModal()"> <i class="fa-solid fa-plus"></i> Add New Service</button>
         </div>
-        <div class="tabs">   
-            
-        </div>
         <div class="tbl-container">
             <table class="header-table">
                 <thead>
@@ -55,13 +64,83 @@ include '../backend/dbcon.php';
                         <th>Event Name</th>
                         <th>Service Name</th>
                         <th>Price</th>
+                        <th>Image</th>
                         <th>Inclusions</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody id="services-table-body">
+                    
                 </tbody>
             </table>
+        </div>
+    </section>
+
+    <section class="container-bottom">
+        <div class="tbl-admin">
+            <div class="title-bar">
+                <h4>Additional Services</h4>
+                <button class="btn-admin" onclick="showPopup()"> 
+                    <i class="fa-solid fa-plus"></i> New Additional Service
+                </button>
+            </div>
+            <div class="tbl-container">
+                <table class="header-table">
+                    <thead>
+                        <tr>
+                            <th>Additional ID</th>
+                            <th>Additional Name</th>
+                            <th>Price</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php if (empty($additionalServices)) : ?>
+                            <tr>
+                                <td colspan="4" style="text-align: center;">No additional services found.</td>
+                            </tr>
+                        <?php else : ?>
+                            <?php foreach ($additionalServices as $service) : ?>
+                                <tr>
+                                    <td><?php echo $service['additionalID']; ?></td>
+                                    <td><?php echo htmlspecialchars($service['add_name']); ?></td>
+                                    <td><?php echo number_format($service['price'], 2); ?></td>
+                                    <td>
+                                        <button class="edit-admin" onclick="editAdditionalService(<?php echo $service['additionalID']; ?>)">
+                                            <i class="fas fa-edit"></i> Edit
+                                        </button>
+                                        <button class="delete-admin" onclick="deleteAdditionalService(<?php echo $service['additionalID']; ?>)">
+                                            <i class="fas fa-trash"></i> Delete
+                                        </button>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="tbl-admin1">
+            <div class="title-bar">
+                <h4>Promo Discount %</h4>
+                <button class="btn-admin" onclick="popupDiscount()"> <i class="fa-solid fa-plus"></i> New Discount</button>
+            </div>
+            <div class="table-container">
+                <table class="header-table">
+                    <thead>
+                        <tr>
+                            <th>Discount ID</th>
+                            <th>Discount Name</th>
+                            <th>Off</th>
+                            <th colspan="2">Valid Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="">
+
+                    </tbody>
+                </table>
+            </div>
         </div>
     </section>
     <div id="addServiceModal" class="popup-admin">
@@ -79,7 +158,11 @@ include '../backend/dbcon.php';
             </div>
             <div class="form-group">
                 <label>Specified Service</label>
-                <input type="text" name="specified_service" required>
+                <select name="specified_service" required>
+                    <option value="">Select Service</option>
+                    <option value="Photo Only">Photo Only</option>
+                    <option value="Photo and Video">Photo and Video</option>
+                </select>
             </div>
             <div class="form-group">
                 <label>Price</label>
@@ -97,19 +180,81 @@ include '../backend/dbcon.php';
         </form>
     </div>
 
-<div class="popup-overlay" id="popupOverlay"></div>
-<div class="success-popup" id="successPopup">
-    <div class="icon">
-        <i class="fas fa-check-circle"></i>
+    <div id="popup" class="popup-admin">
+        <span class="close" onclick="hidePopup()">&times;</span>
+        <h3>Additonal Service</h3>
+        <form id="" onsubmit="addServices()">
+            <input type="hidden" name="serviceAddID">
+            <div class="form-group">
+                <label>Additional Service Name</label>
+                <input type="text" name="additonal_name" required>
+            </div>
+            <div class="form-group">
+                <label>Price</label>
+                <input type="number" name="price" required>
+            </div>
+            <button class="submit-btn" type="submit">Save new Additional Services</button>
+        </form>
     </div>
-    <div class="message" id="popupMessage"></div>
-    <button class="ok-btn" onclick="closeSuccessPopup()">OK</button>
-</div>
+
+    <div id="popupDiscount" class="popup-admin">
+        <span class="close" onclick="hideDiscount()">&times;</span>
+        <h3>Promo Discount</h3>
+        <form id="" onsubmit="addServices()">
+            <input type="hidden" name="serviceAddID">
+            <div class="form-group">
+                <label>Discount Name</label>
+                <input type="text" name="additonal_name" required>
+            </div>
+            <div class="form-group">
+                <label>Price</label>
+                <input type="number" name="price" required>
+            </div>
+            <button class="submit-btn" type="submit">Add New Discount</button>
+        </form>
+    </div>
+
+    <div class="popup-overlay" id="popupOverlay"></div>
+    <div class="success-popup" id="successPopup">
+        <div class="icon">
+            <i class="fas fa-check-circle"></i>
+        </div>
+        <div class="message" id="popupMessage"></div>
+        <button class="ok-btn" onclick="closeSuccessPopup()">OK</button>
+    </div>
 <!----Navbar&Sidebar----->
     
 
 </body>
 <script>
+    // Functions for handling additional services (edit, delete, etc.)
+
+    function editAdditionalService(id) {
+        document.getElementById("popup").style.display = "block";
+
+        }
+
+        function deleteAdditionalService(id) {
+            document.getElementById("popup").style.display = "block";
+
+        }
+
+        function showPopup(){
+            // Function to open the modal for adding a new additional service
+            document.getElementById("popup").style.display = "block";
+            // Additional code for opening the modal can be added here
+        }
+        function hidePopup(){
+        document.getElementById('popup').style.display = 'none';
+    }
+
+    function popupDiscount(){
+        document.getElementById("popupDiscount").style.display = "block";
+    }
+    function hideDiscount(){
+        document.getElementById('popupDiscount').style.display = 'none';
+    }
+
     let services = [];
     const tableBody = document.getElementById('services-table-body');
 
@@ -136,12 +281,17 @@ include '../backend/dbcon.php';
         }
 
         services.forEach(service => {
+        const imageHtml = service.image_url
+            ? `<img src="data:image/jpeg;base64,${service.image_url}" alt="Service Image" style="width: 100px; height: auto;">`
+            : 'No Image';
+
             const row = `
                 <tr>
                     <td>${service.serviceID}</td>
                     <td>${service.eventName || 'N/A'}</td>
                     <td>${service.service_name}</td>
                     <td>${service.price}</td>
+                    <td>${imageHtml}</td>
                     <td>${service.inclusions}</td>
                     <td>
                         <button class="edit-admin" name="edit" onclick="editService('${service.serviceID}')" class="edit-btn">

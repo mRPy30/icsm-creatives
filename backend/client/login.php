@@ -1,10 +1,13 @@
 <?php
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = $conn->real_escape_string($_POST['email']);
-    $password = $_POST['password'];
+    $password = mysqli_real_escape_string($conn, md5($_POST["password"]));
 
     $sql = "SELECT clientID, password FROM client WHERE email='$email'";
     $result = $conn->query($sql);
+
+    // Hash the user's input password with md5
+    $hashedPassword = md5($password);
 
     if ($result->num_rows > 0) {
         $row = $result->fetch_assoc();

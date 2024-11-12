@@ -203,7 +203,7 @@
                 </li>
                 <li class="nav-link">
                     <span class="top_curve"></span>
-                    <a href="services.php" title="Service Ratings Management" class="<?php if ($page == "..admin/services.php") {
+                    <a href="services.php" title="Service Management" class="<?php if ($page == "..admin/services.php") {
                         echo "nav-link active";
                     } else {
                         echo "nav-link";
@@ -212,11 +212,11 @@
                 </li>
                 <li class="nav-link">
                     <span class="top_curve"></span>
-                    <a href="expenses.php" title="Expenses Budget" class="<?php if ($page == "..admin/expenses.php") {
+                    <a href="events.php" title="Event Management" class="<?php if ($page == "..admin/events.php") {
                         echo "nav-link active";
                     } else {
                         echo "nav-link";
-                    } ?> "><i class="fa-solid fa-money-bill-trend-up"></i></a>
+                    } ?> "><i class="fa-regular fa-calendar-plus"></i></a>
                     <span class="bottom_curve"></span>
                 </li>
                 <li class="nav-link">

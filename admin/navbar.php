@@ -24,16 +24,14 @@ if ($result->num_rows > 0) {
 $pageTitles = array(
     "dashboard.php" => "Admin Dashboard",
     "booking.php" => "Booking Management",
-    "calendar.php" => "Calendar Details",
     "client.php" => "Client Management",
     "folders.php" => "Gallery Management",
     "gallery.php" => "Client Name Gallery",
     "feedback.php" => "Feedback Management",
     "details.php" => "Feedback details",
     "analytics.php" => "Analytics / Records",
-    "finance.php" => "Finance",
-    "expenses.php" => "Expenses Reports",
-    "content.php" => "Content Management",
+    "services.php" => "Services Management",
+    "events.php" => "Event Management",
     "account.php" => "Admin account Settings",
     "production.php" => "Production Management"
 );

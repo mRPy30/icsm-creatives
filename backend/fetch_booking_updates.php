@@ -13,8 +13,8 @@ $endTime = time() + $timeout;
 while (time() <= $endTime) {
     // Modify query to join booking, client, services, booking_staff, and staff tables
     $sql = "
-    SELECT b.bookingId, b.clientID, b.eventLocation, b.proof_payment, b.status, b.service_package, b.eventDate, b.event_time, b.payment_option, b.remaining_balance,
-           c.name as client_name, s.service_name
+    SELECT b.bookingId, b.clientID, b.eventLocation, b.additional, b.proof_payment, b.status, b.service_package, b.eventDate, b.event_time, b.payment_option, b.remaining_balance,
+           c.name as client_name, s.service_name , s.specified_service
     FROM booking b
     LEFT JOIN client c ON b.clientID = c.clientID
     LEFT JOIN services s ON b.service_package = s.serviceID

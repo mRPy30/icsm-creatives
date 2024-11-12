@@ -18,8 +18,15 @@ if (isset($_SESSION['clientID'])) {
         $clientName = $row['name'];
         $profilePicture = $row['profile']; // Assuming this is the BLOB data for the profile picture
 
-        // Convert the profile picture BLOB to base64
-        $profilePictureBase64 = base64_encode($profilePicture);
+        // Check if profile picture is empty or null
+        if (empty($profilePicture)) {
+            // Use default profile image if profile picture is missing
+            $profilePicturePath = '../picture/default_profile.jpg';
+            $profilePictureBase64 = base64_encode(file_get_contents($profilePicturePath));
+        } else {
+            // Convert the profile picture BLOB to base64
+            $profilePictureBase64 = base64_encode($profilePicture);
+        }
     } else {
         $clientName = "Guest";
         $profilePictureBase64 = null; // No profile picture for guest
@@ -29,18 +36,8 @@ if (isset($_SESSION['clientID'])) {
     $profilePictureBase64 = null; // No profile picture if not logged in
 }
 
-$pageTitles = array(
-    "booking.php" => "Booking Event",
-    "calendar.php" => "Calendar Details",
-    "contacts.php" => "Message",
-    "feedback.php" => "Feedback",
-    "profile.php" => "My Profile",
-    "gallery.php" => "My Gallery",
-);
+// Page titles, navigation, etc. (rest of the code remains unchanged)
 
-$currentPage = basename($_SERVER['SCRIPT_NAME']); 
-
-$pageTitle = isset($pageTitles[$currentPage]) ? $pageTitles[$currentPage] : "Booking Event";
 ?>
 <style>
     
@@ -447,7 +444,6 @@ $pageTitle = isset($pageTitles[$currentPage]) ? $pageTitles[$currentPage] : "Boo
             <div class="profile_info">
             <?php if ($clientName != "Guest") { ?>
                 <div class="profile_dropdown">
-                    <!-- Profile Info (Name + Picture) -->
                     <div class="profile_pic">
                         <div class="name">
                             <h3><?php echo htmlspecialchars($clientName); ?></h3>
@@ -455,7 +451,6 @@ $pageTitle = isset($pageTitles[$currentPage]) ? $pageTitles[$currentPage] : "Boo
                         </div>
                         <img src="data:image/jpeg;base64,<?php echo $profilePictureBase64; ?>" alt="Profile Picture">
                     </div>
-                    <!-- Dropdown Menu -->
                     <div class="profile_dropdown-content">
                         <a href="profile.php">My Profile</a>
                         <a href="login.php" class="logout-btn">Logout</a>

@@ -11,17 +11,6 @@ if (!$selected_event) {
     echo "No event selected!";
     exit;
 }
-
-$additional_services = [
-    'Same Day Editing' => 4000,
-    'Virtual Invitation' => 700,
-    'Throwback Presentation' => 2000,
-    'Props and Background' => 2500,
-    'Drone Shot' => 8000,
-    'Extended 1 Hour' => 8000,
-    'Add 1 Photographer' => 1500
-];
-
 if (isset($_POST['additional_services'])) {
     $_SESSION['additional_services'] = $_POST['additional_services'];
 }
@@ -49,6 +38,12 @@ $stmt->bind_param('s', $selected_event);
 $stmt->execute();
 $result = $stmt->get_result();
 $services = $result->fetch_all(MYSQLI_ASSOC);
+
+
+// Fetch additional services from service_add table
+$additional_query = "SELECT additionaID, add_name, price, add_at FROM service_add";
+$additional_result = $conn->query($additional_query);
+$additional_services = $additional_result->fetch_all(MYSQLI_ASSOC);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -139,26 +134,28 @@ $services = $result->fetch_all(MYSQLI_ASSOC);
                                 </div>
 
                                 <h2>Additional Services:</h2>
-                                <div class="add-services">
-                                    <div class="column">
-                                        <?php 
-                                        $half = ceil(count($additional_services) / 2); // Divide into 2 columns
-                                        $i = 0;
-                                        foreach ($additional_services as $service => $price): 
-                                            if ($i == $half): 
-                                        ?>
+                                <div class="price">
+                                    <div class="add-services">
+                                        <div class="column">
+                                            <?php
+                                            $half = ceil(count($additional_services) / 2);
+                                            $i = 0;
+                                            foreach ($additional_services as $service) {
+                                                if ($i == $half) echo '</div><div class="column">';
+                                                echo '<label>';
+                                                echo '<input type="checkbox" name="additional_services[]" value="' . $service['price'] . '">';
+                                                echo htmlspecialchars($service['add_name']) . ' (PHP ' . number_format($service['price'], 2) . ')';
+                                                echo '</label><br>';
+                                                $i++;
+                                            }
+                                            ?>
+                                        </div>
                                     </div>
-                                    <div class="column"> <!-- Start second column -->
-                                        <?php endif; ?>
-                                        <label>
-                                            <input type="checkbox" name="additional_services[]" value="<?php echo $price; ?>">
-                                            <?php echo $service; ?> (PHP <?php echo number_format($price, 2); ?>)
-                                        </label><br>
-                                        <?php $i++; endforeach; ?>
-                                    </div>
-                                </div>
                                 <div class="buttons-book">
-                                    <h1>Total Price: PHP <span id="totalPrice">0.00</span></h1>
+                                    <div class="total-price">
+                                        <h1>Total Price: (₱) <span id="totalPrice">0.00</span></h1>
+                                        <p id="discountInfo" style="display: none;"> Saved <span id="discountPercentage"></span> <span id="discountAmount"></span></p>
+                                    </div>
                                     <input type="hidden" name="total_price" id="totalPriceInput" value="0">  
                                     <button id="next" type="submit">Next</button>
                                 </div>
@@ -290,15 +287,42 @@ $(document).ready(function() {
     });
 
     function updateTotal() {
-        let total = 0;
-        // Add selected services prices
-        selectedServices.forEach(service => total += service.price);
-        // Add additional services prices
-        selectedAdditionalServices.forEach(service => total += service.price);
+    let total = 0;
+    let allRecommendedServicesSelected = true;
 
-        $('#totalPrice').text(total.toFixed(2));
-        $('#totalPriceInput').val(total.toFixed(2));
+    // Add selected services prices
+    selectedServices.forEach(service => {
+        total += service.price;
+        if (!$(`[data-serviceid="${service.id}"]`).hasClass('selected')) {
+            allRecommendedServicesSelected = false;
+        }
+    });
+
+    // Add additional services prices
+    selectedAdditionalServices.forEach(service => total += service.price);
+
+    // Apply 20% discount if all recommended services are selected
+    if (allRecommendedServicesSelected) {
+        const discountedTotal = total * 0.8; // Apply 20% discount
+        total = discountedTotal;
+        allRecommendedSelected = true;
+    } else {
+        allRecommendedSelected = false;
     }
+
+    // Update the total price display
+    $('#totalPrice').text(total.toFixed(2));
+    $('#totalPriceInput').val(total.toFixed(2));
+
+    // Display the discount information
+    if (allRecommendedSelected) {
+        $('#discountInfo').show();
+        $('#discountPercentage').text('20%');
+        $('#discountAmount').text((total * 0.2).toFixed(2));
+    } else {
+        $('#discountInfo').hide();
+    }
+}
 });
 
 </script>
