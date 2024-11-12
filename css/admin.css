@@ -3,6 +3,7 @@
     padding: 0;
     margin: 0;
 }
+
 :root {
     --BgColor: #EEEEEE;
     --DarkColor: #1C1C1D;
@@ -19,6 +20,7 @@ body {
     background-color: var(--BgColor);
     overflow-x: hidden;
 }
+
 
 /****Dashboard*****/
 
@@ -49,7 +51,7 @@ body {
 .dashboard-item h2 {
     font: normal 700 35px/normal 'Poppins';
     color: #1c1c1c;
-    margin: 0; 
+    margin: 0;
 }
 
 .metric-container {
@@ -107,19 +109,19 @@ body {
     color: var(--tblColor) !important;
 }
 
-.icon-container-client{
+.icon-container-client {
     background-image: linear-gradient(147deg, #BC8759 0%, #77563D 100%);
     border-radius: 5%;
     padding: 15px;
 }
 
-.icon-container-chart{
+.icon-container-chart {
     background-image: linear-gradient(147deg, #BC8759 0%, #77563D 100%);
     border-radius: 5%;
     padding: 15px;
 }
 
-.icon-container-rate{
+.icon-container-rate {
     background-image: linear-gradient(147deg, #BC8759 0%, #77563D 100%);
     border-radius: 5%;
     padding: 15px;
@@ -136,7 +138,7 @@ body {
     justify-content: space-between;
 }
 
-.pendings{
+.pendings {
     flex: 1 1 calc(47.666% - 10px);
     background-color: var(--tblColor);
     border-radius: 10px;
@@ -147,12 +149,12 @@ body {
 
 .pendings h4 {
     font: normal 600 15px/normal 'Poppins';
-    margin: 10px; 
+    margin: 10px;
 }
 
 .tbl-prod {
     flex: 1 1 calc(33.333% - 10px);
-    background-color: var(--tblColor); 
+    background-color: var(--tblColor);
     padding: 0px 0px 50px 0px;
     height: 47vh;
     border-radius: 10px;
@@ -169,8 +171,8 @@ body {
 }
 
 .tbl-prod h4 {
-    font: normal 600 15px/normal 'Poppins';
-    margin: 10px; 
+    font: normal 600 152px/normal 'Poppins';
+    margin: 10px;
 }
 
 .prod-table {
@@ -179,7 +181,8 @@ body {
     font: normal 15px/normal 'Poppins';
 }
 
-.prod-table th, .prod-table td {
+.prod-table th,
+.prod-table td {
     border-bottom: 1px solid var(--tblColor);
 }
 
@@ -191,7 +194,7 @@ body {
 }
 
 .prod-table .td-name span {
-    font: normal 400 11px/normal 'Poppins'; 
+    font: normal 400 11px/normal 'Poppins';
     color: #929292;
 }
 
@@ -210,7 +213,6 @@ body {
     overflow-y: auto;
 }
 
-
 .table-container::-webkit-scrollbar {
     width: 8px;
 }
@@ -223,7 +225,9 @@ body {
     background-color: #FCF6F6;
 }
 
+
 /*****Booking & Client*****/
+
 .container-admin {
     padding: 10px 0px 20px 0px;
     margin: 8% 0% 2% 10%;
@@ -268,7 +272,7 @@ body {
 }
 
 .accept-decline-form {
-    display: inline-block; 
+    display: inline-block;
 }
 
 .accept{
@@ -284,7 +288,8 @@ body {
     cursor: pointer;
     text-decoration: none;
 }
-.accept:hover{
+
+.accept:hover {
     background-color: #00861f;
     transition: 0.4s;
 }
@@ -302,11 +307,11 @@ body {
     cursor: pointer;
     text-decoration: none;
 }
-.decline:hover{
+
+.decline:hover {
     background-color: rgb(172, 3, 0);
     transition: 0.4s;
 }
-
 
 .status-circle {
     width: 15px;
@@ -343,7 +348,7 @@ body {
     margin-top: 8px;
 }
 
-.sort{
+.sort {
     margin: 20px 0px 5px 10px;
 }
 
@@ -385,9 +390,12 @@ body {
     color: #666;
     font-style: italic;
 }
- #year-select , #month-select{
+
+#year-select,
+#month-select {
     padding: 4px 15px;
-    border: 1px solid #FCF6F6;;
+    border: 1px solid #FCF6F6;
+    ;
     border-radius: 5px;
     box-sizing: border-box;
     font: normal 400 13px/normal 'Poppins';
@@ -455,25 +463,26 @@ body {
     background: transparent;
     transition: border-color 0.2s;
 }
+
 .search-bar #booking-search::placeholder {
     color: #9b9b9b;
     font: normal 13px/normal 'Poppins';
 }
 
-.search-bar #booking-search:focus{
-  border-width: 3px;
-  border-image: linear-gradient(to right, #C2BE63, #c0b71a);
-  border-image-slice: 1;
-  font: normal 13px/normal 'Poppins';
+.search-bar #booking-search:focus {
+    border-width: 3px;
+    border-image: linear-gradient(to right, #C2BE63, #c0b71a);
+    border-image-slice: 1;
+    font: normal 13px/normal 'Poppins';
 }
-.search-bar button{
+
+.search-bar button {
     margin-top: 7%;
 }
 
 
+/***Table Style***/
 
-
-/***Table Style***/ 
 .header-table {
     border-collapse: collapse;
     width: 100%;
@@ -514,7 +523,8 @@ body {
     background-color: #FCF6F6;
 }
 
-th, td {
+th,
+td {
     text-align: left;
     padding: 10px;
     border: 1px solid #CCCCCC;
@@ -526,7 +536,6 @@ th {
     top: 0;
     z-index: 2;
 }
-
 
 td form button[name="delete"] {
     background-color: var(--declineColor);
@@ -542,7 +551,7 @@ td form button[name="delete"] {
     text-decoration: none;
 }
 
-td form button[name="delete"]:hover{
+td form button[name="delete"]:hover {
     background-color: rgb(172, 3, 0);
     transition: 0.4s;
 }
@@ -561,20 +570,18 @@ td form button[name="delete"]:hover{
     text-decoration: none;
 }
 
-.delete-admin:hover{
+.delete-admin:hover {
     background-color: rgb(172, 3, 0);
     transition: 0.4s;
 }
 
-
 td .profile-image {
-    width: 50px; 
-    height: 50px; 
-    border-radius: 50%; 
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
 }
 
-
-.assign-btn{
+.assign-btn {
     padding: 5px;
     border-radius: 100px;
     background-color: transparent;
@@ -586,7 +593,7 @@ td .profile-image {
 }
 
 .assign-btn:hover {
-    background-color: #e1e1e1; 
+    background-color: #e1e1e1;
 }
 
 #recommendedStaff h4{
@@ -657,7 +664,7 @@ td .profile-image {
     margin-bottom: 10px;
 }
 
-.popup-admin{
+.popup-admin {
     display: none;
     position: fixed;
     top: 50%;
@@ -669,11 +676,11 @@ td .profile-image {
     width: 90%;
     max-width: 500px;
     z-index: 1000;
-    box-shadow: 0px 0px 400px 900px rgba(0,0,0,0.28);
+    box-shadow: 0px 0px 400px 900px rgba(0, 0, 0, 0.28);
     z-index: 10000;
 }
 
-.popup-admin h3{
+.popup-admin h3 {
     font: normal 500 25px/normal 'Poppins';
     margin-bottom: 10px;
 }
@@ -725,7 +732,9 @@ td .profile-image {
     border: 1px solid var(--DarkColor);
 }
 
+
 /*****Admin Calendar*****/
+
 .calendar {
     margin: 3% 0 0 14%;
     padding: 4%;
@@ -739,9 +748,8 @@ td .profile-image {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    position: relative; 
+    position: relative;
     box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25), 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
-
 }
 
 .event_management {
@@ -753,15 +761,14 @@ td .profile-image {
     padding-top: 40px;
     border-radius: 10px 10px 0 0;
     width: 100%;
-    position: relative; 
+    position: relative;
 }
 
 #calendar {
     border: 1px solid #ccc;
-    height: 82.2vh; 
+    height: 82.2vh;
     font: normal 600 16px/normal 'Poppins';
-    flex-grow: 1; 
-    
+    flex-grow: 1;
 }
 
 .add-schedule-button {
@@ -778,16 +785,17 @@ td .profile-image {
     left: 30px;
     top: 41px;
     display: block;
-    z-index: 1; 
-    transition: background-color 0.3s ease-in-out; 
+    z-index: 1;
+    transition: background-color 0.3s ease-in-out;
     box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.2);
 }
+
 .add-schedule-button:hover {
     background-color: #C2BE63;
 }
 
 .fc-day-header {
-    background-color: #E1DE8F; 
+    background-color: #E1DE8F;
 }
 
 .fc-left {
@@ -806,7 +814,7 @@ td .profile-image {
 #calendar .fc-view {
     padding: 0;
     margin: 0;
-    height: 97.5vh; 
+    height: 97.5vh;
 }
 
 #calendar .fc-body {
@@ -822,12 +830,14 @@ td .profile-image {
     padding: 0;
     margin: 0;
 }
-#calendar .fc-content{
+
+#calendar .fc-content {
     height: 15px;
     font: normal 500 11px/normal 'Poppins';
     color: #FCF6F6;
 }
-#calendar td.fc-today{
+
+#calendar td.fc-today {
     background-color: #f6f3ab;
 }
 
@@ -847,13 +857,12 @@ td .profile-image {
 
 @keyframes slideIn {
     from {
-        top: -50%; 
+        top: -50%;
     }
     to {
-        top: 35%; 
+        top: 35%;
     }
 }
-
 
 .close {
     color: #aaa;
@@ -881,21 +890,20 @@ td .profile-image {
     border-radius: 5px;
     z-index: 9999;
     animation: slideIn 0.3s ease-in-out forwards;
-    
 }
 
 @keyframes slideIn {
     from {
-        top: -40%; 
+        top: -40%;
     }
     to {
-        top: 35%; 
+        top: 35%;
     }
 }
 
 .modal-receipt {
     padding: 30px;
-    box-shadow: 0px 0px 400px 900px rgba(0,0,0,0.28);
+    box-shadow: 0px 0px 400px 900px rgba(0, 0, 0, 0.28);
     width: 80%;
     max-width: 600px;
     background: var(--BgColor);
@@ -903,14 +911,14 @@ td .profile-image {
 
 @keyframes slideIn {
     from {
-        top: -50%; 
+        top: -50%;
     }
     to {
-        top: 35%; 
+        top: 35%;
     }
 }
 
-.modal-receipt h2{
+.modal-receipt h2 {
     font: normal 600 20px/normal 'Poppins';
 }
 
@@ -941,11 +949,12 @@ td .profile-image {
 .form-group input[type="number"],
 .form-group input[type="date"],
 .form-group input[type="password"],
-.form-group select, 
-.form-group textarea{
+.form-group select,
+.form-group textarea {
     width: 100%;
     padding: 8px;
-    border: 1px solid #FCF6F6;;
+    border: 1px solid #FCF6F6;
+    ;
     border-radius: 5px;
     box-sizing: border-box;
     font: normal 400 13px/normal 'Poppins';
@@ -959,16 +968,17 @@ td .profile-image {
     outline-color: #807f7f;
 }
 
-.modal-content form h3{
+.modal-content form h3 {
     font: normal 500 23px/normal 'Poppins';
     margin-bottom: 15px;
 }
 
-.form-group#displayPic{
+.form-group#displayPic {
     border: 1px solid #444444;
     padding: 10px;
     border-radius: 10px;
 }
+
 #displayPic {
     display: flex;
     justify-content: center;
@@ -979,7 +989,7 @@ td .profile-image {
     width: 55%;
 }
 
-.form-decline select{
+.form-decline select {
     width: 100%;
     height: 50px;
     padding: 8px;
@@ -989,18 +999,17 @@ td .profile-image {
     font: normal 400 13px/normal 'Poppins';
     box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.25);
     margin-bottom: 15px;
-
 }
-.form-decline{
+
+.form-decline {
     margin-bottom: 15px;
 }
+
 .form-decline label {
     display: block;
     margin-bottom: 15px;
     font: normal 500 17px/normal 'Poppins';
 }
-
-
 
 .btn-save-event {
     background-color: #E1DE8F;
@@ -1013,26 +1022,35 @@ td .profile-image {
     height: 40px;
     font: normal 500 14px/normal 'Poppins';
     transition: background-color 0.3s ease-in-out;
-    box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.25); 
+    box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.25);
 }
 
 .btn-save-event:hover {
     background-color: #C2BE63;
 }
+
+
 /***dark-mode calendar**/
-body.dark-mode .event_management{
+
+body.dark-mode .event_management {
     background-color: #444444;
 }
-body.dark-mode #calendar .fc-day-header{
+
+body.dark-mode #calendar .fc-day-header {
     color: #1C1C1D;
 }
-body.dark-mode #calendar td.fc-today{
+
+body.dark-mode #calendar td.fc-today {
     color: #1c1c1c;
 }
+
+
 /******end****/
 
+
 /******Feedback******/
-.feedbox{
+
+.feedbox {
     padding: 0px 0px 20px 0px;
     margin: 9% 0% 0% 18.5%;
     border-radius: 10px;
@@ -1043,13 +1061,13 @@ body.dark-mode #calendar td.fc-today{
     width: 77%;
 }
 
-.header-feedback{
+.header-feedback {
     border-collapse: collapse;
     width: 100%;
     table-layout: fixed;
 }
 
-.header-feedback th{
+.header-feedback th {
     position: sticky;
     top: 0;
     background-color: #f2f2f2;
@@ -1061,10 +1079,10 @@ body.dark-mode #calendar td.fc-today{
 }
 
 .data-table td.feedback-description {
-    max-height: 50px; 
+    max-height: 50px;
     overflow: hidden;
     text-overflow: ellipsis;
-    white-space: nowrap; 
+    white-space: nowrap;
     position: relative;
     padding: 1.5% 3% 1% 7.8%;
     color: #959595;
@@ -1073,31 +1091,35 @@ body.dark-mode #calendar td.fc-today{
 }
 
 .data-table td.feedback-title {
-    max-height: 50px; 
+    max-height: 50px;
     overflow: hidden;
     text-overflow: ellipsis;
-    white-space: nowrap; 
+    white-space: nowrap;
     position: relative;
-    padding: 1.5% 0% 1% 2.5%; 
+    padding: 1.5% 0% 1% 2.5%;
     width: 10%;
     font: normal 500 14px/normal 'Poppins';
     text-align: start;
 }
 
-.data-table tr:hover{
+.data-table tr:hover {
     background-color: #eaeaea;
 }
+
 .data-table td input[type='checkbox'] {
-    width: 18px; 
-    height: 18px; 
-    vertical-align: middle; 
+    width: 18px;
+    height: 18px;
+    vertical-align: middle;
 }
 
-.data-container p{
+.data-container p {
     font: normal 400 13px/normal 'Poppins';
     margin: 2%;
 }
+
+
 /*******confirmation******/
+
 .popup {
     display: none;
     position: fixed;
@@ -1106,7 +1128,7 @@ body.dark-mode #calendar td.fc-today{
     transform: translate(-50%, -50%);
     padding: 20px;
     border-radius: 5px;
-    box-shadow: 0px 0px 400px 900px rgba(0,0,0,0.28);
+    box-shadow: 0px 0px 400px 900px rgba(0, 0, 0, 0.28);
     z-index: 10000;
 }
 
@@ -1139,7 +1161,7 @@ button#deleteNo:hover {
     background: #9b9b9b;
 }
 
-button#deleteYes{
+button#deleteYes {
     padding: 10px 20px;
     margin: 5px;
     border: none;
@@ -1156,7 +1178,7 @@ button#deleteYes:hover {
     background: #D25A5A;
 }
 
-button#acceptYes{
+button#acceptYes {
     padding: 10px 20px;
     margin: 5px;
     border: none;
@@ -1172,6 +1194,7 @@ button#acceptYes{
 button#acceptYes:hover {
     background: #D25A5A;
 }
+
 button#acceptNo {
     padding: 10px 20px;
     margin: 5px;
@@ -1196,11 +1219,12 @@ button#acceptNo:hover {
     left: 0;
     width: 100%;
     height: 100%;
-    box-shadow: 0px 0px 400px 900px rgba(0,0,0,0.28);
+    box-shadow: 0px 0px 400px 900px rgba(0, 0, 0, 0.28);
     z-index: 10000;
     justify-content: center;
     align-items: center;
-    background: rgba(255, 255, 255, 0.8); /* Add a semi-transparent white background */
+    background: rgba(255, 255, 255, 0.8);
+    /* Add a semi-transparent white background */
 }
 
 .loading-circle {
@@ -1214,8 +1238,12 @@ button#acceptNo:hover {
 }
 
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 .success-popup {
@@ -1270,7 +1298,9 @@ button#acceptNo:hover {
     bottom: 0;
 }
 
+
 /**details feedback***/
+
 .feedbox-inner {
     display: flex;
     flex-direction: column;
@@ -1290,6 +1320,7 @@ button#acceptNo:hover {
     display: flex;
     flex-direction: column;
 }
+
 .details {
     display: flex;
     align-items: center;
@@ -1302,25 +1333,27 @@ button#acceptNo:hover {
     border-radius: 50%;
 }
 
-.info h5{
+.info h5 {
     font: normal 600 16px/normal 'Poppins';
     color: #1c1c1c;
 }
-.info p{
+
+.info p {
     font: normal 500 13px/normal 'Poppins';
     color: #1c1c1c;
 }
 
-.middle{
+.middle {
     display: flex;
     width: 100%;
     margin-top: 2%;
 }
+
 .select_photo {
     width: 30%;
-    flex: 1; 
-    padding: 10px 0px 0px 30px; 
-    box-sizing: border-box; 
+    flex: 1;
+    padding: 10px 0px 0px 30px;
+    box-sizing: border-box;
 }
 
 .select_photo img {
@@ -1328,8 +1361,8 @@ button#acceptNo:hover {
 }
 
 .right {
-    flex: 1; 
-    padding: 10px 0px 0px 10px; 
+    flex: 1;
+    padding: 10px 0px 0px 10px;
     box-sizing: border-box;
 }
 
@@ -1341,19 +1374,21 @@ button#acceptNo:hover {
     margin: 0 0 0 12%;
 }
 
-.rate{
+.rate {
     height: 10%;
     flex-shrink: 0;
     margin: 12% 0 0 40%;
 }
+
 .stars {
-    font-size: 24px; 
+    font-size: 24px;
 }
 
 .star {
     color: gold;
-    cursor: pointer; 
+    cursor: pointer;
 }
+
 .description {
     font: normal 400 14px/normal 'Poppins';
     text-align: center;
@@ -1382,11 +1417,12 @@ button#acceptNo:hover {
     cursor: pointer;
     font: normal 500 13px/normal 'Poppins';
 }
+
 .buttons #postedButton:hover {
-    background-color: #c0b71a; 
+    background-color: #c0b71a;
 }
 
-.buttons #backButton{
+.buttons #backButton {
     margin-left: 10px;
     padding: 8px 23px;
     border: none;
@@ -1396,18 +1432,19 @@ button#acceptNo:hover {
     color: #1c1c1c;
     cursor: pointer;
     font: normal 500 13px/normal 'Poppins';
-    transition: background-color 0.3s ease-in-out; 
+    transition: background-color 0.3s ease-in-out;
 }
 
 .buttons #backButton:hover {
-    background-color: #8f8f8f; 
+    background-color: #8f8f8f;
 }
+
 
 /*****end*****/
 
 
-
 /******Admin Account*******/
+
 .account {
     margin: 5% 0% 0% 8%;
     padding: 3%;
@@ -1423,7 +1460,7 @@ button#acceptNo:hover {
     height: 80vh;
     padding: 10px 50px 50px 50px;
     display: flex;
-    flex-direction: row; 
+    flex-direction: row;
     align-items: flex-start;
     justify-content: space-between;
     box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25), 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
@@ -1435,7 +1472,7 @@ button#acceptNo:hover {
     display: block;
     margin: 0 auto;
     margin-top: 10%;
-    box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.55);
+    box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.55);
 }
 
 .profile {
@@ -1463,6 +1500,7 @@ button#acceptNo:hover {
 .right {
     width: 50%;
 }
+
 form .profile-section {
     display: flex;
     flex-direction: column;
@@ -1470,27 +1508,28 @@ form .profile-section {
     justify-content: center;
     margin-top: 8px;
 }
- .vertical{
-    width: 1px; 
-    height: 100%; 
+
+.vertical {
+    width: 1px;
+    height: 100%;
     background-color: #BCB4B5;
     margin: 2% 5% 0 0;
 }
+
 form .profile-section label input[type="file"] {
     display: none;
 }
 
 form .profile-section label {
-    color: #4285F4; 
+    color: #4285F4;
     cursor: pointer;
     font: normal 600 16px/normal 'Poppins';
 }
 
-form .profile-section p{
+form .profile-section p {
     color: #747473;
     font: normal 500 13px/normal 'Poppins';
 }
-
 
 .fillup {
     display: flex;
@@ -1513,10 +1552,11 @@ form .profile-section p{
     flex-direction: column;
 }
 
-.fillup label{
+.fillup label {
     font: normal 500 13px/normal 'Poppins';
     margin-bottom: 5px;
 }
+
 .fillup input {
     width: 100%;
     height: 7vh;
@@ -1536,21 +1576,22 @@ form .profile-section p{
 .save-changes {
     display: flex;
     justify-content: center;
-    align-items: center; 
+    align-items: center;
     margin: 2% 0 1% 0;
     width: 100%;
-    height: 65px; 
+    height: 65px;
 }
 
 .save-changes input[type="submit"] {
     width: 100%;
-    height: 80%; 
+    height: 80%;
     border-radius: 10px;
     background: #C2BE63;
     cursor: pointer;
     font: normal 500 14px/normal 'Poppins';
-    transition: background-color 0.3s ease-in-out; 
+    transition: background-color 0.3s ease-in-out;
 }
+
 .save-changes input[type="submit"]:hover {
     background-color: #c4bd3d;
 }
@@ -1558,9 +1599,9 @@ form .profile-section p{
 .reset-button {
     display: flex;
     justify-content: center;
-    align-items: center; 
+    align-items: center;
     width: 100%;
-    height: 65px; 
+    height: 65px;
 }
 
 .reset-button input[type="reset"] {
@@ -1572,12 +1613,13 @@ form .profile-section p{
     color: #1c1c1c;
     cursor: pointer;
     font: normal 500 14px/normal 'Poppins';
-    transition: background-color 0.3s ease-in-out; 
+    transition: background-color 0.3s ease-in-out;
 }
 
 .reset-button input[type="reset"]:hover {
-    background-color: #8f8f8f; 
+    background-color: #8f8f8f;
 }
+
 
 /********analytics*******/
 .layout-admin {
@@ -1629,6 +1671,7 @@ form .profile-section p{
     text-align: center;
 }
 
+<<<<<<< HEAD
 .left-analytics {
     display: flex;
     margin-bottom: 20px;
@@ -1686,7 +1729,8 @@ form .profile-section p{
     max-height: 280px;
 }
 /******Finance********/
-.finance{
+
+.finance {
     margin: 5% 0 0 14%;
     padding: 1.8% 3% 0% 3%;
     display: flex;
@@ -1694,12 +1738,13 @@ form .profile-section p{
     justify-content: space-between;
 }
 
-.mid-fin{
+.mid-fin {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
 }
-.left-finance{
+
+.left-finance {
     display: flex;
     flex-direction: column;
     width: 50%;
@@ -1707,18 +1752,18 @@ form .profile-section p{
     margin-bottom: 15px;
 }
 
-.top{
+.top {
     display: flex;
     flex-direction: row;
     width: 102%;
     margin-bottom: 15px;
 }
 
-.fin-box{
+.fin-box {
     padding: 20px 20px 50px 20px;
     margin: 0 5% 2.3% 0;
-    background: rgb(50,50,50);
-    background: linear-gradient(318deg, rgba(50,50,50,1) 0%, rgba(28,28,29,1) 45%);
+    background: rgb(50, 50, 50);
+    background: linear-gradient(318deg, rgba(50, 50, 50, 1) 0%, rgba(28, 28, 29, 1) 45%);
     box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
     width: 52%;
     border-radius: 5%;
@@ -1730,28 +1775,29 @@ form .profile-section p{
     transition: all .3s ease;
 }
 
-.fin-box:hover{
+.fin-box:hover {
     transform: scale(1.01);
 }
 
-.fin-box h4{
+.fin-box h4 {
     font: normal 700 35px/normal 'Poppins';
     color: #C2BE63;
     display: flex;
     margin-top: 5%;
 }
 
-.fin-box p{
+.fin-box p {
     font: normal 400 15px/normal 'Poppins';
     color: #FBF4F4;
 }
-.bottom{
-    padding: 1% 2% 0 0; 
+
+.bottom {
+    padding: 1% 2% 0 0;
     display: flex;
     justify-content: space-between;
 }
 
-.projects{
+.projects {
     margin-bottom: 2.3%;
     background-color: #FCF6F6;
     box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
@@ -1760,14 +1806,14 @@ form .profile-section p{
     padding: 20px 0px 50px 0px;
 }
 
-.projects h4{
+.projects h4 {
     font: normal 700 14px/normal 'Poppins';
     color: #1c1c1c;
     text-align: start;
     margin: 0 0 1% 3%;
-} 
+}
 
-.right-finance{
+.right-finance {
     display: flex;
     flex-direction: column;
     width: 50%;
@@ -1775,7 +1821,7 @@ form .profile-section p{
     margin-bottom: 15px;
 }
 
-.reports{
+.reports {
     padding-top: 20px;
     margin: 0% 5% 2.3% 3%;
     background-color: #FBF4F4;
@@ -1785,7 +1831,7 @@ form .profile-section p{
     height: 75.8vh;
 }
 
-.reports h4{
+.reports h4 {
     font: normal 700 14px/normal 'Poppins';
     color: #1c1c1c;
     text-align: start;
@@ -1797,7 +1843,7 @@ form .profile-section p{
     color: #fcfcfc;
 }
 
-.bot-button button{
+.bot-button button {
     background-color: #1C1C1D;
     font: normal 500 12px/normal 'Poppins';
     color: #FBF4F4;
@@ -1807,23 +1853,22 @@ form .profile-section p{
     letter-spacing: 0.2px;
     cursor: pointer;
     transition: background-color 0.3s ease-in-out;
-    margin-top: 5%;  
+    margin-top: 5%;
 }
 
-.bot-button{
+.bot-button {
     display: flex;
     justify-content: center;
 }
 
-
-.packages h4{
+.packages h4 {
     font: normal 600 16px/normal 'Poppins';
     color: #1c1c1c;
     text-align: start;
     margin-left: 2%;
 }
 
-.pack-box{
+.pack-box {
     padding: 20px 0px 50px 0px;
     margin: 1% 5% 2.3% 0%;
     background-color: #FBF4F4;
@@ -1833,12 +1878,12 @@ form .profile-section p{
     border-radius: 10px;
 }
 
-.pack-box .top{
+.pack-box .top {
     display: flex;
     justify-content: space-between;
 }
 
-.pack-box .add-button{
+.pack-box .add-button {
     background-color: #E1DE8F;
     font: normal 500 13px/normal 'Poppins';
     color: #1c1c1c;
@@ -1848,26 +1893,27 @@ form .profile-section p{
     cursor: pointer;
     text-align: center;
     text-decoration: none;
-    transition: background-color 0.3s ease-in-out; 
+    transition: background-color 0.3s ease-in-out;
     box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.2);
     margin-right: 5%;
 }
+
 .pack-box .add-button:hover {
     background-color: #C2BE63;
 }
 
-.expenses{
+.expenses {
     margin: 5% 0 0 14%;
     padding: 1.8% 3% 0% 3%;
     display: flex;
     flex-direction: column;
 }
-.exp-box{
-    
+
+.exp-box {
     border-radius: 10px;
 }
 
-.exp-box .add-button{
+.exp-box .add-button {
     background-color: #E1DE8F;
     font: normal 500 13px/normal 'Poppins';
     color: #1c1c1c;
@@ -1877,15 +1923,16 @@ form .profile-section p{
     cursor: pointer;
     text-align: center;
     text-decoration: none;
-    transition: background-color 0.3s ease-in-out; 
+    transition: background-color 0.3s ease-in-out;
     box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.2);
     margin: 0px 0px 10px 20px;
 }
+
 .exp-box .add-button:hover {
     background-color: #C2BE63;
 }
 
-.exp-box .search-bar{
+.exp-box .search-bar {
     margin: -2.8% 0px 0px 68%;
     position: absolute;
 }
@@ -1900,25 +1947,29 @@ form .profile-section p{
     background: transparent;
     transition: border-color 0.2s;
 }
+
 .search-bar #search::placeholder {
     color: #9b9b9b;
     font: normal 13px/normal 'Poppins';
 }
 
-.search-bar #search:focus{
-  font-weight: 700;
-  border-width: 3px;
-  border-image: linear-gradient(to right, #C2BE63, #c0b71a);
-  border-image-slice: 1;
-  font: normal 15px/normal 'Poppins';
+.search-bar #search:focus {
+    font-weight: 700;
+    border-width: 3px;
+    border-image: linear-gradient(to right, #C2BE63, #c0b71a);
+    border-image-slice: 1;
+    font: normal 15px/normal 'Poppins';
 }
-.search-bar button{
+
+.search-bar button {
     margin-top: 7%;
-} 
-.form-group input#amount-exp{
+}
+
+.form-group input#amount-exp {
     font: normal 500 13px/normal 'Poppins';
     margin-right: 3px;
 }
+
 td form button[name="edit"] {
     background-color: #17A1FA;
     border-radius: 6px;
@@ -1933,7 +1984,7 @@ td form button[name="edit"] {
     text-decoration: none;
 }
 
-td form button[name="edit"]:hover{
+td form button[name="edit"]:hover {
     background-color: rgb(0, 62, 120);
     transition: 0.4s;
 }
@@ -1952,18 +2003,19 @@ td form button[name="edit"]:hover{
     text-decoration: none;
 }
 
-.edit-admin:hover{
+.edit-admin:hover {
     background-color: rgb(0, 62, 120);
     transition: 0.4s;
 }
+
+
 /*****production****/
 
-.prod-box{
+.prod-box {
     padding: 20px 0px 50px 0px;
 }
 
-
-.prod-box .add-button{
+.prod-box .add-button {
     background-color: #E1DE8F;
     font: normal 500 13px/normal 'Poppins';
     color: #1c1c1c;
@@ -1973,21 +2025,24 @@ td form button[name="edit"]:hover{
     cursor: pointer;
     text-align: center;
     text-decoration: none;
-    transition: background-color 0.3s ease-in-out; 
+    transition: background-color 0.3s ease-in-out;
     box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.2);
     margin: 0px 0px 10px 20px;
 }
+
 .prod-box .add-button:hover {
     background-color: #C2BE63;
 }
 
-.prod-box .search-bar{
+.prod-box .search-bar {
     margin: -2.8% 0px 0px 68%;
     position: absolute;
 }
 
+
 /*****content*****/
-.content{
+
+.content {
     padding: 0px 0px 20px 0px;
     margin: 9% 0% 0% 18.5%;
     border-radius: 5px;
@@ -1998,21 +2053,20 @@ td form button[name="edit"]:hover{
     width: 77%;
 }
 
-.content-box h4{
+.content-box h4 {
     font: normal 600 16px/normal 'Poppins';
     color: #1c1c1c;
     text-align: start;
     margin-left: 2%;
 }
 
-.content-box .top{
+.content-box .top {
     display: flex;
     justify-content: space-between;
     padding: 20px 0px 0px 0px;
-
 }
 
-.content-box .add-button{
+.content-box .add-button {
     background-color: #E1DE8F;
     font: normal 500 13px/normal 'Poppins';
     color: #1c1c1c;
@@ -2022,16 +2076,19 @@ td form button[name="edit"]:hover{
     cursor: pointer;
     text-align: center;
     text-decoration: none;
-    transition: background-color 0.3s ease-in-out; 
+    transition: background-color 0.3s ease-in-out;
     box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.2);
     margin-right: 5%;
 }
+
 .content-box .add-button:hover {
     background-color: #C2BE63;
 }
 
+
 /******Gallery Folders********/
-.folders{
+
+.folders {
     padding: 0px 0px 20px 0px;
     margin: 9% 0% 0% 18.5%;
     border-radius: 5px;
@@ -2042,21 +2099,20 @@ td form button[name="edit"]:hover{
     width: 77%;
 }
 
-.folder-box h4{
+.folder-box h4 {
     font: normal 600 16px/normal 'Poppins';
     color: #1c1c1c;
     text-align: start;
     margin-left: 2%;
 }
 
-.folder-box .top{
+.folder-box .top {
     display: flex;
     justify-content: space-between;
     padding: 20px 0px 0px 0px;
-
 }
 
-.folder-box .add-button{
+.folder-box .add-button {
     background-color: #E1DE8F;
     font: normal 500 13px/normal 'Poppins';
     color: #1c1c1c;
@@ -2066,42 +2122,47 @@ td form button[name="edit"]:hover{
     cursor: pointer;
     text-align: center;
     text-decoration: none;
-    transition: background-color 0.3s ease-in-out; 
+    transition: background-color 0.3s ease-in-out;
     box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.2);
     margin-right: 5%;
 }
+
 .folder-box .add-button:hover {
     background-color: #C2BE63;
 }
 
-.folder-body{
+.folder-body {
     display: flex;
     padding: 20px 0px 0px 50px;
     cursor: pointer;
 }
 
-.folder-body i{
+.folder-body i {
     color: #C2BE63;
     font-size: 120px;
 }
 
-.folder-body p{
+.folder-body p {
     font: normal 500 13px/normal 'Poppins';
     color: #1c1c1c;
 }
 
-body.dark-mode .folders{
+body.dark-mode .folders {
     background-color: #444444;
 }
-body.dark-mode .folder-box h4{
-    color: #FCF6F6;
-}
-body.dark-mode .folder-body p{
+
+body.dark-mode .folder-box h4 {
     color: #FCF6F6;
 }
 
+body.dark-mode .folder-body p {
+    color: #FCF6F6;
+}
+
+
 /*****Gallery****/
-.gallery{
+
+.gallery {
     padding: 0px 0px 20px 0px;
     margin: 9% 0% 0% 18.5%;
     border-radius: 10px;
@@ -2112,14 +2173,13 @@ body.dark-mode .folder-body p{
     width: 77%;
 }
 
-body.dark-mode .gallery{
+body.dark-mode .gallery {
     background-color: #1c1c1c;
 }
 
-.gallery h4{
+.gallery h4 {
     font: normal 600 16px/normal 'Poppins';
     color: #1c1c1c;
     text-align: center;
     margin-left: 2%;
 }
-

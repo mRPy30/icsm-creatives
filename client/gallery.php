@@ -1,15 +1,37 @@
-<?php 
-//Connection
+
+<?php
+session_start();
 include '../backend/dbcon.php';
-session_start(); // Start the session
-$clientID = $_SESSION['clientID'];
-// Active Page
 
-$directoryURI = $_SERVER['REQUEST_URI'];
-$path = parse_url($directoryURI, PHP_URL_PATH);
-$components = explode('/', $path);
-$page = $components[2];
+// Check if client_id is set in the URL
+if (isset($_GET['client_id'])) {
+    $clientID = $_GET['client_id'];
 
+    // Retrieve client's name and images
+    $clientQuery = "SELECT name FROM client WHERE clientID = ?";
+    $stmt = $conn->prepare($clientQuery);
+    $stmt->bind_param("i", $clientID);
+    $stmt->execute();
+    $clientResult = $stmt->get_result();
+    
+    if ($clientResult && $clientResult->num_rows > 0) {
+        $client = $clientResult->fetch_assoc();
+        $clientName = htmlspecialchars($client['name']);
+    } else {
+        echo "Client not found.";
+        exit;
+    }
+
+    // Retrieve images for the client
+    $imageQuery = "SELECT image_path FROM client_images WHERE clientID = ?";
+    $stmt = $conn->prepare($imageQuery);
+    $stmt->bind_param("i", $clientID);
+    $stmt->execute();
+    $imagesResult = $stmt->get_result();
+} else {
+    echo "Invalid client ID.";
+    exit;
+}
 ?>
 
 <!DOCTYPE html>
@@ -22,29 +44,57 @@ $page = $components[2];
     <!---WEB TITLE--->
     <link rel="short icon" href="../picture/shortcut-logo.png" type="x-icon">
     <title>
-        <?php echo "User | Gallery"; ?>
+        <?php echo "Upload Gallery"; ?>
     </title>
 
     <!---CSS--->
-    <link rel="stylesheet" href="../css/client.css">
+    <link rel="stylesheet" href="../css/admin.css">
 
     <!--ICON LINKS-->
-    <link rel="stylesheet" href="font-awesome-6/css/all.css">
+    <link rel="stylesheet" href="../font-awesome-6/css/all.css">
 
     <!--FONT LINKS-->
     <link rel="stylesheet" href="../css/fonts.css">
+    <link rel="stylesheet" href="../css/gallery.css">
+    
+    <style>
+        body {
+            overflow-y: auto;
+        }       
+    </style>
     
 </head>
     
 <body>
 
-<?php 
-    include '../client/sidebar.php';
-    include '../client/navbar.php';
-?>  
+    <section class="gallery">
+        <h4>Album Name</h4>
+        
+    </section>
+    <!----Navbar&Sidebar----->
+     <?php 
+        include '../staff/sidebar.php';
+        include '../staff/navbar.php';
+    ?>   
 
+<h2><?php echo $clientName; ?>'s Gallery</h2>
+    <div class="gallery-grid">
+        <?php
+        if ($imagesResult && $imagesResult->num_rows > 0) {
+            while ($image = $imagesResult->fetch_assoc()) {
+                echo '<div class="gallery-item">';
+                echo '<img src="' . htmlspecialchars($image['image_path']) . '" alt="Client Image">';
+                echo '</div>';
+            }
+        } else {
+            echo "<p>No images found for this client.</p>";
+        }
+        ?>
+    </div>
 
-    
-    
 </body>
+
+
+
 </html>
+

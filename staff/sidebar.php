@@ -161,6 +161,18 @@
                     } ?> "><i class="fa-solid fa-table-columns"></i></a>
                     <span class="bottom_curve"></span>
                 </li>
+
+                <li class="nav-link">
+                    <span class="top_curve"></span>
+                    <a href="albums.php" title="Albums" class="<?php if ($page == "albums.php") {
+                        echo "nav-link active";
+                    } else {
+                        echo "nav-link";
+                    } ?> "><i class="fa-solid fa-image"></i></a>
+                    <span class="bottom_curve"></span>
+                </li>
+
+
                 <li class="nav-link">
                     <span class="top_curve"></span>
                     <a href="booking.php" title="Booking Management" class="<?php if ($page == "..staff/booking.php") {

@@ -72,11 +72,11 @@
     }
 
     .nav-links li a.active {
-        color: #C2BE63;
+        color: #9D7651;
     }
 
     .nav-links li a:hover {
-        color: #C2BE63;
+        color: #BC8759;
         transition: all 0.3s;
     }
 
@@ -161,6 +161,7 @@
             margin: 10px 0;
         }
 
+
     }
 </style>
 
@@ -171,7 +172,7 @@
                 <img src="../picture/logo.png" alt="logo">
             </a>
         </div>
-        <ul class="nav-links">
+        <ul class="nav-links ">
             <li>
                 <a href="homepage.php">Home</a>
             </li>

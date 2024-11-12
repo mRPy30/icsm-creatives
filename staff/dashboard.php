@@ -82,7 +82,7 @@ $page = $components[2];
     dataset.borderColor = textColor;
     dataset.pointBackgroundColor = textColor;
     revenueChart.update();
-});
+   ;
         
         
 
