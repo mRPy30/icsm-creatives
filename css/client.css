@@ -127,12 +127,12 @@
 }
 
 .text-header h2 {
-    font: normal 700 60px/normal 'Poppins';
+    font: normal 700 43px/normal 'Poppins';
     letter-spacing: 1px;
 }
 
 .text-header p {
-    font: normal 15px/normal 'Poppins';
+    font: normal 17px/normal 'Poppins';
     color: var(--hoverDark);
 }
 
@@ -183,7 +183,7 @@
 }
 
 .top-book h3 {
-    font: normal 600 18px/normal 'Poppins';
+    font: normal 700 19px / normal 'Poppins';
     margin-top: 10px;
 }
 
@@ -652,7 +652,7 @@
 }
 
 .service-section {
-    margin: 0 10px;
+    margin: 10px 10px;
 }
 
 .price h3{
@@ -664,19 +664,18 @@
 }
 
 .budget-input label{
-    font: normal 600 14px / normal 'poppins';
+    font: normal 600 18px / normal 'poppins';
 }
 
 .budget-input input{
-    font: normal 400 13px / normal 'poppins';
-    border-radius: 5px;
+    font: normal 600 17px / normal 'poppins';
+    border-radius: 7px;
     padding: 5px;
 }
 
 #recommendedServices {
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-between;
     margin-top: 20px;
     height: 55vh;
     overflow-y: auto;
@@ -779,8 +778,8 @@
 .service-card {
     width: 30%; 
     border: 2px solid #BCB4B5;
-    border-radius: 8px;
-    margin-bottom: 20px;
+    background: #fff;
+    margin: 10px 5px 20px 17px;
     cursor: pointer;
     transform: translate 0.3, box-shadow 0.3s;
 }
@@ -816,6 +815,10 @@
     margin: 0 10px;
 }
 
+.service-name-overlay p{
+    font: normal 600 18px/normal 'Poppins';
+}
+
 .service-name-overlay h3{
     font: normal 500 25px/normal 'Alfa Slab One';
 }
@@ -824,18 +827,20 @@
     background-color: var(--themeColor);
     padding: 15px;
     color: var(--fontLight);
-    border-radius: 0px 25px 0px 0px;
-    width: 55%;
-    margin-top: 5px;
+    border-radius: 0px 25px 25px 0px;
+    width: 50%;
+    margin-top: 15px;
 }
 
 .service-price-box span{
     font: normal 400 25px/normal 'Paprika';
+    padding-left: 14px;
 }
 
+
 .service-content {
-    padding: 20px;
-    background-color: #fff;
+    padding: 10px 0 10px 31px;
+
 }
 
 .service-content h3 {
@@ -846,48 +851,53 @@
 
 .service-price span {
     display: block;
-    font-size: 36px;
+    font-size: 30px;
     color: var(--themeColor);
     font-weight: bold;
     margin-top: 10px;
 }
 
 .service-inclusions {
-    margin-top: 15px;
+    margin-top: 3px;
     text-align: left;
 }
 
 .service-inclusions p {
-    font-weight: bold;
-    color: #333;
+    color: #9D7651;
+    padding-bottom: 8px;
+    font: normal 700 18px / normal 'poppins';
 }
-
 .service-inclusions ul {
-    list-style-type: none;
-    padding-left: 0;
+    padding-left: 30px; /* Add padding to the whole list for more space */
 }
 
 .service-inclusions ul li {
-    font-size: 16px;
-    color: #666;
+    font: normal 15px 'Poppins', sans-serif; /* Ensure correct font styling */
+    color: #222222;
     margin-bottom: 5px;
-    padding-left: 20px;
     position: relative;
 }
 
 .service-inclusions ul li::before {
-    content: "•"; 
-    color: var(--HoverthemeColor);
-    font-size: 24px;
     position: absolute;
-    left: 0;
-    top: 0;
+    left: 0; /* Align bullet to the left */
+    /*top: 5px;  Adjust this value to align the bullet vertically with the text */
 }
+
 
 .price h2{
     color: var(--themeColor);
-    font: normal 500 20px/normal 'Poppins';
+    font: normal 700 20px/normal 'Poppins';
+    padding: 20px 0;
 }
+
+.price h3 span{
+    color: var(--themeColor);
+    text-transform: uppercase;
+    font-weight: 900;
+    letter-spacing: 0.1px;
+}
+
 .add-services{
     display: flex;
     justify-content: space-between;
@@ -916,6 +926,10 @@
     color: var(--HoverthemeColor);
     margin-left: 10px;
 }
+
+
+
+
 
 
 /*****Payment****/
@@ -1214,10 +1228,11 @@
 }
 
 #pending-payment {
-    color: red;
+    color: var(--DarkColor);
     margin-left: 10px;
-    font: normal 400 12px/normal 'Poppins';
+    font: normal 400 18px/normal 'Poppins';
 }
+
 .policy-section {
     margin-bottom: 20px;
     font: normal 400 15px / normal 'Poppins';

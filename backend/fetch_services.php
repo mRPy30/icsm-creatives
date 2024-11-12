@@ -30,9 +30,9 @@ if (isset($_POST['selected_event'])) {
             $base64Image = base64_encode($row['image_url']);
             $mimeType = 'image/png'; // or image/jpeg, depending on the image type you're storing
 
-            echo '<div class="service-card" data-serviceid="'.$row['serviceID'].'" data-price="'.$row['price'].'" data-service="'. htmlspecialchars($row['service_name']).'">';
+            echo '<div class="service-card" data-serviceid="' . $row['serviceID'] . '" data-price="' . $row['price'] . '" data-service="' . htmlspecialchars($row['service_name']) . '">';
             echo '<div class="service-image">';
-            echo '<img src="data:' . $mimeType . ';base64,' . $base64Image . '" alt="'.$row['service_name'].'" />';
+            echo '<img src="data:' . $mimeType . ';base64,' . $base64Image . '" alt="' . $row['service_name'] . '" />';
             echo '<div class="service-name-overlay">';
             echo '<h3>' . $row['service_name'] . '</h3>';
             echo '</div>';
@@ -41,6 +41,8 @@ if (isset($_POST['selected_event'])) {
             echo '<div class="service-price-box">';
             echo '<span>₱ ' . number_format($row['price'], 0) . '</span>';
             echo '</div>';
+
+
 
             echo '<div class="service-content">';
             echo '<div class="service-inclusions">';

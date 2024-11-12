@@ -139,7 +139,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <p>Make every occasion unforgettable—start creating your perfect moment today.</p>
             </div>
             <div class="milestone-grid">
-                <div class="milestone-card" onclick="location.href='events/birthday.php'">
+                <div class="milestone-card" onclick="location.href='birthday.php'">
                     <a href="events/birthday.php" class="icon-link">
                         <i class="fa-solid fa-arrow-right"></i>
                     </a>
@@ -148,16 +148,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     <img src="../picture/cake.png" alt="Birthday Cake">
                 </div>
 
-                <div class="milestone-card" onclick="location.href='events/marriage.php'">
-                    <a href="events/marriage.php" class="icon-link">
-                        <i class="fa-solid fa-arrow-right"></i>
+                <div class="milestone-card" onclick="location.href='wedding.php'">
+                    <a href="events/marriage.php" class="icon-link"> <i class="fa-solid fa-arrow-right"></i>
                     </a>
-                    <h3>Marriage:</h3>
+                    <h3>Wedding:</h3>
                     <p>Capturing every step of your journey to love.</p>
                     <img src="../picture/marriage-ring.png" alt="Marriage">
                 </div>
 
-                <div class="milestone-card" onclick="location.href='events/family-portrait.php'">
+                <div class="milestone-card" onclick="location.href='family-portrait.php'">
                     <a href="events/family-portrait.php" class="icon-link">
                         <i class="fa-solid fa-arrow-right"></i>
                     </a>
@@ -166,7 +165,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     <img src="../picture/family.png" alt="Family Portraits">
                 </div>
 
-                <div class="milestone-card" onclick="location.href='events/graduation.php'">
+                <div class="milestone-card" onclick="location.href='graduation.php'">
                     <a href="events/graduation.php" class="icon-link">
                         <i class="fa-solid fa-arrow-right"></i>
                     </a>
@@ -175,7 +174,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     <img src="../picture/graduation.png" alt="Graduation">
                 </div>
 
-                <div class="milestone-card" onclick="location.href='events/christening.php'">
+                <div class="milestone-card" onclick="location.href='christening.php'">
                     <a href="events/christening.php" class="icon-link">
                         <i class="fa-solid fa-arrow-right"></i>
                     </a>
@@ -184,7 +183,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     <img src="../picture/baby.png" alt="Baby">
                 </div>
 
-                <div class="milestone-card" onclick="location.href='events/corporate.php'">
+                <div class="milestone-card" onclick="location.href='corporate.php'">
                     <a href="events/corporate.php" class="icon-link">
                         <i class="fa-solid fa-arrow-right"></i>
                     </a>
@@ -193,7 +192,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     <img src="../picture/business.png" alt="Corporate Events">
                 </div>
 
-                <div class="milestone-card" onclick="location.href='events/adventure.php'">
+                <div class="milestone-card" onclick="location.href='adventure.php'">
                     <a href="events/adventure.php" class="icon-link">
                         <i class="fa-solid fa-arrow-right"></i>
                     </a>
