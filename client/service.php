@@ -81,58 +81,66 @@ $additional_services = $additional_result->fetch_all(MYSQLI_ASSOC);
                 <p>Make Sure you details is correct before proceeding to the next step</p>
             </div>
         </section>
-            <section class="booking-feed">
-                <div class="content">
-                    <div class="service-book">
-                        <div class="top-book">
-                            <div class="title">
-                                <h3>Choose the Perfect Package for Your Event</h3>
+        <section class="booking-feed">
+            <div class="content">
+                <div class="service-book">
+                    <div class="top-book">
+                        <div class="title">
+                            <h3>Choose the Perfect Package for Your Event</h3>
+                        </div>
+                        <div class="steps">
+                            <div class="step1">
+                                <div
+                                    class="progress-line <?php echo basename($_SERVER['PHP_SELF']) != 'booking.php' ? 'active current' : ''; ?>">
+                                </div>
+                                <div
+                                    class="circle <?php echo basename($_SERVER['PHP_SELF']) == 'booking.php' ? 'active current' : (basename($_SERVER['PHP_SELF']) == 'service.php' || basename($_SERVER['PHP_SELF']) == 'payment.php' ? 'active' : ''); ?>">
+                                    <h4>1</h4>
+                                </div>
+                                <p>Fillup Booking</p>
                             </div>
-                            <div class="steps">
-                                <div class="step1">
-                                    <div class="progress-line <?php echo basename($_SERVER['PHP_SELF']) != 'booking.php' ? 'active current' : ''; ?>"></div>
-                                    <div class="circle <?php echo basename($_SERVER['PHP_SELF']) == 'booking.php' ? 'active current' : (basename($_SERVER['PHP_SELF']) == 'service.php' || basename($_SERVER['PHP_SELF']) == 'payment.php' ? 'active' : ''); ?>">
-                                        <h4>1</h4>
-                                    </div>
-                                    <p>Fillup Booking</p>
+                            <div class="step2">
+                                <div
+                                    class="progress-line <?php echo basename($_SERVER['PHP_SELF']) == 'service.php' ? 'active current ' : ''; ?>">
                                 </div>
-                                <div class="step2">
-                                    <div class="progress-line <?php echo basename($_SERVER['PHP_SELF']) == 'service.php' ? 'active current ' : ''; ?>"></div>
-                                    <div class="circle <?php echo basename($_SERVER['PHP_SELF']) == 'service.php' ? 'active current' : (basename($_SERVER['PHP_SELF']) == 'payment.php' ? 'active' : ''); ?>">
-                                        <h4>2</h4>
-                                    </div>
-                                    <p>Choose Package</p>
+                                <div
+                                    class="circle <?php echo basename($_SERVER['PHP_SELF']) == 'service.php' ? 'active current' : (basename($_SERVER['PHP_SELF']) == 'payment.php' ? 'active' : ''); ?>">
+                                    <h4>2</h4>
                                 </div>
-                                <div class="step3">
-                                    <div class="progress-line"></div>
-                                    <div class="circle <?php echo basename($_SERVER['PHP_SELF']) == 'payment.php' ? 'active current' : ''; ?>">
-                                        <h4>3</h4>
-                                    </div>
-                                    <p>Payment</p>
+                                <p>Choose Package</p>
+                            </div>
+                            <div class="step3">
+                                <div class="progress-line"></div>
+                                <div
+                                    class="circle <?php echo basename($_SERVER['PHP_SELF']) == 'payment.php' ? 'active current' : ''; ?>">
+                                    <h4>3</h4>
                                 </div>
+                                <p>Payment</p>
                             </div>
                         </div>
-                        <form action="payment.php" class="service-section" method="POST" id="serviceForm">
-                            <div class="price">
-                                <h3>Recommended Services for Your Event: <?php echo htmlspecialchars($selected_event); ?></h3>
+                    </div>
+                    <form action="payment.php" class="service-section" method="POST" id="serviceForm">
+                        <div class="price">
+                            <h3>Packages for your:<span>
+                                    <?php echo htmlspecialchars($selected_event); ?>
+                                </span></h3>
 
-                                <!-- Budget Input -->
-                                <div class="budget-input">
-                                    <label for="budget">Set your Budget (₱): </label>
-                                    <input type="number" id="budget" name="budget" placeholder="Please enter you budget" >
+                            <!-- Budget Input -->
+                            <div class="budget-input">
+                                <label for="budget">Set your Budget (₱): </label>
+                                <input type="number" id="budget" name="budget" placeholder="Please enter you budget">
+                            </div>
+
+                            <!-- Services Section -->
+                            <div id="servicesSection">
+                                <div class="title-service">
+                                    <i class="fa-regular fa-thumbs-up"></i>
+                                    <h4>Recommended Services:</h4>
                                 </div>
+                                <div id="recommendedServices" class="recommended-services">
 
-                                <!-- Services Section -->
-                                <div id="servicesSection">
-                                    <div class="title-service">
-                                        <i class="fa-regular fa-thumbs-up"></i>
-                                        <h4>Recommended Services:</h4>
-                                    </div>
-                                    <div id="recommendedServices" class="recommended-services">
-
-                                    </div>
                                 </div>
-
+                            </div>
                                 <h2>Additional Services:</h2>
                                 <div class="price">
                                     <div class="add-services">
@@ -158,12 +166,19 @@ $additional_services = $additional_result->fetch_all(MYSQLI_ASSOC);
                                     </div>
                                     <input type="hidden" name="total_price" id="totalPriceInput" value="0">  
                                     <button id="next" type="submit">Next</button>
+
                                 </div>
                             </div>
-                        </form>
-                    </div>
+                            <div class="buttons-book">
+                                <h1>Total Price: PHP <span id="totalPrice">0.00</span></h1>
+                                <input type="hidden" name="total_price" id="totalPriceInput" value="0">
+                                <button id="next" type="submit">Next</button>
+                            </div>
+                        </div>
+                    </form>
                 </div>
-            </section>
+            </div>
+        </section>
         <section class="going-back">
             <div class="arrow-up-button back-to-top-hidden">
                 <button class="back-to-top" onclick="scrollToTop()"><i class="fas fa-arrow-up"></i></button>
@@ -179,11 +194,11 @@ $additional_services = $additional_result->fetch_all(MYSQLI_ASSOC);
     </main>
 </body>
 <script>
-$(document).ready(function() {
-    // Fetch recommended services based on budget input
-    $('#budget').on('input', function() {
-        const budget = $(this).val();
-        $('#recommendedServices').html(`
+    $(document).ready(function () {
+        // Fetch recommended services based on budget input
+        $('#budget').on('input', function () {
+            const budget = $(this).val();
+            $('#recommendedServices').html(`
             <div class="recommended-container">
                 <div class="loading-container">
                     <div class="scaling-dots">
@@ -194,69 +209,71 @@ $(document).ready(function() {
             </div>
         `);
 
-        setTimeout(function() {
-            $.ajax({
-                url: '../backend/fetch_services.php',
-                method: 'POST',
-                data: {
-                    budget: budget, // Pass the budget (it could be empty)
-                    selected_event: '<?php echo $selected_event; ?>'  // Pass the selected event
-                },
-                success: function(data) {
-                    $('#recommendedServices').html(data);
-                    updateTotal(); // Update total after services load
-                }
-            });
-        }, 3000);  // 2-second delay for smoother UX
-    });
+            setTimeout(function () {
+                $.ajax({
+                    url: '../backend/fetch_services.php',
+                    method: 'POST',
+                    data: {
+                        budget: budget, // Pass the budget (it could be empty)
+                        selected_event: '<?php echo $selected_event; ?>'  // Pass the selected event
+                    },
+                    success: function (data) {
+                        $('#recommendedServices').html(data);
+                        updateTotal(); // Update total after services load
+                    }
+                });
+            }, 3000);  // 2-second delay for smoother UX
+        });
 
 
-    let selectedServices = [];
-    let selectedAdditionalServices = [];
+        let selectedServices = [];
+        let selectedAdditionalServices = [];
 
-    // Listen for service card clicks (from fetch_services.php results)
-    $(document).on('click', '.service-card', function() {
-        const serviceID = $(this).data('serviceid');
-        const serviceName = $(this).data('service');
-        const servicePrice = parseFloat($(this).data('price'));
+        // Listen for service card clicks (from fetch_services.php results)
+        $(document).on('click', '.service-card', function () {
+            const serviceID = $(this).data('serviceid');
+            const serviceName = $(this).data('service');
+            const servicePrice = parseFloat($(this).data('price'));
 
-        const index = selectedServices.findIndex(service => service.id === serviceID);
+            const index = selectedServices.findIndex(service => service.id === serviceID);
 
-        if (index === -1) {
-            selectedServices.push({ 
-                id: serviceID, 
-                name: serviceName, 
-                price: servicePrice 
-            });
-            $(this).addClass('selected');
-        } else {
-            selectedServices.splice(index, 1);
-            $(this).removeClass('selected');
-        }
-
-        updateTotal();
-    });
-
-    // Listen for additional services selection
-    $('input[name="additional_services[]"]').on('change', function() {
-        const price = parseFloat($(this).val());
-        const serviceName = $(this).parent().text().split('(')[0].trim();
-        
-        if ($(this).is(':checked')) {
-            selectedAdditionalServices.push({
-                name: serviceName,
-                price: price
-            });
-        } else {
-            const index = selectedAdditionalServices.findIndex(service => 
-                service.name === serviceName);
-            if (index > -1) {
-                selectedAdditionalServices.splice(index, 1);
+            if (index === -1) {
+                selectedServices.push({
+                    id: serviceID,
+                    name: serviceName,
+                    price: servicePrice
+                });
+                $(this).addClass('selected');
+            } else {
+                selectedServices.splice(index, 1);
+                $(this).removeClass('selected');
             }
-        }
-        
-        updateTotal();
-    });
+
+            updateTotal();
+        });
+
+        // Listen for additional services selection
+        $('input[name="additional_services[]"]').on('change', function () {
+            const price = parseFloat($(this).val());
+            const serviceName = $(this).parent().text().split('(')[0].trim();
+
+            if ($(this).is(':checked')) {
+                selectedAdditionalServices.push({
+                    name: serviceName,
+                    price: price
+                });
+            } else {
+                const index = selectedAdditionalServices.findIndex(service =>
+                    service.name === serviceName);
+                if (index > -1) {
+                    selectedAdditionalServices.splice(index, 1);
+                }
+            }
+
+            updateTotal();
+        });
+
+       
 
     // Modify form submission to include both service arrays
     $('#serviceForm').submit(function(e) {
@@ -326,4 +343,5 @@ $(document).ready(function() {
 });
 
 </script>
+
 </html>
