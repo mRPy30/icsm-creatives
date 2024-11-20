@@ -149,11 +149,6 @@
     padding: 20px;
 }
 
-.fillup-book h1{
-    transform: translate(0%, -230%);
-    font: normal 600 18px/normal 'Poppins';
-}
-
 .service-book {
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
     border-radius: 10px;
@@ -333,6 +328,11 @@
     font: normal 400 12px/normal 'Poppins';
 }
 
+.start h4{
+    color: #fb0019;
+    opacity: 0.7;
+}
+
 
 .info {
     width: 100%;
@@ -471,7 +471,58 @@
     opacity: 0.5 !important; 
 }
 
-  
+.venue-suggestions {
+    position: absolute;
+    width: 100%;
+    max-height: 300px;
+    overflow-y: auto;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    z-index: 1000;
+}
+
+.venue-suggestion-item {
+    padding: 12px;
+    cursor: pointer;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.venue-suggestion-item:hover {
+    background-color: #f5f5f5;
+}
+
+.venue-suggestion-item .venue-name {
+    font-weight: bold;
+    color: #333;
+}
+
+.venue-image {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+.venue-suggestion-item .recommendation-label {
+    font-size: 0.8em;
+    color: #4CAF50;
+    margin-top: 2px;
+}
+
+.input-with-icon {
+    position: relative;
+}
+
+.no-suggestions {
+    padding: 15px;
+    text-align: center;
+    color: #666;
+}
 
 /****booking-status***/
 
@@ -545,7 +596,7 @@
     display: flex;
     border-top: 2px solid var(--line-border-fill);
     overflow: hidden;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
 }
 
 .event-card:hover {
@@ -556,11 +607,11 @@
     width: 170px;
     height: 130px;
     object-fit: cover;
-    margin-top: 15px;
+    margin-top: 5px;
 }
 
 .event-details {
-    padding: 10px;
+    padding: 0 10px;
     flex-grow: 1;
 }
 
@@ -568,6 +619,72 @@
     margin: 0 0 10px 0;
     font: normal 600 23px/normal 'Poppins' ;
     color: var(--HoverthemeColor);
+}
+
+.event-details-disabled{
+    opacity: 0.5 !important; 
+    padding: 0 10px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: row;
+}
+
+.decline-reason{
+    display: flex;
+    flex-direction: column;
+    width: 15%;
+}
+
+.decline-reason h6 {
+    color: var(--fontLight) !important;
+    font: normal 600 13px/normal 'Poppins';
+    text-align: center;
+    width: 150%;
+    height: 20px;
+    background-color: var(--themeColor);
+
+}
+
+.event-details-disabled h5 {
+    margin: 0 0 10px 0;
+    font: normal 600 23px/normal 'Poppins' ;
+    color: var(--HoverthemeColor);
+}
+
+.event-details-disabled p {
+    margin: 5px 0;
+    font: normal 500 13px/normal 'Poppins' ;
+    color: var(--DarkColor);
+}
+
+.event-details-disabled i {
+    margin-right: 5px;
+    color: var(--DarkColor);
+}
+
+.refund-button{
+    background-color: var(--themeColor);
+    color: var(--fontLight);
+    border: none;
+    padding: 8px 50px;
+    border-radius: 5px;
+    cursor: pointer;
+    font: normal 600 13px/normal 'Poppins';
+    transition: background-color 0.3s ease-in-out;
+    box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    text-decoration: none;
+    height: 35px;
+}
+
+.refund-button:hover {
+    background-color: var(--HoverthemeColor);
+}
+
+.details-disabled{
+    display: flex;
+    flex-direction: column;
+    margin: 20px 0 0 10px;
 }
 
 .event-container h6{
@@ -588,6 +705,45 @@
     color: var(--DarkColor);
 }
 
+.btn-client {
+    background-image: linear-gradient(147deg, #BC8759 0%, #77563D 100%);
+    color: var(--fontLight);
+    border: none;
+    padding: 8px 50px;
+    border-radius: 5px;
+    cursor: pointer;
+    font: normal 600 13px/normal 'Poppins';
+    transition: all .6s ease;
+    box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    text-decoration: none;
+    margin-bottom: 15px;
+}
+
+.btn-client:hover {
+    background-color: var(--HoverthemeColor);
+    transform: scale(1.02);
+}
+
+.btn-popup {
+    background-image: linear-gradient(147deg, #BC8759 0%, #77563D 100%);
+    color: var(--fontLight);
+    border: none;
+    padding: 8px 50px;
+    border-radius: 5px;
+    cursor: pointer;
+    font: normal 600 13px/normal 'Poppins';
+    transition: all .6s ease;
+    box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    text-decoration: none;
+}
+
+.btn-popup:hover {
+    background-color: var(--HoverthemeColor);
+    transform: scale(1.02);
+}
+
 /* Completed Event Card Styles */
 
 .event-grid {
@@ -598,7 +754,7 @@
 
 .completed{
     border: 1px solid var(--line-border-empty);
-    width: 98%;
+    width: 100%;
     margin: 15px 0;
     box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.2);
 }
@@ -622,15 +778,25 @@
 .view-img-button:hover{
     transform: scale(1.01);
 }
-/*****Cart****/
-.cart-section{
+
+.upcoming-details{
+    border: 1px solid var(--line-border-empty);
+    width: 100%;
+    margin: 15px 0;
+    box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.2);
+}
+
+
+.client-section{
     padding: 20px;
     background-color: #fff;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    transform: translate(0%, -5%);
+    transform: translate(0%, -5%);    
     width: 80vw;
 }
+
+/*****Cart****/
 
 /*****Services******/
 
@@ -880,10 +1046,12 @@
 
 .service-inclusions ul li::before {
     position: absolute;
-    left: 0; /* Align bullet to the left */
-    /*top: 5px;  Adjust this value to align the bullet vertically with the text */
+    left: 0; 
 }
 
+.border{
+    border-top: 1px solid var(--hoverLight);
+}
 
 .price h2{
     color: var(--themeColor);
@@ -910,11 +1078,17 @@
 }
 
 .add-services label{
-    border: 1px solid;
+    border: 1px solid var(--hoverLight);
     padding: 10px;
     font: normal 500 15px / normal 'Poppins';
     width: 35vw;
-    height: 20%;
+    height: 50%;
+    transition: all 0.3s ease;
+
+}
+
+.add-services label.selected {
+    border: 3px solid var(--HoverthemeColor); 
 }
 
 .buttons-book h1{
@@ -925,6 +1099,37 @@
 .buttons-book span{
     color: var(--HoverthemeColor);
     margin-left: 10px;
+}
+
+.outsource-table {
+    margin-top: 20px;
+    overflow-x: auto;
+}
+
+.outsource-table table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+.outsource-table th, 
+.outsource-table td {
+    border: 1px solid #ddd;
+    padding: 12px;
+    text-align: left;
+}
+
+.outsource-table th {
+    background-color: #f5f5f5;
+    font-weight: bold;
+}
+
+.outsource-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.outsource-table tr:hover {
+    background-color: #f0f0f0;
 }
 
 
@@ -1066,7 +1271,7 @@
 .subtotal{
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
+    justify-content: flex-end;
 }
 
 #total-cost{
@@ -1229,8 +1434,10 @@
 
 #pending-payment {
     color: var(--DarkColor);
-    margin-left: 10px;
-    font: normal 400 18px/normal 'Poppins';
+    display: flex;
+    justify-content: flex-end;
+    font: normal 400 16px/normal 'Poppins';
+    margin-right: 15px;
 }
 
 .policy-section {
@@ -1446,6 +1653,26 @@
     flex: 1;
 }
 
+.popup-client {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-40%, -50%);
+    background: var(--BgColor);
+    padding: 20px;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 500px;
+    z-index: 1000;
+    box-shadow: 0px 0px 400px 900px rgba(0, 0, 0, 0.28);
+    z-index: 10000;
+}
+
+.popup-client h3 {
+    font: normal 500 25px/normal 'Poppins';
+    margin-bottom: 10px;
+}
+
 .cart-header {
     display: flex;
     justify-content: space-between;
@@ -1590,10 +1817,8 @@
 
 .arrow-up-button .back-to-top i {
     color: #fff;
-    /* White color for the arrow icon */
     font-weight: 1100;
     font-size: 20px;
-    /* Adjusted weight for the arrow icon */
 }
 
 .back-to-top:hover {
@@ -1605,6 +1830,60 @@
     display: none;
 }
 
+
+/******Feedback******/
+.booking-card {
+    display: flex;
+    gap: 20px;
+    border-top: 3px solid var(--line-border-empty);
+    margin-bottom: 20px;
+}
+
+.feedback-details {
+    flex: 1;
+}
+
+.star-rating {
+    display: flex;
+    gap: 5px;
+    font-size: 24px;
+    color: #ddd;
+    cursor: pointer;
+}
+
+.star-rating .star.active {
+    color: gold;
+}
+
+.rating-section {
+    margin: 15px 0;
+}
+
+.rating-section h4 {
+    margin-bottom: 10px;
+}
+
+.company-rating {
+    display: flex;
+    gap: 5px;
+    justify-content: flex-start;
+    margin-bottom: 15px;
+}
+
+.company-star {
+    font-size: 24px;
+    cursor: pointer;
+    color: #ddd;
+    transition: color 0.2s;
+}
+
+.company-star.active {
+    color: #FFD700;
+}
+
+.company-star:hover {
+    color: #FFD700;
+}
 
 /****** Footer *******/
 
@@ -1750,3 +2029,103 @@
     grid-column: 1 / -1;
 }
 
+/****Profile Client****/
+.profile-container {
+    max-width: 950px;
+    margin: 130px auto;
+    padding: 20px;
+    background: white;
+    border-radius: 3px;
+    box-shadow: 0 0 5px rgba(0,0,0,0.1);
+}
+
+.form {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.form label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 500;
+    font: normal 500 14px/normal 'Poppins';
+}
+
+.form input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #e0e0e0;
+    font: normal 400 12px/normal 'Poppins';
+    border-radius: 5px;
+    margin-bottom: 10px;
+    box-sizing: border-box;
+}
+
+.profile-header {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 44px;
+    padding: 20px;
+}
+.profile-image {
+    margin-right: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.profile-image img{
+    border-radius: 50%;
+    width: 150px;
+    height: 150px;
+}
+
+.profile-info h1{
+    font: normal 600 25px/normal 'Poppins';
+
+}
+
+.profile-stats {
+    display: flex;
+    gap: 40px;
+    margin: 10px 0;
+}
+
+.profile-stats p{
+    font: normal 500 15px/normal 'Poppins';
+}
+
+.edit-form {
+    margin-top: 20px;
+}
+
+.gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 28px;
+    padding: 20px;
+}
+.gallery-item {
+    aspect-ratio: 1;
+    overflow: hidden;
+    background: #fafafa;
+}
+.gallery-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.alert {
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 3px;
+    font: normal 500 13px/normal 'Poppins';
+}
+.alert-success {
+    background-color: #d4edda;
+    color: #155724;
+}
+.alert-danger {
+    background-color: #f8d7da;
+    color: #721c24;
+}

@@ -5,11 +5,14 @@ if (isset($_POST['selected_event'])) {
     $selected_event = $_POST['selected_event'];
     $budget = isset($_POST['budget']) ? $_POST['budget'] : null;
 
-    // Query to fetch services based on selected event
-    $query = "SELECT serviceID, service_name, specified_service, price, image_url, inclusions FROM services WHERE eventID = (SELECT eventID FROM event WHERE eventName = ?)";
+    // Modified query using JOIN instead of subquery
+    $query = "SELECT s.serviceID, s.service_name, s.specified_service, s.price, s.image_url, s.inclusions 
+              FROM services s
+              INNER JOIN event e ON s.eventID = e.eventID 
+              WHERE e.eventName = ?";
 
     if ($budget !== null && $budget !== '') {
-        $query .= " AND price <= ?";
+        $query .= " AND s.price <= ?";
     }
 
     $stmt = $conn->prepare($query);
@@ -42,8 +45,6 @@ if (isset($_POST['selected_event'])) {
             echo '<div class="service-price-box">';
             echo '<span>₱ ' . number_format($row['price'], 0) . '</span>';
             echo '</div>';
-
-
 
             echo '<div class="service-content">';
             echo '<div class="service-inclusions">';

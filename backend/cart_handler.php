@@ -1,97 +1,78 @@
 <?php
 session_start();
+include '../backend/dbcon.php';
 
-class CartHandler {
-    private $clientId;
-    
-    public function __construct() {
-        // Generate or retrieve client ID from cookie
-        if (!isset($_COOKIE['client_id'])) {
-            $this->clientId = uniqid('client_', true);
-            setcookie('client_id', $this->clientId, time() + (86400 * 30), "/"); // 30 days expiry
-        } else {
-            $this->clientId = $_COOKIE['client_id'];
-        }
-        
-        // Initialize cart from localStorage if session is empty
-        if (!isset($_SESSION['cart']) && isset($_COOKIE['cart_' . $this->clientId])) {
-            $_SESSION['cart'] = json_decode($_COOKIE['cart_' . $this->clientId], true);
-        }
-    }
-    
-    public function addToCart() {
-        if (!isset($_SESSION['cart'])) {
-            $_SESSION['cart'] = [];
-        }
-        
-        $bookingId = uniqid();
-        $timestamp = time();
-        $expiryTime = $timestamp + (24 * 60 * 60); // 24 hours
-        
-        $cartItem = [
-            'id' => $bookingId,
-            'event_type' => $_SESSION['booking']['type_of_event'] ?? '',
-            'title_event' => $_SESSION['booking']['title_event'] ?? '',
-            'event_date' => $_SESSION['booking']['event_date'] ?? '',
-            'start_time' => $_SESSION['booking']['start_time'] ?? '',
-            'end_time' => $_SESSION['booking']['end_time'] ?? '',
-            'location' => $_SESSION['booking']['event_location'] ?? '',
-            'services' => $_SESSION['service_ids'] ?? [],
-            'additional_services' => $_SESSION['additional_services'] ?? [],
-            'total_cost' => $_SESSION['total_cost'] ?? 0,
-            'expiry_time' => $expiryTime,
-            'client_id' => $this->clientId
-        ];
-        
-        $_SESSION['cart'][$bookingId] = $cartItem;
-        
-        // Store in cookie
-        $this->updateCartCookie();
-        
-        return ['success' => true, 'booking_id' => $bookingId];
-    }
-    
-    private function updateCartCookie() {
-        setcookie(
-            'cart_' . $this->clientId,
-            json_encode($_SESSION['cart']),
-            time() + (86400 * 30), // 30 days
-            "/"
-        );
-    }
-    
-    public function getCart() {
-        return $_SESSION['cart'] ?? [];
-    }
-    
-    public function removeExpiredItems() {
-        if (!isset($_SESSION['cart'])) {
-            return;
-        }
-        
-        $currentTime = time();
-        foreach ($_SESSION['cart'] as $bookingId => $item) {
-            if ($item['expiry_time'] < $currentTime) {
-                unset($_SESSION['cart'][$bookingId]);
-            }
-        }
-        
-        $this->updateCartCookie();
-    }
+$clientID = $_SESSION['clientID'];
+$eventDate = $_SESSION['booking']['event_date'];
+$eventTime = $_SESSION['booking']['event_time'];
+$eventLocation = $_SESSION['booking']['event_location'];
+$title_event = $_SESSION['booking']['title_event'];
+$selectedServiceIDs = isset($_SESSION['service_ids']) ? $_SESSION['service_ids'] : [];
+$service_package = !empty($selectedServiceIDs) ? $selectedServiceIDs[0] : null;
+$additional_services = isset($_SESSION['selected_additional_services']) ? $_SESSION['selected_additional_services'] : '';
+$additional = json_encode($additional_services);
+$pax = $_SESSION['booking']['pax'];
+$ref_num = isset($_POST['ref_num']) ? $_POST['ref_num'] : '';
+
+$validDate = DateTime::createFromFormat('Y-m-d', $eventDate);
+if (!$validDate || $validDate->format('Y-m-d') !== $eventDate) {
+    $eventDate = date('Y-m-d');
 }
 
-// Handle POST requests
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $cartHandler = new CartHandler();
-    
-    if (isset($_POST['action'])) {
-        switch ($_POST['action']) {
-            case 'add_to_cart':
-                $result = $cartHandler->addToCart();
-                echo json_encode($result);
-                break;
+$eventTime24 = date("H:i", strtotime($eventTime));
+
+if (is_string($additional_services)) {
+    $additional = $additional_services;
+} else {
+    // Convert array of services to comma-separated string of names
+    $service_names = array();
+    foreach ($additional_services as $service) {
+        if (is_array($service) && isset($service['name'])) {
+            $service_names[] = $service['name'];
+        } else if (is_string($service)) {
+            $service_names[] = $service;
         }
     }
-    exit;
+    $additional = implode(', ', $service_names);
+}
+
+// Fetch eventID
+$type_of_event = $_SESSION['booking']['type_of_event'];
+$sql = "SELECT eventID FROM event WHERE eventName = ?";
+$stmt = $conn->prepare($sql);
+if ($stmt) {
+    $stmt->bind_param("s", $type_of_event);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    if ($result->num_rows > 0) {
+        $row = $result->fetch_assoc();
+        $eventID = $row['eventID'];
+    } else {
+        echo "Error: Event not found.";
+        exit();
+    }
+    $stmt->close();
+} else {
+    echo "Error preparing statement: " . $conn->error;
+    exit();
+}
+
+// Prepare the SQL statement with proof_payment
+$sql = "INSERT INTO booking (clientID, eventDate, event_time, eventLocation, eventID, 
+        title_event, service_package, additional, pax, ref_num, created_at)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)";
+
+$stmt = $conn->prepare($sql);
+if ($stmt) {
+    $stmt->bind_param("isssisssds", 
+        $clientID, $eventDate, $eventTime, $eventLocation, $eventID, 
+        $title_event, $service_package, $additional, $pax, $ref_num
+    );
+
+    if ($stmt->execute()) {
+        echo "Booking added to cart successfully";
+    } else {
+        echo "Error adding booking to cart: " . $stmt->error;
+    }
 }
 ?>

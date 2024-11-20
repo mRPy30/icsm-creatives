@@ -4,14 +4,29 @@ include '../backend/logout.php';
 //Connection
 include '../backend/dbcon.php';
 
-// Set the last activity time
-if (isset($_SESSION['LAST_ACTIVITY']) && (time() - $_SESSION['LAST_ACTIVITY'] > 600)) {
-    // Last request was more than 10 minutes ago
-    session_unset();     
-    session_destroy();   
-}
-$_SESSION['LAST_ACTIVITY'] = time(); 
+$sql = "SELECT staff_ID, staff_name, profile_picture, email, role FROM staff";
+$result = $conn->query($sql);
 
+
+if ($result->num_rows > 0) {
+    $staffData = $result->fetch_all(MYSQLI_ASSOC);
+} else {
+    $staffData = array(); 
+}
+
+$sqlPendingBookings = "
+    SELECT client.name, booking.eventDate, booking.event_time, booking.status 
+    FROM booking 
+    JOIN client ON booking.clientID = client.clientID 
+    WHERE booking.status = 'pending'";
+    
+$resultPendingBookings = $conn->query($sqlPendingBookings);
+
+if ($resultPendingBookings->num_rows > 0) {
+    $pendingBookings = $resultPendingBookings->fetch_all(MYSQLI_ASSOC);
+} else {
+    $pendingBookings = array(); // No pending bookings found
+}
 
 // Active Page
 $directoryURI = $_SERVER['REQUEST_URI'];
@@ -43,6 +58,9 @@ $page = $components[2];
     <!--FONT LINKS-->
     <link rel="stylesheet" href="../css/fonts.css">
 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
     <!----css---->
     <style>
         body {
@@ -58,7 +76,77 @@ $page = $components[2];
     
     <!----Main Content----->
     <main>
-        
+    <div class="dashboard">
+            <div class="pendings">
+                <div class="title-bar">
+                    <h4>Pending Bookings</h4>
+                </div>
+                <div class="pending-container">
+                    <table class="header-table">
+                    <thead>
+                        <tr>
+                            <th class="header">Booked By</th>
+                            <th class="header">Date & Time</th>
+                            <th class="header">Status</th> <!-- Added Status Column -->
+                        </tr>
+                        </thead>
+                        <tbody class="booking-table-body">
+                            <?php if (!empty($pendingBookings)): ?>
+                                <?php foreach ($pendingBookings as $booking): ?>
+                                    <tr>
+                                        <td><?php echo htmlspecialchars($booking['name']); ?></td>
+                                        <td>
+                                            <?php
+                                            $eventDate = date('F d, Y', strtotime($booking['eventDate']));
+                                            $eventTime = date('g:i A', strtotime($booking['event_time']));
+                                            echo $eventDate . ' ' . $eventTime;
+                                            ?>
+                                        </td>
+                                        <td><?php echo htmlspecialchars($booking['status']); ?></td> 
+                                    </tr>
+                                <?php endforeach; ?>
+                            <?php else: ?>
+                                <tr>
+                                    <td colspan="4">No pending bookings found.</td>
+                                </tr>
+                            <?php endif; ?>
+                        </tbody>
+                    </table>
+                </div> 
+            </div>
+            <div class="tbl-prod">
+                <div class="title-bar">
+                    <h4>Production Member</h4>
+                </div>
+                <div class="table-container">
+                    <table class="prod-table">
+                        <thead>
+                            <tr>
+                                <th class="header" colspan="2" style="padding-right: 30px">Name</th>
+                                <th class="header">Role</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($staffData as $staff): ?>
+                                <tr onclick="window.location.href='../admin/production.php';" style="cursor: pointer;">
+                                    <td style="padding-left: 30px; vertical-align: middle;"><img src="data:image/jpeg;base64,<?php echo base64_encode($staff['profile_picture']); ?>" alt="Profile" style="width: 40px; height: 40px; border-radius: 100%;"></td>
+                                    <td class="td-name">
+                                        <?php echo $staff['staff_name']; ?><br>
+                                        <span><?php echo $staff['email']; ?></span>
+                                    </td>
+                                    <td>
+                                        <?php
+                                        $roles = explode(",", $staff['role']);
+                                        echo implode("<br>", $roles);
+                                        ?>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     <main>
     <!----Navbar&Sidebar----->
     <?php 
@@ -66,91 +154,7 @@ $page = $components[2];
         include '../staff/navbar.php';
     ?>
     <script>
-        
-
-    // Add or remove the dark-mode class based on the state
-    if (darkMode) {
-        document.getElementById('revenueChartContainer').classList.add('dark-mode');
-    } else {
-        document.getElementById('revenueChartContainer').classList.remove('dark-mode');
-    }
-
-    // Set text color for labels and dataset
-    const dataset = revenueChart.data.datasets[0];
-    const textColor = darkMode ? '#FCF6F6' : '#1C1C1D';
-    
-    dataset.borderColor = textColor;
-    dataset.pointBackgroundColor = textColor;
-    revenueChart.update();
-   ;
-        
-        
-
-        var inactivityTimeout = 1000; 
-
-        function checkInactivity() {
-            setTimeout(function () {
-                window.location.href = '../login.php'; 
-            }, inactivityTimeout * 1100);
-        }
-
-        // Start checking for inactivity when the page loads
-        document.addEventListener('DOMContentLoaded', function () {
-            checkInactivity();
-        });
-
-        // Reset the inactivity timer when there's user activity
-        document.addEventListener('mousemove', function () {
-            clearTimeout(checkInactivity);
-            checkInactivity();
-        });
-
-        document.addEventListener('keypress', function () {
-            clearTimeout(checkInactivity);
-            checkInactivity();
-        });
-
-
-        //Dark Mode
-        function toggleDarkMode() {
-        const body = document.body;
-        const isDarkMode = body.classList.toggle('dark-mode');
-        const moonIcon = document.querySelector('.dark-mode-toggle i');
-
-        const dashboardItems = document.querySelectorAll('.dashboard-item');
-
-        if (isDarkMode) {
-            moonIcon.className = 'fas fa-sun';
-
-            moonIcon.classList.add('sun-transition');
-            setTimeout(() => {
-                moonIcon.classList.remove('sun-transition');
-            }, 1000);
-
-            // Add dark-mode class to dashboard items
-            dashboardItems.forEach(item => {
-                item.classList.add('dark-mode');
-            });
-        } else {
-            moonIcon.className = 'fas fa-moon';
-
-            moonIcon.classList.add('moon-transition');
-            setTimeout(() => {
-                moonIcon.classList.remove('moon-transition');
-            }, 1000);
-
-            // Remove dark-mode class from dashboard items
-            dashboardItems.forEach(item => {
-                item.classList.remove('dark-mode');
-            });
-        }
-
-        revenueChart.data.datasets[0].borderColor = isDarkMode ? '#FCF6F6' : '#1C1C1D';
-        revenueChart.data.datasets[0].pointBackgroundColor = isDarkMode ? '#FCF6F6' : '#7a7adb';
-        revenueChart.update();
-
-        localStorage.setItem('darkMode', isDarkMode);
-    }
+     
     </script>
 </body>
 </html>

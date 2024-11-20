@@ -204,16 +204,16 @@ $_SESSION['selected_additional_services'] = $selected_additional_services;
                                         <div class="detail-item">
                                             <p class="label">Select Payment option</p>
                                             <select id="payment_option" name="payment_option">
-                                                <option value="Down Payment">50 Percent Down Payment</option>
+                                                <option value="Down Payment">50% Down Payment</option>
                                                 <option value="Full Payment">Full Payment</option>
                                             </select>
                                         </div>
                                     </div>
                                     <div class="subtotal">
                                         <h4>Subtotal (₱): </h4>
-                                        <h5 id="total-cost"><?php echo htmlspecialchars($_SESSION['total_cost']); ?></h5>
+                                        <h5 id="total-cost" style="margin-left: 10px;"> <?php echo htmlspecialchars($_SESSION['total_cost']); ?></h5>
                                     </div>
-                                    <p id="pending-payment">Remaining Balance: ₱ 0.00</p>
+                                    <div id="pending-payment"> Remaining Balance: ₱ 0.00</div>
                                     <input type="hidden" name="remaining_balance" id="hidden_remaining_balance" value="0">
 
                                 </div>
@@ -341,15 +341,25 @@ $_SESSION['selected_additional_services'] = $selected_additional_services;
         </section>
 
         <div id="cartPopup" class="popup-overlay">
-            <div class="popup-content">
-                <h3>Add to Cart</h3>
-                <p>Are you sure you want to add this booking to your cart?</p>
-                <div class="popup-buttons">
-                    <button onclick="addToCart()">Yes</button>
-                    <button onclick="closePopup()">No</button>
-                </div>
+    <div class="popup-content">
+        <h3>Add to Cart</h3>
+        <p>Are you sure you want to add this booking to your cart?</p>
+        <form id="addToCartForm" action="../backend/cart_handler.php" method="POST">
+            <!-- Hidden input fields to capture booking details from session -->
+            <input type="hidden" name="title_event" value="<?php echo htmlspecialchars($_SESSION['booking']['title_event'] ?? ''); ?>">
+            <input type="hidden" name="event_date" value="<?php echo htmlspecialchars($_SESSION['booking']['event_date'] ?? ''); ?>">
+            <input type="hidden" name="type_of_event" value="<?php echo htmlspecialchars($_SESSION['booking']['type_of_event'] ?? ''); ?>">
+            <input type="hidden" name="event_location" value="<?php echo htmlspecialchars($_SESSION['booking']['event_location'] ?? ''); ?>">
+            <input type="hidden" name="selected_services" value="<?php echo htmlspecialchars(json_encode($selected_services)); ?>">
+            <input type="hidden" name="selected_additional_services" value="<?php echo htmlspecialchars(json_encode($selected_additional_services)); ?>">
+            
+            <div class="popup-buttons">
+                <button type="submit">Yes</button>
+                <button type="button" onclick="closePopup()">No</button>
             </div>
-        </div>
+        </form>
+    </div>
+</div>
 
         <div id="consentPopup" class="consent-popup-overlay">
             <div class="consent-popup-content">
@@ -383,7 +393,7 @@ $_SESSION['selected_additional_services'] = $selected_additional_services;
     const pendingPaymentElement = document.getElementById('pending-payment');
     const hiddenRemainingBalanceInput = document.getElementById('hidden_remaining_balance');
 
-    const totalCost = <?php echo $_SESSION['total_cost']; ?>; // Get total cost from PHP session
+    const totalCost =  <?php echo $_SESSION['total_cost']; ?>; // Get total cost from PHP session
 
     function updatePayment() {
         const selectedOption = paymentOption.value; // 50 or 100 (percentage)
@@ -417,39 +427,29 @@ function closePopup() {
     document.getElementById('cartPopup').style.display = 'none';
 }
 
-function addToCart() {
-    const formData = new FormData();
-    formData.append('action', 'add_to_cart');
-    
+// Optional: Add event listener to handle form submission via AJAX
+document.getElementById('addToCartForm').addEventListener('submit', function(e) {
+    e.preventDefault(); // Prevent default form submission
+
+    const formData = new FormData(this);
+
     fetch('../backend/cart_handler.php', {
         method: 'POST',
         body: formData
     })
-    .then(response => response.json())
-    .then(data => {
-        if(data.success) {
-            // Store cart data in localStorage as backup
-            const cartData = localStorage.getItem('cartData') || '{}';
-            const parsedCart = JSON.parse(cartData);
-            parsedCart[data.booking_id] = {
-                timestamp: Date.now(),
-                expiry: Date.now() + (24 * 60 * 60 * 1000) // 24 hours in milliseconds
-            };
-            localStorage.setItem('cartData', JSON.stringify(parsedCart));
-            
-            alert('Successfully added to cart!');
-            window.location.href = 'cart.php';
-        } else {
-            alert('Error adding to cart: ' + data.message);
-        }
+    .then(response => response.text())
+    .then(result => {
+        alert(result); // Show result message
+        closePopup();
+        // Optional: Redirect or refresh page
+        window.location.href = '../client/cart.php';
     })
     .catch(error => {
         console.error('Error:', error);
-        alert('Error adding to cart. Please try again.');
+        alert('An error occurred while adding to cart');
     });
-    
-    closePopup();
-}
+});
+
 
 // Add this function to check and restore cart data on page load
 document.addEventListener('DOMContentLoaded', function() {
@@ -551,30 +551,43 @@ function closeErrorPopup() {
 }
 
 // PayPal button integration
+// Modify the existing PayPal button integration
 paypal.Buttons({
-        createOrder: function(data, actions) {
-            return actions.order.create({
-                purchase_units: [{
-                    amount: {
-                        value: '<?php echo $_SESSION['total_cost']; ?>' // Use the total cost from PHP session
-                    }
-                }]
+    createOrder: function(data, actions) {
+        // Show consent popup when PayPal section is expanded
+        document.querySelector('.payment-section:nth-child(1) .payment-header').addEventListener('click', function() {
+            document.getElementById('consentPopup').style.display = 'flex';
+        });
+
+        return actions.order.create({
+            purchase_units: [{
+                amount: {
+                    value: '<?php echo $_SESSION['total_cost']; ?>'
+                }
+            }]
+        });
+    },
+    onApprove: function(data, actions) {
+        return actions.order.capture().then(function(details) {
+            // Remove the payment proof requirement
+            const form = document.querySelector('.payment');
+            
+            // Remove the file input requirement
+            const fileInputs = form.querySelectorAll('input[type="file"]');
+            fileInputs.forEach(input => {
+                input.removeAttribute('required');
             });
-        },
-        onApprove: function(data, actions) {
-            return actions.order.capture().then(function(details) {
-                // Show a success message to the buyer
-                alert('Transaction completed by ' + details.payer.name.given_name);
-                
-                // Optionally, submit the form to confirm the booking
-                document.querySelector('.payment').submit(); // Submitting the form
-            });
-        },
-        onError: function(err) {
-            console.error(err);
-            alert('An error occurred during the transaction. Please try again.');
-        }
-    }).render('#paypal-button-container');
+
+            // Submit the form directly to success page
+            form.action = '../client/success.php';
+            form.submit();
+        });
+    },
+    onError: function(err) {
+        console.error(err);
+        alert('An error occurred during the transaction. Please try again.');
+    }
+}).render('#paypal-button-container');
 </script>
 
 </html>

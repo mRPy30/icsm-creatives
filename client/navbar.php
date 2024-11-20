@@ -37,6 +37,7 @@ if (isset($_SESSION['clientID'])) {
 }
 
 // Page titles, navigation, etc. (rest of the code remains unchanged)
+$currentPage = basename($_SERVER['PHP_SELF']);
 
 ?>
 <style>
@@ -51,13 +52,9 @@ if (isset($_SESSION['clientID'])) {
     }
 
     .transparent-background .nav-links li .nav {
-        color: #fcf6f6 !important;
+        color: #fcf6f6;
     }
 
-    .transparent-background .nav-links li .nav .active{
-        color: #BC8759 !important;
-        
-    }
 
     .transparent-background .nav-right i{
         color: #fbfbfb;
@@ -122,12 +119,12 @@ if (isset($_SESSION['clientID'])) {
       text-decoration: none;
     }
     .nav-links li .nav.active {
-        color: #BC8759;
-        border-bottom: 3px solid #BC8759;
+        color: #dd9e66;
+        border-bottom: 3px solid #dd9e66;
     }
 
     .nav-links li .nav:hover {
-        color: #BC8759;
+        color: #dd9e66;
         transition: all 0.3s;
     }
 
@@ -229,15 +226,17 @@ if (isset($_SESSION['clientID'])) {
         flex-direction: row;
     }
 
+    .profile_pic img{
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 1px solid gray;
+    }
+
     .profile_pic .name{
         display: flex;
         flex-direction: column;
-    }
-
-    .profile_pic img {
-        max-width: 35px;
-        max-height: 35px;
-        border-radius: 50%;
     }
 
     .profile_dropdown {
@@ -428,13 +427,13 @@ if (isset($_SESSION['clientID'])) {
     </div>
         <ul class="nav-links">
             <li>
-                <a class="nav active" href="../client/booking.php">Booking</a>
+                <a class="nav <?= $currentPage == 'booking.php' ? 'active' : '' ?>" href="../client/booking.php">Booking</a>
             </li>
             <li>
-                <a class="nav" href="../client/feedback.php">Feedback</a>
+                <a class="nav <?= $currentPage == 'feedback.php' ? 'active' : '' ?>" href="../client/feedback.php">Feedback</a>
             </li>
             <li>
-                <a class="nav" href="../client/Gallery.php">Gallery</a>
+                <a class="nav <?= $currentPage == 'Gallery.php' ? 'active' : '' ?>" href="../client/Gallery.php">Gallery</a>
             </li>
         </ul>
     <div class="profile_dropdown">

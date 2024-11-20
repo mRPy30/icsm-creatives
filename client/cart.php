@@ -37,8 +37,8 @@ function formatTime($timestamp) {
                 <p>Your add to Cart can book again</p>
             </div>
         </section>
-        <section class="cart-section">
-        <div class="cart-content">
+        <section class="client-section">
+            <div class="cart-content">
                 <?php if (isset($_SESSION['cart']) && !empty($_SESSION['cart'])): ?>
                     <?php foreach ($_SESSION['cart'] as $bookingId => $item): ?>
                         <?php

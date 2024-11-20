@@ -23,9 +23,14 @@ while (time() <= $endTime) {
             b.eventLocation, 
             b.event_time, 
             b.status, 
-            e.picture 
+            b.additional,
+            b.reason,
+            e.picture,
+            s.service_name 
         FROM booking AS b
         JOIN event AS e ON b.eventID = e.eventID
+        JOIN services AS s ON b.service_package = s.serviceID
+
         WHERE b.clientID = ? 
         ORDER BY b.eventDate DESC, b.event_time DESC
     ");    

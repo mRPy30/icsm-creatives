@@ -176,7 +176,7 @@ if ($resultClientRegistration->num_rows > 0) {
                 <div class="top-book">
                     <h4>Total Bookings</h4>
                 </div>
-                <table class="header-table">
+                <table class="tbls-bookings">
                     <thead>
                         <tr>
                             <th>YEAR</th>

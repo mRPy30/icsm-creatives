@@ -356,13 +356,6 @@ body, html {
         flex-direction: column;
     }
 
-    .left-section,
-    .right-section {
-        padding: 5%;
-        align-items: center;
-        text-align: center;
-    }
-
     .welcome-text h1 {
         font-size: 2.5em;
     }

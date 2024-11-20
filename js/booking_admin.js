@@ -51,26 +51,22 @@ function closeAssignStaffModal(){
 }
 
 
-function openAssignStaffModal(bookingId, servicePackage, pax) {
+function openAssignStaffModal(bookingId) {
     var modal = document.getElementById('assign-staff-modal');
     modal.style.display = 'block';
     document.getElementById('bookingId').value = bookingId;
 
-    getAvailableStaff('Photographer').then(photographers => {
-        getAvailableStaff('Videographer').then(videographers => {
-            getAvailableStaff('Editor').then(editors => {
-                let staffNeeded = calculateStaff(servicePackage, pax);
+    // Show loading animation and hide the recommended staff content initially
+    document.getElementById('loading-animation').style.display = 'grid';
+    document.querySelector('.recommended-staff').style.display = 'none';
 
-                populateDropdown('staff-select', photographers, staffNeeded.photographer);
-                populateDropdown('staff-select-videographer', videographers, staffNeeded.videographer);
-                populateDropdown('staff-select-editor', editors, staffNeeded.editor);
-
-                let deadline = calculateDeadline(servicePackage);
-                document.getElementById('deadline').value = deadline;
-            });
-        });
-    });
+    // After 2 seconds, hide the loading animation and show the recommended staff content
+    setTimeout(() => {
+        document.getElementById('loading-animation').style.display = 'none';
+        document.querySelector('.recommended-staff').style.display = 'flex';
+    }, 2000);
 }
+
 
 
 function submitAssignStaff(event) {
@@ -99,13 +95,23 @@ function submitAssignStaff(event) {
 
 
 
-let bookings = []; // Holds all bookings data
-let currentFilter = 'all'; // Current status filter
-let selectedYear = ''; // Selected year filter
-let selectedMonth = ''; // Selected month filter
+let bookings = []; 
+let currentFilter = 'all';
+let selectedYear = ''; 
+let selectedMonth = ''; 
 
     // Function to update status filter and re-render bookings
     function filterBookings(filter) {
+        // Update the active state for tabs
+    const tabs = document.querySelectorAll('.tab');
+    tabs.forEach(tab => {
+        if (tab.dataset.filter === filter) {
+            tab.classList.add('active');
+        } else {
+            tab.classList.remove('active');
+        }
+    });
+
         currentFilter = filter;
         renderBookings(); // Re-render based on new status filter
     }
@@ -123,6 +129,10 @@ let selectedMonth = ''; // Selected month filter
         const pendingCount = document.getElementById('pending-count');
         const acceptedCount = document.getElementById('accepted-count');
         const declinedCount = document.getElementById('declined-count');
+        const cancelledCount = document.getElementById('cancelled-count');
+        const completedCount = document.getElementById('completed-count');
+
+
 
         tableBody.innerHTML = ''; 
 
@@ -141,10 +151,14 @@ let selectedMonth = ''; // Selected month filter
     pendingCount.innerText = bookings.filter(b => b.status.toLowerCase() === 'pending').length;
     acceptedCount.innerText = bookings.filter(b => b.status.toLowerCase() === 'accepted').length;
     declinedCount.innerText = bookings.filter(b => b.status.toLowerCase() === 'declined').length;
+    cancelledCount.innerText = bookings.filter(b => b.status.toLowerCase() === 'cancelled').length;
+    completedCount.innerText = bookings.filter(b => b.status.toLowerCase() === 'completed').length;
+
+
 
     // Display "Empty" message if no bookings match the filter
     if (filteredBookings.length === 0) {
-        tableBody.innerHTML = `<tr><td colspan="10" style="text-align:center;">Empty</td></tr>`;
+        tableBody.innerHTML = `<tr><td colspan="14" style="text-align:center;">Empty</td></tr>`;
         return;
     }
 
@@ -156,12 +170,21 @@ let selectedMonth = ''; // Selected month filter
         if (booking.status === 'Pending') {
             statusCircle = '<span class="status-circle pending-circle"></span>';
             statusButtons = `
-                <button class="accept" onclick="openAcceptPopup('${booking.bookingId}')">Accept</button>
-                <button class="decline" onclick="openDeclinePopup('${booking.bookingId}')">Decline</button>`;
+                <button class="accept" onclick="openAcceptPopup('${booking.bookingId}')"> <i class="fa-solid fa-check"></i> Accept</button>
+                <button class="decline" onclick="openDeclinePopup('${booking.bookingId}')"><i class="fa-solid fa-minus"></i> Decline</button>`;
         } else if (booking.status === 'Accepted') {
-            statusCircle = '<span class="status-circle accepted-circle"></span>';
+            statusCircle = '<span class="status-circle accepted-circle"></span>'
+            statusButtons = `
+                <button class="archive"> <i class="fa-solid fa-box-archive"></i> Archived</button>`;
         } else if (booking.status === 'Declined') {
-            statusCircle = '<span class="status-circle declined-circle"></span>';
+            statusCircle = '<span class="status-circle declined-circle"></span>'
+            statusButtons = `
+                <button class="archive"> <i class="fa-solid fa-box-archive"></i> Archived</button>`;;
+        } else if (booking.status === 'Cancelled') {
+            statusCircle = '<span class="status-circle cancelled-circle"></span>';
+            statusButtons = `<div class="cancel-reason">Reason: ${booking.reason}')"</div>`;
+        } else if (booking.status === 'Completed') {
+            statusCircle = '<span class="status-circle completed-circle"></span>';
         }
 
         const receiptLink = booking.proof_payment ?
@@ -191,23 +214,24 @@ let selectedMonth = ''; // Selected month filter
 
         // Add "Send SMS" button next to status buttons
         const sendSmsButton = `
-            <button class="send-sms" onclick="openMessageModal('${booking.bookingId}')">Send SMS</button>
-        `;
+        <button class="send-sms" onclick="openMessageModal('${booking.cellphone}', '${booking.bookingId}')">
+        Send SMS
+    </button>        `;
 
         const row = `
             <tr>
                 <td>${booking.bookingId}</td>
                 <td>${statusCircle}</td>
-                <td>${booking.service_name}</td>
-                <td>${booking.additional}</td>
-                <td>${booking.specified_service}</td>
-                <td>${assignStaffButton}</td>
+                <td>${booking.formattedDateTime}</td>
                 <td>${booking.client_name}</td>
-                <td>${booking.formattedEventDate} ${booking.formattedTimeRange}</td>
                 <td>${booking.eventLocation}</td>
+                <td>${booking.service_name}</td>
+                <td>${booking.specified_service}</td>
+                <td>${booking.additional}</td>
+                <td>${assignStaffButton}</td>
                 <td>${booking.payment_option}</td>
-                <td>${booking.remaining_balance}</td>
                 <td>${receiptLink}</td>
+                <td>${booking.remaining_balance}</td>
                 <td>${statusButtons}</td>
                 <td>${sendSmsButton}</td>
             </tr>`;
@@ -215,63 +239,75 @@ let selectedMonth = ''; // Selected month filter
     });
 }
 
-function openMessageModal(bookingId) {
-    // Show the message modal and populate the bookingId field
-    document.getElementById('bookingId').value = bookingId;
-    document.getElementById('messageModal').style.display = 'block';
-    document.getElementById('popupOverlay').style.display = 'block';
+function openMessageModal(cellphone, bookingId) {
+    const modal = document.getElementById('messageModal');
+    const cellphoneInput = document.getElementById('cellphone-number');
+    const bookingIdInput = document.getElementById('bookingId');
+
+    if (!modal || !cellphoneInput || !bookingIdInput) {
+        console.error('Required elements not found in the DOM!');
+        return;
+    }
+
+    // Show modal and set input values
+    modal.style.display = 'block';
+    cellphoneInput.value = cellphone || '';
+    bookingIdInput.value = bookingId || '';
+
+    // Log for debugging
+    console.log('Modal opened with:', {
+        cellphone: cellphone,
+        bookingId: bookingId
+    });
 }
 
 function closeMessageModal() {
-    // Hide the message modal
     document.getElementById('messageModal').style.display = 'none';
-    document.getElementById('popupOverlay').style.display = 'none';
 }
+
+
+function closeMessageModal() {
+    document.getElementById('messageModal').style.display = 'none';
+}
+
 
 function sendMessage(event) {
     event.preventDefault();
-    // Get the form data
-    let bookingId = document.getElementById('bookingId').value;
-    let messageText = document.getElementById('message-text').value;
+    
+    var bookingId = document.getElementById('bookingId').value;
+    var phoneNumber = document.getElementById('cellphone-number').value;
+    var messageText = document.getElementById('message-text').value;
 
-    // Send the message, e.g., using AJAX or Semaphore SMS
-    // Replace the following with your actual implementation
-    sendMessageToCustomer(bookingId, messageText)
-        .then(() => {
-            closeMessageModal();
-            showSuccessPopup('Message sent successfully!');
-        })
-        .catch((error) => {
-            console.error('Error sending message:', error);
-            alert('Failed to send message. Please try again later.');
-        });
-}
-
-// Example implementation using AJAX
-function sendMessageToCustomer(bookingId, message) {
-    return new Promise((resolve, reject) => {
-        // Make an AJAX request to the backend to send the message
-        // Using the Fetch API for example
-        fetch('../backend/semaphore_sms.php', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
-            },
-            body: `booking_id=${bookingId}&message=${encodeURIComponent(message)}`
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.status === 'success') {
-                resolve();
+    // AJAX call to PHP backend
+    $.ajax({
+        url: '../backend/send_message.php',
+        method: 'POST',
+        data: {
+            bookingId: bookingId,
+            phoneNumber: phoneNumber,
+            message: messageText
+        },
+        success: function(response) {
+            if (response.success) {
+                // Show success popup
+                document.getElementById('popupMessage').textContent = 'Message sent successfully!';
+                document.getElementById('successPopup').style.display = 'block';
+                document.getElementById('popupOverlay').style.display = 'block';
+                
+                // Close message modal
+                closeMessageModal();
             } else {
-                reject(new Error('Failed to send message'));
+                // Handle error
+                alert('Failed to send message: ' + response.message);
             }
-        })
-        .catch(error => {
-            reject(error);
-        });
+        },
+        error: function() {
+            alert('Error sending message');
+        }
     });
 }
+
+
 
 
 function openAcceptPopup(bookingId) {

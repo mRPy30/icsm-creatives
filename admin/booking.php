@@ -2,8 +2,26 @@
 session_start();
 // Connection
 include '../backend/dbcon.php';
-include '../backend/semaphore_sms.php';
+include '../backend/infobip_sms.php';
 
+// Initialize variables
+$cellphone = '';
+
+// Check if clientID is available
+if (isset($clientID)) {
+    // Query the database for the cellphone number
+    $query = "SELECT cellphone FROM client WHERE clientID = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("i", $clientID);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows > 0) {
+        $row = $result->fetch_assoc();
+        $cellphone = $row['cellphone']; // Get the cellphone number
+    }
+    $stmt->close();
+}
 
 // Active Page
 $directoryURI = $_SERVER['REQUEST_URI'];
@@ -19,6 +37,8 @@ $page = $components[2];
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 
     <!---WEB TITLE--->
     <link rel="short icon" href="../picture/shortcut-logo.png" type="x-icon">
@@ -68,6 +88,8 @@ $page = $components[2];
                     <button class="tab" data-filter="pending" onclick="filterBookings('pending')">Pending (<span id="pending-count">0</span>) |</button>
                     <button class="tab" data-filter="accepted" onclick="filterBookings('accepted')">Accepted (<span id="accepted-count">0</span>) |</button>
                     <button class="tab" data-filter="declined" onclick="filterBookings('declined')">Declined (<span id="declined-count">0</span>)</button>
+                    <button class="tab" data-filter="cancelled" onclick="filterBookings('cancelled')">Cancelled (<span id="cancelled-count">0</span>)</button>
+                    <button class="tab" data-filter="completed" onclick="filterBookings('completed')">Completed (<span id="completed-count">0</span>)</button>
                 </div>
                 <div class="right-tab">
                     <select id="year-select" onchange="filterByDate()">
@@ -75,6 +97,8 @@ $page = $components[2];
                         <option value="2022">2022</option>
                         <option value="2023">2023</option>
                         <option value="2024">2024</option>
+                        <option value="2025">2025</option>
+                        <option value="2026">2026</option>
                     </select>
                     <select id="month-select" onchange="filterByDate()">
                         <option value="">All Months</option>
@@ -96,21 +120,21 @@ $page = $components[2];
                 </div>
             </div>
             <div class="tbl-container">
-                <table class="header-table">
+                <table class="booking-table">
                     <thead>
                         <tr>
                             <th>Booking Id</th>
                             <th>Status</th>
-                            <th>Service Package</th>
-                            <th>Addtional Services</th>
-                            <th>Specified Services</th>
-                            <th>Assigned Staff</th>
-                            <th>Booked by</th>
                             <th>Date & Time</th>
-                            <th>Location</th>
+                            <th>Booked by</th>
+                            <th>Venue Location</th>
+                            <th>Service Package</th>
+                            <th>Specified Services</th>
+                            <th>Addtional Services</th>
+                            <th>Assigned Staff</th>
                             <th>Payment Status</th>
-                            <th>Remaining Balance</th>
                             <th>Payment Receipt</th>
+                            <th>Remaining Balance</th>
                             <th>Actions</th>
                             <th>Message</th>
                         </tr>
@@ -119,16 +143,50 @@ $page = $components[2];
 
                     </tbody>
                 </table>
+                
             </div>
+                <div class="status-legend">
+                    <div class="legend-label">
+                        <span class="status-circle completed-circle"></span>
+                        <p>Completed</p>
+                    </div>
+                    <div class="legend-label">
+                        <span class="status-circle accepted-circle"></span>
+                        <p>Accepted</p>
+                    </div>
+                    <div class="legend-label">
+                        <span class="status-circle cancelled-circle"></span>
+                        <p>Cancelled</p>
+                    </div>
+                    <div class="legend-label">
+                        <span class="status-circle declined-circle"></span>
+                        <p>Declined</p>
+                    </div>
+                    <div class="legend-label">
+                        <span class="status-circle pending-circle"></span>
+                        <p>Pending</p>
+                    </div>
+                </div>
     
         <div id="assign-staff-modal" class="popup-admin">
             <span class="close-btn" onclick="closeAssignStaffModal()">&times;</span>
             <div id="recommendedStaff">
                 <h4>Recommended</h4>
+                <div id="loading-animation" class="scaling-dots">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <p>Loading...</p>
+                </div>
+
                 <div class="recommended-staff">
                     <?php
-                    // Fetch recommended staff
-                    $recommendedQuery = "SELECT staff_ID, staff_name, role, profile_picture FROM staff WHERE role IN ('photographer', 'videographer', 'editor') LIMIT 2";
+                    // Fetch recommended staff with highest rates
+                    $recommendedQuery = "SELECT staff_ID, staff_name, role, profile_picture, rate FROM staff 
+                                         WHERE role IN ('Photographer', 'Videographer', 'Editor') 
+                                         ORDER BY rate DESC LIMIT 5";
                     $recommendedResult = mysqli_query($conn, $recommendedQuery);
                     while ($staff = mysqli_fetch_assoc($recommendedResult)) {
                         echo "<div class='staff-card'>";
@@ -136,6 +194,7 @@ $page = $components[2];
                         echo "<div class='staff-info'>";
                         echo "<div class='staff-name'>" . htmlspecialchars($staff['staff_name']) . "</div>";
                         echo "<div class='staff-role'>" . htmlspecialchars(ucfirst($staff['role'])) . "</div>";
+                        echo "<div class='staff-rate'>Rate: " . number_format($staff['rate'], 2) . "</div>";
                         echo "</div>";
                         echo "</div>";
                     }
@@ -200,23 +259,23 @@ $page = $components[2];
             </div>
         </div>
 
-        <!-- Inside the main container -->
-        <div id="messageModal" class="popup-admin">
-            <span class="close-btn" onclick="closeMessageModal()">&times;</span>
-            <h3>Send Message to Client</h3>
-            <form id="message-form" onsubmit="sendMessage(event)">
-                <input type="hidden" id="bookingId" name="bookingId">
-                <div class="form-group">
-                    <label for="cellphone-number">Client Contact Number:</label>
-                    <input type="number" id="cellphone-number" name="cellphone-number">
-                </div>
-                <div class="form-group">
-                    <label for="message-text">Message:</label>
-                    <textarea id="message-text" name="message" rows="4" required></textarea>
-                </div>
-                <button class="submit-btn" type="submit">Send Message</button>
-            </form>
+        <div id="messageModal" class="popup-admin" style="display: none;">
+    <span class="close-btn" onclick="closeMessageModal()">&times;</span>
+    <h3>Send Message to Client</h3>
+    <form method="POST" action="../backend/infobip_sms.php">
+        <input type="hidden" name="bookingId" id="bookingId">
+        <div class="form-group">
+            <label for="cellphone-number">Client Contact Number:</label>
+            <input type="tel" id="cellphone-number" pattern="[0-9]+" name="cellphone-number" autocomplete="off" required>
         </div>
+        <div class="form-group">
+            <label for="message-text">Message:</label>
+            <textarea id="message-text" name="message" rows="4" required></textarea>
+        </div>
+        <button type="submit" name="send_sms" class="submit-btn">Send Message</button>
+    </form>
+</div>
+
    
 
         <!-- Popup -->

@@ -75,11 +75,13 @@ if (isset($_POST['delete'])) {
 
 
     <section class="container-admin">
-        <div class="table-booking">
-            <h4>Client Details</h4>
-            <div class="search-bar">
-                <input type="text" placeholder="Search client name" id="client-search">
-                <i class="fa-solid fa-magnifying-glass" type="button" onclick="searchClient()" title="Search"></i>
+        <div class="table-admin">
+            <div class="top-book">
+                <h4>Client Details</h4>
+                <div class="search-bar">
+                    <input type="text" placeholder="Search Client" id="client-search" onkeyup="searchClient()">
+                    <i class="fa-solid fa-magnifying-glass" type="button" title="Search Client"></i>
+                </div>
             </div>
             <table class="header-table">
                 <thead>

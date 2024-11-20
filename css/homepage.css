@@ -319,7 +319,14 @@
     position: absolute;
     margin: 5% 0% 0% 80%;
     font-size: 130%;
+    color: #BC8759;
 }
+
+.milestone-card .icon-link i{
+    color: #BC8759;
+
+}
+
 .milestone-card img {
     width: 100%;
     height: 70%;
@@ -861,9 +868,10 @@
     font-size: 25px;
   }
   
-  .ms-testimonial-stars {
-    font-size: 2rem;
+  .ms-testimonial-stars i {
+    font-size: 1rem;
     color: #f4c542;
+    margin: 0 5px;
   }
   
   @media screen and (max-width: 768px) {

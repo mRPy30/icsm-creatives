@@ -10,16 +10,14 @@ $path = parse_url($directoryURI, PHP_URL_PATH);
 $components = explode('/', $path);
 $page = $components[2];
 
-// Fetch data from the database
-$query = "SELECT feedback.feedbackID AS feedbackID, client.name, feedback.feedback_Title, feedback.feedback_description
-          FROM feedback
-          INNER JOIN client ON feedback.clientID = client.clientID"; 
-
+// Fetch feedback data with joins to get client name and event name
+$query = "SELECT f.*, c.name as client_name, e.eventName as event_name, b.title_event as booking_event 
+          FROM feedback f
+          LEFT JOIN client c ON f.clientID = c.clientID
+          LEFT JOIN booking b ON f.bookingId = b.bookingId
+          LEFT JOIN event e ON b.eventID = e.eventID
+          ORDER BY f.feedback_date DESC";
 $result = mysqli_query($conn, $query);
-
-if (!$result) {
-    die("Query Failed: " . mysqli_error($connection));
-}
 ?>
 
 <!DOCTYPE html>
@@ -56,59 +54,61 @@ if (!$result) {
 
    
 
-    <section class="feedbox">
-        <div class="table-feedback">
-        <form id="deleteForm" method="post" action="../backend/delete_feedback.php">
-            <table class="header-feedback">
-                <thead>
-                    <tr>
-                        <th style="width: 10%;"></th>
-                        <th style="padding: 1.5% 0% 1% 1%; width: 15%;">Name</th>
-                        <th style="padding: 1.5% 0% 1% 1%; width: 15%;">Title</th>
-                        <th style="padding: 1.5% 0% 1% 0%;">Feedback</th>
-                        <th style="text-align: right; padding-right: 5%; width: 5%; cursor: pointer; ">
-                            <i class="fa-regular fa-trash-can" id="deleteIcon"></i>
-                        </th>           
-                    </tr>
-                </thead>
-            </table>
-            <div class="data-container">
-                <table class="data-table">
-                    <tbody>
-                        <?php
-                        if (mysqli_num_rows($result) == 0) {
-                            echo "<p>No feedback available.</p>";
-                        } else {
-                            echo '<table class="data-table">';
-                            echo '<tbody>';
-                            
-                            while ($row = mysqli_fetch_assoc($result)) {
-                                echo "<tr class='clickable-row' data-feedback-id='" . $row['feedbackID'] . "'>";
-                                echo "<td style='width: 7%;'><input type='checkbox' name='feedbackIDs[]' value='" . $row['feedbackID'] . "'></td>";
-                                echo "<td class='feedback-name' style='padding: 1.5% 0% 1% 3%; width: 15%; text-align: start;' >" . $row['name'] . "</td>";
-                                echo "<td class='feedback-title'>" . $row['feedback_Title'] . "</td>";
-                                echo "<td class='feedback-description'>" . $row['feedback_description'] . "</td>";
-                                echo "</tr>";
-                            } 
-                        
-                            echo '</tbody>';
-                            echo '</table>';
-                        }             
-                        ?>
+<section class="container-admin">
+        <div class="table-admin">
+            <div class="top-book">
+                <h4>Feedbacks</h4>
+                <div class="search-bar">
+                    <input type="text" placeholder="Search Feedback" id="feedback-search" onkeyup="searchFeedback()">
+                    <i class="fa-solid fa-magnifying-glass" type="button" title="Search Feedback"></i>
+                </div>
+            </div>
+            <div class="tbl-container">
+                <table class="header-table">
+                    <thead>
+                        <tr>
+                            <th>Feedback Id</th>
+                            <th>Client Name</th>
+                            <th>Booking Event</th>
+                            <th>Status</th>
+                            <th>Text</th>
+                            <th>Service Rate</th>
+                            <th>Actions</th>
+                        </tr>
+                        <tbody id="feedback-table-body">
+                        <?php while($row = mysqli_fetch_assoc($result)) { ?>
+                            <tr>
+                                <td><?php echo $row['feedbackID']; ?></td>
+                                <td><?php echo htmlspecialchars($row['client_name']); ?></td>
+                                <td><?php echo htmlspecialchars($row['event_name'] ?? $row['booking_event']); ?></td>
+                                <td><?php echo htmlspecialchars($row['status']); ?></td>
+                                <td class="feedback-text"><?php echo htmlspecialchars($row['feedback_description']); ?></td>
+                                <td>
+                                    <span class="service-rating">
+                                        <?php
+                                        $rating = intval($row['rating']);
+                                        // Display filled stars
+                                        for($i = 1; $i <= $rating; $i++) {
+                                            echo '<i class="fa-solid fa-star"></i>';
+                                        }
+                                        // Display empty stars
+                                        for($i = $rating + 1; $i <= 5; $i++) {
+                                            echo '<i class="fa-solid fa-star empty-star"></i>';
+                                        }
+                                        ?>
+                                    </span>
+                                    <span class="rating-number">(<?php echo $row['rating']; ?>)</span>
+                                </td>                                
+                                <td>
+    <?php if ($row['status'] !== 'Posted' && $row['status'] !== 'Archived') { ?>
+        <button class="status-btn posted" onclick="updateStatus(<?php echo $row['feedbackID']; ?>, 'Posted')">Posted</button>
+        <button class="status-btn archived" onclick="updateStatus(<?php echo $row['feedbackID']; ?>, 'Archived')">Archived</button>
+    <?php } ?>
+</td>
+                            </tr>
+                        <?php } ?>
                     </tbody>
                 </table>
-            </div>
-        </form>
-        </div>
-        <div class="popup" id="deletePopup">
-            <div class="popup-content">
-                <p>Are you sure you want to delete this feedback?</p>
-                <button id="deleteNo">No</button>
-                <button id="deleteYes">Yes</button>
-            </div>
-        </div>
-        <div id="loadingOverlay">
-            <div class="loading-circle"></div>
         </div>
     </section>
      
@@ -118,52 +118,113 @@ if (!$result) {
         include '../admin/navbar.php';
     ?> 
 <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const tableRows = document.querySelectorAll(".data-table tbody tr");
-            const deleteIcon = document.getElementById("deleteIcon");
-            const deleteForm = document.getElementById("deleteForm");
-            const deletePopup = document.getElementById("deletePopup");
-            const deleteYesBtn = document.getElementById("deleteYes");
-            const deleteNoBtn = document.getElementById("deleteNo");
-            const loadingOverlay = document.getElementById("loadingOverlay");
+  function searchFeedback() {
+            const input = document.getElementById('feedback-search');
+            const filter = input.value.toUpperCase();
+            const tbody = document.getElementById('feedback-table-body');
+            const rows = tbody.getElementsByTagName('tr');
 
-            deleteIcon.addEventListener("click", function () {
-                const selectedCheckboxes = document.querySelectorAll(".data-table tbody input[type='checkbox']:checked");
-                if (selectedCheckboxes.length > 0) {
-                    deletePopup.style.display = "block";
-                } else {
-                    alert("Please select a feedback to delete.");
-                }
-            });
-
-            tableRows.forEach(row => {
-                row.addEventListener("click", function (event) {
-                    if (event.target.tagName !== 'INPUT') {
-                        const feedbackID = this.dataset.feedbackId;
-                        feedbackToDelete = feedbackID;
-                        window.location.href = `details.php?feedbackID=${feedbackID}`;
+            for (let i = 0; i < rows.length; i++) {
+                const cells = rows[i].getElementsByTagName('td');
+                let found = false;
+                
+                for (let j = 0; j < cells.length; j++) {
+                    const cell = cells[j];
+                    if (cell) {
+                        const textValue = cell.textContent || cell.innerText;
+                        if (textValue.toUpperCase().indexOf(filter) > -1) {
+                            found = true;
+                            break;
+                        }
                     }
-                });
+                }
+                
+                rows[i].style.display = found ? '' : 'none';
+            }
+        }
+
+        function updateStatus(feedbackId, status) {
+            fetch('../backend/fetch_feedback.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `feedbackId=${feedbackId}&status=${status}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Update the status in the table
+                    const row = document.querySelector(`tr[data-feedback-id="${feedbackId}"]`);
+                    if (row) {
+                        const statusCell = row.querySelector('td:nth-child(4)');
+                        if (statusCell) {
+                            statusCell.textContent = status;
+                        }
+                    }
+                    alert('Status updated successfully!');
+                } else {
+                    alert('Error updating status');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error updating status');
             });
+        }
 
-            deleteYesBtn.addEventListener("click", function () {
-                const selectedRow = document.querySelector(".data-table tbody input[type='checkbox']:checked").closest("tr");
-                const userName = selectedRow.querySelector(".feedback-name").innerText;
+        const eventSource = new EventSource('../backend/feedback_stream.php');
 
-                deletePopup.style.display = "none"; // Close the popup
-                loadingOverlay.style.display = "flex"; // Show loading overlay
+eventSource.onmessage = function (event) {
+    const feedbackData = JSON.parse(event.data);
+    const tableBody = document.getElementById('feedback-table-body');
 
-                setTimeout(function () {
-                    loadingOverlay.style.display = "none"; // Hide loading overlay
-                    alert( userName + "'s feedback was successfully deleted");
-                    deleteForm.submit();
-                }, 2000); // Simulate a delay for demonstration purposes
-            });
+    feedbackData.forEach(row => {
+        const existingRow = document.querySelector(`tr[data-feedback-id="${row.feedbackID}"]`);
+        
+        if (existingRow) {
+            // Update existing row
+            existingRow.querySelector('td:nth-child(4)').textContent = row.status;
+            existingRow.querySelector('td:nth-child(5)').textContent = row.feedback_description;
+            existingRow.querySelector('td:nth-child(6) .service-rating').innerHTML = generateStarHTML(row.rating);
+        } else {
+            // Add new row
+            const tr = document.createElement('tr');
+            tr.setAttribute('data-feedback-id', row.feedbackID);
+            tr.innerHTML = `
+                <td>${row.feedbackID}</td>
+                <td>${row.client_name}</td>
+                <td>${row.event_name || row.booking_event}</td>
+                <td>${row.status}</td>
+                <td class="feedback-text">${row.feedback_description}</td>
+                <td>
+                    <span class="service-rating">
+                        ${generateStarHTML(row.rating)}
+                    </span>
+                    <span class="rating-number">(${row.rating})</span>
+                </td>
+                <td>
+                    ${row.status !== 'Posted' && row.status !== 'Archived' ? `
+                        <button class="status-btn posted" onclick="updateStatus(${row.feedbackID}, 'Posted')">Posted</button>
+                        <button class="status-btn archived" onclick="updateStatus(${row.feedbackID}, 'Archived')">Archived</button>
+                    ` : ''}
+                </td>
+            `;
+            tableBody.appendChild(tr);
+        }
+    });
+};
 
-            deleteNoBtn.addEventListener("click", function () {
-                deletePopup.style.display = "none";
-            });
-        });
-</script>  
+eventSource.onerror = function () {
+    console.error("Error connecting to the feedback stream.");
+};
+
+// Helper function to generate star HTML
+function generateStarHTML(rating) {
+    return `${Array.from({ length: rating }, () => '<i class="fa-solid fa-star"></i>').join('')}
+            ${Array.from({ length: 5 - rating }, () => '<i class="fa-solid fa-star empty-star"></i>').join('')}`;
+}
+
+    </script> 
 </body>
 </html>

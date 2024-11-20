@@ -17,7 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $title_event = $_SESSION['booking']['title_event'];
     $selectedServiceIDs = isset($_SESSION['service_ids']) ? $_SESSION['service_ids'] : [];
     $service_package = !empty($selectedServiceIDs) ? $selectedServiceIDs[0] : null;
-    $additional_services = isset($_SESSION['selected_additional_services']) ? $_SESSION['selected_additional_services'] : true;
+    $additional_services = isset($_SESSION['selected_additional_services']) ? $_SESSION['selected_additional_services'] : '';    
     $additional = json_encode($additional_services);
     $pax = $_SESSION['booking']['pax'];
     $total_cost = $_SESSION['total_cost'];
@@ -32,13 +32,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $eventTime24 = date("H:i", strtotime($eventTime));
 
+    if (is_string($additional_services)) {
+        $additional = $additional_services;
+    } else {
+        // Convert array of services to comma-separated string of names
+        $service_names = array();
+        foreach ($additional_services as $service) {
+            if (is_array($service) && isset($service['name'])) {
+                $service_names[] = $service['name'];
+            } else if (is_string($service)) {
+                $service_names[] = $service;
+            }
+        }
+        $additional = implode(', ', $service_names);
+    }
+
 
     // Handle file upload for payment proof
     if(isset($_FILES['payment_proof']) && $_FILES['payment_proof']['error'] === UPLOAD_ERR_OK) {
         $tmpName = $_FILES['payment_proof']['tmp_name'];
         $proof_payment = file_get_contents($tmpName);
     } else {
-        echo "Error: Payment proof is required.";
+        
         exit();
     }
 

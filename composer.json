@@ -2,6 +2,7 @@
     "require": {
         "phpmailer/phpmailer": "^6.9",
         "facebook/graph-sdk": "^5.1",
-        "google/apiclient": "^2.17"
+        "google/apiclient": "^2.17",
+        "infobip/infobip-api-php-client": "^5.1"
     }
 }

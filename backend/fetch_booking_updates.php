@@ -13,11 +13,12 @@ $endTime = time() + $timeout;
 while (time() <= $endTime) {
     // Modify query to join booking, client, services, booking_staff, and staff tables
     $sql = "
-    SELECT b.bookingId, b.clientID, b.eventLocation, b.additional, b.proof_payment, b.status, b.service_package, b.eventDate, b.event_time, b.payment_option, b.remaining_balance,
-           c.name as client_name, s.service_name , s.specified_service
+    SELECT b.bookingId, b.clientID, b.eventLocation, b.additional, b.proof_payment, b.status, b.service_package, b.eventDate, b.event_time, b.payment_option, b.remaining_balance, b.reason,
+           c.name as client_name, c.cellphone, s.service_name , s.specified_service
     FROM booking b
     LEFT JOIN client c ON b.clientID = c.clientID
     LEFT JOIN services s ON b.service_package = s.serviceID
+    WHERE b.status IN ('Cancelled', 'Accepted', 'Pending', 'Declined', 'Request Cancellation')
     ORDER BY b.bookingId DESC
     ";
 
@@ -28,16 +29,16 @@ while (time() <= $endTime) {
         // Convert the image data to base64
         $row['proof_payment'] = $row['proof_payment'] ? base64_encode($row['proof_payment']) : null;
 
-        // Format the eventDate, event_time
-        $formattedEventDate = date('F j, Y', strtotime($row['eventDate']));
-        $formattedStartTime = date('h:i A', strtotime($row['event_time']));
+        // Format the date and time in one line
+        $formattedDateTime = date(' F j, Y | h:i A ', strtotime($row['eventDate'] . ' ' . $row['event_time']));
 
-        // Add formatted dates and times to the row
-        $row['formattedEventDate'] = $formattedEventDate;
-        $row['formattedTimeRange'] = "$formattedStartTime";
+        // Add formatted datetime to the row
+        $row['formattedDateTime'] = $formattedDateTime;
 
         // Add service name to the row (fetched from the services table)
         $row['service_name'] = $row['service_name'] ? $row['service_name'] : 'Unknown Service';
+
+        $row['cellphone'] = $row['cellphone'];
 
         // Fetch assigned staff for the bookingId
         $staffSql = "
@@ -83,10 +84,8 @@ while (time() <= $endTime) {
         $prevData = $newData;
     }
 
-    sleep(1);
+    
 }
 
-echo "event: close\n\n";
-ob_flush();
-flush();
+
 ?>

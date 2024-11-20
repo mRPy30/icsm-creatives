@@ -1,0 +1,169 @@
+<?php
+include '../backend/logout.php';
+include '../backend/dbcon.php';
+$bookingID = $_GET['bookingID']; 
+
+
+$sql = "SELECT b.*, s.service_name, b.additional, b.reason, e.eventName, st.staff_name
+        FROM booking b
+        LEFT JOIN booking_staff bs ON b.bookingId = bs.bookingId
+        LEFT JOIN staff st ON bs.staff_ID = st.staff_ID
+        JOIN services s ON b.service_package = s.serviceID
+        JOIN event e ON b.eventID = e.eventID
+        WHERE b.bookingId = ?";
+
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $bookingID);
+$stmt->execute();
+$result = $stmt->get_result();
+$booking = $result->fetch_assoc();
+
+if ($booking) {
+    // Format the date and time
+    $booking['formattedDate'] = date('F j, Y', strtotime($booking['eventDate']));
+    $booking['formattedTime'] = date('g:i A', strtotime($booking['event_time']));
+    
+    // Set default values for null fields
+    $booking['eventName'] = $booking['eventName'] ?? 'No Event Name';
+    $booking['title_event'] = $booking['title_event'] ?? 'No Title';
+    $booking['eventLocation'] = $booking['eventLocation'] ?? 'No Location';
+    $booking['service_name'] = $booking['service_name'] ?? 'No Service Package';
+    $booking['additional'] = $booking['additional'] ?? 'No Additional Services';
+    $booking['staff_name'] = $booking['staff_name'] ?? 'Will be assigned soon';
+} else {
+    // Handle case where no booking is found
+    die("Booking not found");
+}
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!---WEB TITLE--->
+    <link rel="short icon" href="../picture/shortcut-logo.png" type="x-icon">
+    <title>
+        <?php echo "Your Booking Details | ICSM Creative"; ?>
+    </title>
+
+    <!---CSS--->
+    <link rel="stylesheet" href="../css/client.css">
+
+    <!--ICON LINKS-->
+    <link rel="stylesheet" href="../font-awesome-6/css/all.css">
+
+    <!--FONT LINKS-->
+    <link rel="stylesheet" href="../css/fonts.css">
+
+    <!---Date picker--->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    
+
+</head>
+
+<body>
+    <!-----Navbar------->
+    <?php include '../client/navbar.php'; ?>
+
+    <main class="main-content">
+        <section class="container">
+            <div class="status-content">
+                <div class="text-header">
+                    <h2>Request Refund</h2>
+                    <p>Here's are waiting moments you've booking with ICSM Creatives.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="booking-status">
+            <div class="upcoming-details">
+                <div class="booking-header">
+                    <h3><?php echo $booking['eventName']; ?></h3>
+                    <div class="detail-item">
+                        <p class="label">Event Name</p>
+                        <h6><?php echo $booking['title_event']; ?></h6>
+                    </div>
+                    <div class="detail-item">
+                        <p class="label">Reason of Cancellation</p>
+                        <h6><?php echo $booking['reason']; ?></h6>
+                    </div>
+                </div>
+                <div class="summary">
+                    <div class="header-summary">
+                        <h4>Booking Details</h4>
+                    </div>
+                    <div class="details-grid">
+                        <div class="detail-item">
+                            <p class="label"> <i class="fa-solid fa-map-location" style="font-size: large; color: #1C1C1D;"></i> Location</p>
+                            <h6><?php echo $booking['eventLocation']; ?></h6>
+                        </div>
+                        <div class="detail-item">
+                            <p class="label"> <i class="far fa-calendar" style="font-size: large; color: #1C1C1D;"></i> Date:</p>
+                            <h6> <?php echo $booking['formattedDate']; ?></h6>
+                        </div>
+                        <div class="detail-item">
+                            <p class="label"><i class="far fa-clock" style="font-size: large; color: #1C1C1D;"></i> Event Time:</p>
+                            <h6><?php echo $booking['formattedTime']; ?></h6>
+                        </div>
+                        <div class="detail-item">
+                            <p class="label"><i class="fa-solid fa-hand-holding" style="font-size: large; color: #1C1C1D;"></i> Service Package:</p>
+                            <h6><?php echo $booking['service_name']; ?></h6>
+                        </div>
+                        <div class="detail-item">
+                            <p class="label"><i class="fa-solid fa-square-plus" style="font-size: large; color: #1C1C1D;"></i> Additional Services:</p>
+                            <h6><?php echo $booking['additional']; ?></h6>
+                        </div>
+                        <div class="detail-item">
+                        <p class="label"><i class="fa-solid fa-camera-retro" style="font-size: large; color: #1C1C1D;"></i> Assigned Staff:</p>
+                        <h6> <?php echo $booking['staff_name']; ?></h6>                        
+                    </div>
+                </div>
+                </div>
+            </div>
+            <div class="top">
+                <div class="left-details">
+                    <div class="detail-item">
+                        <p class="label">Refund to </p>
+                        <select id="" name="">
+                            <option value=""></option>
+                            <option value=""></option>
+                            <option value=""></option>
+                        </select>
+                    </div>
+                    <div class="detail-item">
+                        <p class="label">Input your Bank Name / Gcash Number: </p>
+                        <input type="text">
+                    </div>
+                    <div class="detail-item">
+                        <p class="label">Account Name</p>
+                        <input type="text">
+                    </div>
+                </div>
+                <div class="right-details">
+                    <h3>How to Refund?</h3>
+                </div>
+            </div>
+            <div class="buttons-book">
+                <button class="btn-client" id="">Submit</button>
+            </div>
+        </section>
+
+        <section class="container-credential">
+            <div class="credit-info">
+                <div class="rights-definition">
+                    <p>© 2023-2024 ICSMCREATIVES.COM ALL RIGHTS RESERVED. TERMS OF USE | PRIVACY POLICY</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+</body>
+<script>
+
+</script>
+</html>

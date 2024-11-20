@@ -21,6 +21,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     exit();
 }
 
+
+
 // Fetch all bookings with 'Accepted' status
 $sql = "SELECT eventDate, event_time FROM booking WHERE status = 'Accepted' ORDER BY eventDate, event_time";
 $result = $conn->query($sql);
@@ -82,6 +84,8 @@ while ($row = $unavailableResult->fetch_assoc()) {
 
 // Merge fully booked dates and unavailable dates
 $allUnavailableDates = array_merge($fullyBookedDates, $unavailableDates);
+
+
 
 ?>
 
@@ -185,10 +189,11 @@ $allUnavailableDates = array_merge($fullyBookedDates, $unavailableDates);
                                         <input type="text" id="event_date" name="event_date" required>
                                     </div>
                                     <br>
-                                    <label for="event_location">Location:</label>
+                                    <label for="event_location">Venue Location:</label>
                                     <div class="input-with-icon">
                                         <i class="fa-solid fa-location-dot"></i>
-                                        <input type="text" id="event_location" name="event_location" required>
+                                        <input type="text" id="event_location" name="event_location" required autocomplete="off">
+                                        <div id="venue-suggestions" class="venue-suggestions"> sa imus</div>
                                     </div>
                                 </div>   
                                 <div class="right-info">
@@ -205,6 +210,7 @@ $allUnavailableDates = array_merge($fullyBookedDates, $unavailableDates);
                                                 <i class="fa-regular fa-clock"></i>
                                                 <select id="event_time" name="event_time" required></select>
                                             </div>
+                                            <h4>**Note: Every booking should 4 Hours service</h4>
                                         </div>
                                         <br>
                                         
@@ -224,9 +230,10 @@ $allUnavailableDates = array_merge($fullyBookedDates, $unavailableDates);
                         </div>
                     </form>
                 </div>
-                <h1>Stay updated in your booking status:</h1>
+                <h1 style="transform: translate(0%, -230%); font: normal 600 18px/normal 'Poppins';">Stay updated in your booking status:</h1>
             </div>
         </section>
+        
 
         <section class="booking-status">
             <div class="status-tabs">
@@ -286,7 +293,7 @@ $allUnavailableDates = array_merge($fullyBookedDates, $unavailableDates);
         const daysTag = document.querySelector(".days"),
         currentDate = document.querySelector(".current-date"),
         prevNextIcon = document.querySelectorAll(".icons span");
-
+        
     function populateTimeOptions(selectElement) {
        selectElement.innerHTML = '';
        const timeSlots = [
@@ -350,6 +357,8 @@ $allUnavailableDates = array_merge($fullyBookedDates, $unavailableDates);
         }
     });
 
+    
+
 
 
         function startSSE() {
@@ -380,7 +389,7 @@ $allUnavailableDates = array_merge($fullyBookedDates, $unavailableDates);
             // Construct the HTML for the event card based on the status
             let eventCard = '';
 
-            if (status === 'Accepted' || status === 'Pending' || status === 'Declined' || status === 'Cancelled') {
+            if (status === 'Accepted' || status === 'Pending' ) {
                 // Layout for Accepted, Pending, and Declined bookings
                 eventCard = `
                     <div class='event-card'>
@@ -417,22 +426,60 @@ $allUnavailableDates = array_merge($fullyBookedDates, $unavailableDates);
                                     <p><i class='far fa-clock'></i> ${booking.formattedTime}</p>
                                 </div>
                                 <div class="event-grid">
-                                    <p><strong>Service Package:</strong> ${booking.servicePackage}</p>
+                                    <p><strong>Service Package:</strong> ${booking.service_name}</p>
                                 </div>
                                 <div class="event-grid">
-                                    <p><strong>Additional Service:</strong> ${booking.additionalService}</p>
+                                    <p><strong>Additional Service:</strong> ${booking.additional}</p>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (status === 'Cancelled') {
+                const eventDate = new Date(booking.eventDate);
+                const today = new Date();
+                const showRefundButton = eventDate > today;
+
+                eventCard = `
+                    <div class='event-card'>
+                        <div class='event-details-disabled'>
+                            <img src='${booking.picture}' alt='Event Image'>
+                            <div class='details-disabled'>
+                                <h5>${booking.title_event}</h5>
+                                <p><i class='fas fa-map-marker-alt'></i> ${booking.eventLocation}</p>
+                                <p><i class='far fa-calendar'></i> ${booking.formattedDate}</p>
+                                <p><i class='far fa-clock'></i> ${booking.formattedTime}</p>
+                            </div>
+                        </div>
+                        ${showRefundButton ? `<div class="buttons-book"><a href="../client/refund.php?bookingID=${booking.bookingID}" class="refund-button">Request Refund</a></div>` : ''}
+                    </div>
+                `;
+            } else if (status === 'Declined') {
+                const eventDate = new Date(booking.eventDate);
+                const today = new Date();
+                const showRefundButton = eventDate > today;
+                        
+                eventCard = `
+                    <div class='event-card'>
+                        <div class='event-details-disabled'>
+                            <div class="decline-reason">
+                                <h6>${booking.reason || 'No reason provided'}</h6>
+                                <img src='${booking.picture}' alt='Event Image'>
+                            </div>
+                            <div class='details-disabled'>
+                                <h5>${booking.title_event}</h5>
+                                <p><i class='fas fa-map-marker-alt'></i> ${booking.eventLocation}</p>
+                                <p><i class='far fa-calendar'></i> ${booking.formattedDate}</p>
+                                <p><i class='far fa-clock'></i> ${booking.formattedTime}</p>
                             </div>
                         </div>
                     </div>
                 `;
             }
 
-            // Add the event card to the correct status container
             document.querySelector(`#events-${status}`).insertAdjacentHTML('beforeend', eventCard);
         });
         
-        // Display default messages if no bookings were found
         statuses.forEach(status => {
             const eventContainer = document.querySelector(`#events-${status}`);
             if (bookingCount[status] === 0) {
@@ -455,7 +502,6 @@ $allUnavailableDates = array_merge($fullyBookedDates, $unavailableDates);
         });
     };
 
-    // Reconnect on close event
     source.addEventListener('close', function() {
         console.log("Connection closed, reconnecting...");
         setTimeout(startSSE, 100);
@@ -466,7 +512,6 @@ startSSE();
 
 
 
-    // Tab switching functionality
 document.querySelectorAll('.status-tab').forEach(tab => {
     tab.addEventListener('click', () => {
         // Remove active class from all tabs and panels
@@ -575,6 +620,99 @@ function update() {
         next.disabled = false
     }
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+    const typeOfEventSelect = document.getElementById('type_of_event');
+    const eventLocationInput = document.getElementById('event_location');
+    const venueSuggestions = document.getElementById('venue-suggestions');
+
+    typeOfEventSelect.addEventListener('change', function() {
+        eventLocationInput.value = ''; // Clear the input when event type changes
+        fetchVenueSuggestions(this.value);
+    });
+
+    eventLocationInput.addEventListener('focus', function() {
+        const eventType = typeOfEventSelect.value;
+        fetchVenueSuggestions(eventType);
+    });
+
+    function fetchVenueSuggestions(eventType) {
+        fetch('booking.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: 'get_venues=1&event_type=' + encodeURIComponent(eventType)
+        })
+        .then(response => response.json())
+        .then(venues => {
+            displayVenueSuggestions(venues, eventType);
+        })
+        .catch(error => {
+            console.error('Error fetching venues:', error);
+            venueSuggestions.style.display = 'none';
+        });
+    }
+
+    function displayVenueSuggestions(venues, eventType) {
+        venueSuggestions.innerHTML = '';
+        
+        if (venues.length === 0) {
+            const noVenues = document.createElement('div');
+            noVenues.className = 'no-suggestions';
+            noVenues.textContent = `No recommended venues for ${eventType} events yet.`;
+            venueSuggestions.appendChild(noVenues);
+        } else {
+            venues.forEach(venue => {
+                const div = document.createElement('div');
+                div.className = 'venue-suggestion-item';
+                
+                let venueHtml = '<div class="venue-content">';
+                
+                if (venue.image) {
+                    venueHtml = `
+                        <img src="data:image/jpeg;base64,${venue.image}" 
+                             alt="${venue.name}" 
+                             class="venue-image"
+                        >`;
+                }
+                
+                venueHtml += `
+                    <div class="venue-details">
+                        <div class="venue-name">${venue.name}</div>
+                        <div class="recommendation-label">Recommended for ${eventType}</div>
+                    </div>
+                `;
+                
+                div.innerHTML = venueHtml;
+                
+                div.addEventListener('click', () => {
+                    eventLocationInput.value = venue.name;
+                    venueSuggestions.style.display = 'none';
+                });
+                
+                venueSuggestions.appendChild(div);
+            });
+        }
+        
+        venueSuggestions.style.display = 'block';
+    }
+
+    // Hide suggestions when clicking outside
+    document.addEventListener('click', function(e) {
+        if (!eventLocationInput.contains(e.target)) {
+            venueSuggestions.style.display = 'none';
+        }
+    });
+
+    // Show suggestions when clicking on input
+    eventLocationInput.addEventListener('click', function(e) {
+        e.stopPropagation();
+        if (venueSuggestions.children.length > 0) {
+            venueSuggestions.style.display = 'block';
+        }
+    });
+});
 </script>
 
 </body>

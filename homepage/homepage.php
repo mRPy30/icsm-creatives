@@ -2,79 +2,15 @@
 // Connection
 include '../backend/dbcon.php';
 
-session_start(); // Start the session
-
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    if (isset($_POST['submit'])) {
-        $email = mysqli_real_escape_string($conn, $_POST['email']);
-        $password = mysqli_real_escape_string($conn, $_POST['password']);
-
-        $hashedPassword = md5($password);
-
-        $query = "SELECT id FROM client WHERE email = '$email' AND password = '$hashedPassword'";
-
-        $result = mysqli_query($conn, $query);
-
-        if (!$result) {
-            die("Query failed: " . mysqli_error($conn));
-        }
-
-        $matchedRows = mysqli_num_rows($result);
-
-        if ($matchedRows > 0) {
-            $row = mysqli_fetch_assoc($result);
-            $id = $row['id'];
-
-            $_SESSION['name'] = $email;
-            $_SESSION['id'] = $id;
-
-
-            $redirect_url = "../client/booking.php?id=$id";
-
-            echo '<style>
-                body { overflow: hidden; }
-                .loading-overlay {
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    position: fixed;
-                    top: 0;
-                    left: 0;
-                    width: 100%;
-                    height: 100%;
-                    background: rgba(255, 255, 255, 0.8);
-                    z-index: 10000;
-                }
-                .loading-circle {
-                    display: inline-block;
-                    width: 40px;
-                    height: 40px;
-                    border: 7px solid #E1DE8F;
-                    border-radius: 50%;
-                    border-top: 5px solid transparent;
-                    animation: spin 1s linear infinite;
-                }
-                @keyframes spin {
-                    0% { transform: rotate(0deg); }
-                    100% { transform: rotate(360deg); }
-                }
-            </style>';
-            echo '<div class="loading-overlay">
-                    <div class="loading-circle"></div>
-                  </div>';
-
-            echo '<script>
-                setTimeout(function() {
-                    window.location.href = "' . $redirect_url . '";
-                }, 2000);
-            </script>';
-            exit();
-        } else {
-            header("Location: ../homepage.php?login_error=true");
-            exit();
-        }
-    }
-}
+// Fetch feedback data with joins to get client name and event name
+$query = "SELECT f.*, c.name as client_name, e.eventName as event_name, b.title_event as booking_event 
+          FROM feedback f
+          LEFT JOIN client c ON f.clientID = c.clientID
+          LEFT JOIN booking b ON f.bookingId = b.bookingId
+          LEFT JOIN event e ON b.eventID = e.eventID
+          WHERE f.status = 'Posted'
+          ORDER BY f.feedback_date DESC";
+$result = mysqli_query($conn, $query);
 ?>
 
 <!DOCTYPE html>
@@ -140,7 +76,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             </div>
             <div class="milestone-grid">
                 <div class="milestone-card" onclick="location.href='birthday.php'">
-                    <a href="events/birthday.php" class="icon-link">
+                    <a href="birthday.php" class="icon-link">
                         <i class="fa-solid fa-arrow-right"></i>
                     </a>
                     <h3>Birthdays:</h3>
@@ -149,7 +85,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 </div>
 
                 <div class="milestone-card" onclick="location.href='wedding.php'">
-                    <a href="events/marriage.php" class="icon-link"> <i class="fa-solid fa-arrow-right"></i>
+                    <a href="marriage.php" class="icon-link"> <i class="fa-solid fa-arrow-right"></i>
                     </a>
                     <h3>Wedding:</h3>
                     <p>Capturing every step of your journey to love.</p>
@@ -157,7 +93,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 </div>
 
                 <div class="milestone-card" onclick="location.href='family-portrait.php'">
-                    <a href="events/family-portrait.php" class="icon-link">
+                    <a href="family-portrait.php" class="icon-link">
                         <i class="fa-solid fa-arrow-right"></i>
                     </a>
                     <h3>Family Portraits:</h3>
@@ -166,7 +102,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 </div>
 
                 <div class="milestone-card" onclick="location.href='graduation.php'">
-                    <a href="events/graduation.php" class="icon-link">
+                    <a href="graduation.php" class="icon-link">
                         <i class="fa-solid fa-arrow-right"></i>
                     </a>
                     <h3>Graduation:</h3>
@@ -175,7 +111,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 </div>
 
                 <div class="milestone-card" onclick="location.href='christening.php'">
-                    <a href="events/christening.php" class="icon-link">
+                    <a href="christening.php" class="icon-link">
                         <i class="fa-solid fa-arrow-right"></i>
                     </a>
                     <h3>Baby:</h3>
@@ -184,7 +120,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 </div>
 
                 <div class="milestone-card" onclick="location.href='corporate.php'">
-                    <a href="events/corporate.php" class="icon-link">
+                    <a href="corporate.php" class="icon-link">
                         <i class="fa-solid fa-arrow-right"></i>
                     </a>
                     <h3>Corporate Events:</h3>
@@ -193,7 +129,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 </div>
 
                 <div class="milestone-card" onclick="location.href='adventure.php'">
-                    <a href="events/adventure.php" class="icon-link">
+                    <a href="adventure.php" class="icon-link">
                         <i class="fa-solid fa-arrow-right"></i>
                     </a>
                     <h3>Outdoor Adventures:</h3>
@@ -481,34 +417,31 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <section class="ms-testimonials">
             <h2 class="ms-testimonials-title">What our clients say about us.</h2>
             <div class="ms-testimonials-wrapper">
-                <div class="ms-testimonial">
-                    <i class="fa-solid fa-quote-left"></i>
-                    <p class="ms-testimonial-quote">“We had them capture our engagement photos, and they were amazing!
-                        The team made the whole experience fun and relaxed. The photos came out even better than we
-                        imagined. We're so happy with the results and can't wait to book them for our wedding!”</p>
-                    <p class="ms-testimonial-author">Kyarah & Agie</p>
-                    <div class="ms-testimonial-stars">★★★★★</div>
-                </div>
-                <div class="ms-testimonial">
-                    <i class="fa-solid fa-quote-left"></i>
-                    <p class="ms-testimonial-quote">“We booked their photography and videography for our baby shower,
-                        and they went above and beyond. Every moment was beautifully captured, and the quality of the
-                        photos and videos was stunning. The team was so friendly and made everything feel effortless.
-                        We're so glad we chose them!”</p>
-                    <p class="ms-testimonial-author">Kath & David</p>
-                    <div class="ms-testimonial-stars">★★★★★</div>
-                </div>
-                <div class="ms-testimonial">
-                    <i class="fa-solid fa-quote-left"></i>
-                    <p class="ms-testimonial-quote">“They did an incredible job with our wedding video! They were
-                        professional and easy to work with, and the final video truly captured the emotion of our day.
-                        We've watched it so many times already. Their work is top-notch, and we couldn't be happier!”
-                    </p>
-                    <p class="ms-testimonial-author">Anna & James</p>
-                    <div class="ms-testimonial-stars">★★★★★</div>
-                </div>
+                <?php while ($row = mysqli_fetch_assoc($result)) : ?>
+                    <div class="ms-testimonial">
+                        <i class="fa-solid fa-quote-left"></i>
+                        <p class="ms-testimonial-quote">
+                            <?php echo htmlspecialchars($row['feedback_description']); ?>
+                        </p>
+                        <p class="ms-testimonial-author">
+                            <?php echo htmlspecialchars($row['client_name']); ?>
+                        </p>
+                        <div class="ms-testimonial-stars">
+                            <?php
+                            $rating = intval($row['rating']);
+                            for ($i = 1; $i <= $rating; $i++) {
+                                echo '<i class="fa-solid fa-star"></i>';
+                            }
+                            for ($i = $rating + 1; $i <= 5; $i++) {
+                                echo '<i class="fa-solid fa-star empty-star"></i>';
+                            }
+                            ?>
+                        </div>
+                    </div>
+                <?php endwhile; ?>
             </div>
         </section>
+
 
 
 

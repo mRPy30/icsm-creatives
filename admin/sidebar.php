@@ -176,7 +176,7 @@
                 </li>
                 <li class="nav-link">
                     <span class="top_curve"></span>
-                    <a href="client.php" title="Client Management" class="<?php if ($page == "..admin/client.php") {
+                    <a href="client.php" title="Clients" class="<?php if ($page == "..admin/client.php") {
                         echo "nav-link active";
                     } else {
                         echo "nav-link";
@@ -185,7 +185,7 @@
                 </li>
                 <li class="nav-link">
                     <span class="top_curve"></span>
-                    <a href="feedback.php" title="Feedback Management" class="<?php if ($page == "..admin/feedback.php") {
+                    <a href="feedback.php" title="Feedbacks" class="<?php if ($page == "..admin/feedback.php") {
                         echo "nav-link active";
                     } else {
                         echo "nav-link";
@@ -194,7 +194,7 @@
                 </li>
                 <li class="nav-link">
                     <span class="top_curve"></span>
-                    <a href="analytics.php" title="Analytics and Revenue" class="<?php if ($page == "..admin/analytics.php") {
+                    <a href="analytics.php" title="Reports" class="<?php if ($page == "..admin/analytics.php") {
                         echo "nav-link active";
                     } else {
                         echo "nav-link";
@@ -203,7 +203,7 @@
                 </li>
                 <li class="nav-link">
                     <span class="top_curve"></span>
-                    <a href="services.php" title="Service Management" class="<?php if ($page == "..admin/services.php") {
+                    <a href="services.php" title="Services Controls" class="<?php if ($page == "..admin/services.php") {
                         echo "nav-link active";
                     } else {
                         echo "nav-link";
@@ -212,20 +212,11 @@
                 </li>
                 <li class="nav-link">
                     <span class="top_curve"></span>
-                    <a href="events.php" title="Event Management" class="<?php if ($page == "..admin/events.php") {
+                    <a href="events.php" title="Event" class="<?php if ($page == "..admin/events.php") {
                         echo "nav-link active";
                     } else {
                         echo "nav-link";
                     } ?> "><i class="fa-regular fa-calendar-plus"></i></a>
-                    <span class="bottom_curve"></span>
-                </li>
-                <li class="nav-link">
-                    <span class="top_curve"></span>
-                    <a href="folders.php" title="Uploading Gallery" class="<?php if ($page == "..admin/folders.php") {
-                        echo "nav-link active";
-                    } else {
-                        echo "nav-link";
-                    } ?> "><i class="fa-solid fa-image"></i></a>
                     <span class="bottom_curve"></span>
                 </li>
                 <li class="nav-link">

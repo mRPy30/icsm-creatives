@@ -86,3 +86,194 @@ th {
     top: 0;
     z-index: 2;
 }
+
+* {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+}
+
+:root {
+    --BgColor: #EEEEEE;
+    --DarkColor: #1C1C1D;
+    --tblColor: #faf8f8;
+    --headerTble: #edecec;
+    --hoverDark: #444444;
+    --borderTble: #CCCCCC;
+    --acceptColor: #00c72e;
+    --declineColor: #ff3628;
+    --themeColor: #9D7651;
+    --HoverthemeColor: #BC8759;
+}
+
+
+body {
+    background-color: #EEEEEE;
+    overflow-x: hidden;
+    font-family: 'Poppins', sans-serif;
+    /* Ensure proper font family */
+}
+
+
+
+.dashboard {
+    margin: 6% 1.5% 0 8%;
+    padding: 1.5%; 
+    display: flex;
+    justify-content: space-between;
+}
+
+.pendings {
+    flex: 1 1 calc(47.666% - 10px);
+    background-color: var(--tblColor);
+    border-radius: 10px;
+    height: 47vh;
+    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+    margin: 0px 20px 0px 5px;
+}
+
+.pendings h4 {
+    font: normal 600 15px/normal 'Poppins';
+    margin: 10px;
+}
+
+.tbl-prod {
+    flex: 1 1 calc(33.333% - 10px);
+    background-color: var(--tblColor);
+    padding: 0px 0px 50px 0px;
+    height: 47vh;
+    border-radius: 10px;
+    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+}
+
+.title-bar {
+    background-color: var(--hoverDark);
+    color: var(--tblColor);
+    padding: 5px;
+    border-radius: 10px 10px 0 0;
+    display: flex;
+    justify-content: space-between;
+}
+
+.tbl-prod h4 {
+    font: normal 600 15px/normal 'Poppins';
+    margin: 10px;
+}
+
+.prod-table {
+    width: 100%;
+    border-collapse: collapse;
+    font: normal 15px/normal 'Poppins';
+}
+
+.prod-table th,
+.prod-table td {
+    border-bottom: 1px solid var(--tblColor);
+}
+
+.prod-table .td-name {
+    padding: 0px;
+    text-align: start;
+    color: #1C1C1D;
+    font: normal 500 15px/normal 'Poppins';
+}
+
+.prod-table .td-name span {
+    font: normal 400 11px/normal 'Poppins';
+    color: #929292;
+}
+
+.prod-table tbody tr:hover {
+    background-color: #e3e3e3;
+    transition: all .3s ease;
+}
+
+.table-container {
+    height: 38vh;
+    overflow-y: auto;
+}
+
+.pending-container {
+    height: 39vh;
+    overflow-y: auto;
+}
+
+.table-container::-webkit-scrollbar {
+    width: 8px;
+}
+
+.table-container::-webkit-scrollbar-thumb {
+    background-color: #CCCCCC;
+}
+
+.table-container::-webkit-scrollbar-track {
+    background-color: #FCF6F6;
+}
+.header-table {
+    border-collapse: collapse;
+    width: 100%;
+    font: normal 13px/normal 'Poppins';
+}
+
+.tbl-container {
+    height: 55vh;
+    overflow-y: auto;
+    overflow-x: auto;
+}
+
+.booking-table thead th {
+    background-color: var(--headerTble);
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    text-align: left;
+    padding: 10px;
+    border: 1px solid #CCCCCC;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.booking-table tbody td {
+    text-align: left;
+    padding: 10px;
+    border: 1px solid #CCCCCC;
+}
+
+.booking-table tbody tr:hover {
+    background-color: var(--headerTble);
+}
+
+.header-table thead th {
+    background-color: var(--headerTble);
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    text-align: left;
+    padding: 10px;
+    border: 1px solid #CCCCCC;
+    border-collapse: collapse;
+    width: 100%;
+    table-layout: fixed;
+}
+
+.header-table tbody td {
+    text-align: left;
+    padding: 10px;
+    border: 1px solid #CCCCCC;
+}
+
+.header-table tbody tr:hover {
+    background-color: var(--headerTble);
+}
+
+.tbl-container::-webkit-scrollbar {
+    width: 8px;
+}
+
+.tbl-container::-webkit-scrollbar-thumb {
+    background-color: #CCCCCC;
+}
+
+.tbl-container::-webkit-scrollbar-track {
+    background-color: #FCF6F6;
+}

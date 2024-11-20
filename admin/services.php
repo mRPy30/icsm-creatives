@@ -14,6 +14,29 @@ if ($resultAdditionalServices->num_rows > 0) {
     }
 }
 
+// Query to fetch discounts
+$sqlDiscounts = "SELECT discountID, discount_name, discount_type, discount_percentage, start_date, end_date, is_active FROM discounts";
+$resultDiscounts = $conn->query($sqlDiscounts);
+
+// Array to store the data (optional if you're directly outputting the rows)
+$discounts = array();
+if ($resultDiscounts->num_rows > 0) {
+    while ($row = $resultDiscounts->fetch_assoc()) {
+        $discounts[] = $row;
+    }
+}
+
+// Query to fetch discounts
+$sqlOutsource = "SELECT outsourceID, companyName, social_links FROM outsource";
+$resultOutsource = $conn->query($sqlOutsource);
+
+// Array to store the data (optional if you're directly outputting the rows)
+$outsource = array();
+if ($resultOutsource->num_rows > 0) {
+    while ($row = $resultOutsource->fetch_assoc()) {
+        $outsource[] = $row;
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -122,26 +145,78 @@ if ($resultAdditionalServices->num_rows > 0) {
         </div>
         <div class="tbl-admin1">
             <div class="title-bar">
-                <h4>Promo Discount %</h4>
-                <button class="btn-admin" onclick="popupDiscount()"> <i class="fa-solid fa-plus"></i> New Discount</button>
+                <h4>Outsources Company</h4>
+                <button class="btn-admin"  onclick=""> <i class="fa-solid fa-plus"></i> Add New Outsource</button>
             </div>
             <div class="table-container">
-                <table class="header-table">
+                <table class="tbls-bookings">
                     <thead>
                         <tr>
-                            <th>Discount ID</th>
-                            <th>Discount Name</th>
-                            <th>Off</th>
-                            <th colspan="2">Valid Date</th>
+                            <th>Outsource ID</th>
+                            <th>Comapny Name</th>
+                            <th>Social Links</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
-                    <tbody id="">
-
+                    <tbody id="discountTableBody">
+                        <?php foreach ($outsource as $outsource): ?>
+                            <tr>
+                                <td><?php echo $outsource['outsourceID']; ?></td>
+                                <td><?php echo htmlspecialchars($outsource['companyName']); ?></td>
+                                <td><?php echo htmlspecialchars($outsource['social_links']); ?></td>
+                                <td>
+                                    <button class="edit-admin"></i> Edit</button>
+                                    <button class="delete-admin"> <i class="fas fa-trash"></i> Delete</button>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
                     </tbody>
                 </table>
             </div>
         </div>
+    </section>
+    <section class="container-admin">
+    <div class="top-book">
+            <h4>Discounts</h4> 
+            <button class="btn-admin" onclick="openAddServiceModal()"> <i class="fa-solid fa-plus"></i> Add New Service</button>
+        </div>
+            <div class="table-container">
+                <table class="tbls-bookings">
+                    <thead>
+                        <tr>
+                            <th>Discount ID</th>
+                            <th>Discount Name</th>
+                            <th>Type</th>
+                            <th>Percentage</th>
+                            <th>Valid Period</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="discountTableBody">
+                        <?php foreach ($discounts as $discount): ?>
+                            <tr>
+                                <td><?php echo $discount['discountID']; ?></td>
+                                <td><?php echo htmlspecialchars($discount['discount_name']); ?></td>
+                                <td><?php echo htmlspecialchars($discount['discount_type']); ?></td>
+                                <td><?php echo $discount['discount_percentage']; ?>%</td>
+                                <td>
+                                    <?php echo date('Y-m-d', strtotime($discount['start_date'])); ?> 
+                                    to 
+                                    <?php echo date('Y-m-d', strtotime($discount['end_date'])); ?>
+                                </td>
+                                <td>
+                                    <?php echo $discount['is_active'] ? 'Active' : 'Inactive'; ?>
+                                </td>
+                                <td>
+                                    <button class="edit-admin" onclick="editDiscount(<?php echo $discount['discountID']; ?>)"> <i class="fas fa-edit"></i> Edit</button>
+                                    <button class="delete-admin" onclick="deleteDiscount(<?php echo $discount['discountID']; ?>)"> <i class="fas fa-trash"></i> Delete</button>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
     </section>
     <div id="addServiceModal" class="popup-admin">
         <span class="close" onclick="closeAddServiceModal()">&times;</span>
@@ -200,17 +275,39 @@ if ($resultAdditionalServices->num_rows > 0) {
     <div id="popupDiscount" class="popup-admin">
         <span class="close" onclick="hideDiscount()">&times;</span>
         <h3>Promo Discount</h3>
-        <form id="" onsubmit="addServices()">
-            <input type="hidden" name="serviceAddID">
+        <form id="discountForm" onsubmit="saveDiscount(event)">
+            <input type="hidden" name="discountID">
             <div class="form-group">
                 <label>Discount Name</label>
-                <input type="text" name="additonal_name" required>
+                <input type="text" name="discount_name" required>
             </div>
             <div class="form-group">
-                <label>Price</label>
-                <input type="number" name="price" required>
+                <label>Discount Type</label>
+                <select name="discount_type" required>
+                    <option value="holiday">Holiday Discount</option>
+                    <option value="package">Package Discount</option>
+                </select>
             </div>
-            <button class="submit-btn" type="submit">Add New Discount</button>
+            <div class="form-group">
+                <label>Discount Percentage (%)</label>
+                <input type="number" name="discount_percentage" min="0" max="100" required>
+            </div>
+            <div class="form-group">
+                <label>Start Date</label>
+                <input type="date" name="start_date" required>
+            </div>
+            <div class="form-group">
+                <label>End Date</label>
+                <input type="date" name="end_date" required>
+            </div>
+            <div class="form-group">
+                <label>Status</label>
+                <select name="is_active">
+                    <option value="1">Active</option>
+                    <option value="0">Inactive</option>
+                </select>
+            </div>
+            <button class="submit-btn" type="submit">Save Discount</button>
         </form>
     </div>
 
@@ -248,7 +345,7 @@ if ($resultAdditionalServices->num_rows > 0) {
         document.getElementById('popup').style.display = 'none';
     }
 
-    function popupDiscount(){
+    function openDiscountModal(){
         document.getElementById("popupDiscount").style.display = "block";
     }
     function hideDiscount(){
