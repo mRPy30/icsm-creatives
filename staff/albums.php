@@ -1,5 +1,5 @@
 <?php 
-session_start(); // Start the session
+session_start();
 
 // Include necessary files
 include '../backend/logout.php';
@@ -7,13 +7,12 @@ include '../backend/dbcon.php';
 
 // Session timeout management
 if (isset($_SESSION['LAST_ACTIVITY']) && (time() - $_SESSION['LAST_ACTIVITY'] > 600)) {
-    // Last request was more than 10 minutes ago
     session_unset();     
     session_destroy();   
-    session_start(); // Start a new session after destroying the old one
-    session_regenerate_id(true); // Regenerate session ID to prevent fixation attacks
+    session_start(); 
+    session_regenerate_id(true); 
 }
-$_SESSION['LAST_ACTIVITY'] = time(); // Update last activity time
+$_SESSION['LAST_ACTIVITY'] = time(); 
 
 // Determine the active page
 $directoryURI = $_SERVER['REQUEST_URI'];
@@ -39,13 +38,10 @@ $page = $components[2];
     <link rel="stylesheet" href="../css/fonts.css">
 
     <style>
-        body {
-            overflow-y: hidden;
-        }
         table {
             width: 100%;
-            border-collapse: collapse;
             margin-top: 20px;
+            table-layout: fixed;
         }
         table, th, td {
             border: 1px solid #ddd;
@@ -70,10 +66,52 @@ $page = $components[2];
         .dark-mode .dashboard-item {
             background-color: #333;
         }
+        /* Modal Styles */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            width: 50%;
+            max-height: 80%;
+            overflow-y: auto;
+        }
+
+        .close-btn {
+            float: right;
+            font-size: 1.5rem;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close-btn:hover {
+            color: red;
+        }
     </style>
 </head>
     
 <body>
+    <!-- Modal Structure -->
+    <div id="uploadModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <div id="modalBody">
+                <!-- Content will be loaded dynamically -->
+            </div>
+        </div>
+    </div>
+
     <!-- Main Content -->
     <main>
         <!-- Navbar & Sidebar -->
@@ -88,72 +126,91 @@ $page = $components[2];
             <table class="header-table">
                 <thead>
                     <tr>
-                        <th>Client ID</th>
-                        <th>Full Name</th>
+                        <th>Booked By</th>
+                        <th>Status</th>
+                        <th>Event Name</th>
+                        <th>Venue Location</th>
+                        <th>Event Date</th>
+                        <th>Deadline</th>
                         <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <?php
-                    // Retrieve client details from database using prepared statements
-                    $sql = "SELECT clientID, name FROM client";
-                    $stmt = $conn->prepare($sql);
-                    $stmt->execute();
-                    $result = $stmt->get_result();
+                <?php
+    // Retrieve client details from database using prepared statements
+    $sql = "
+        SELECT b.clientID,c.name,b.eventDate,b.title_event,b.eventLocation,bs.deadline,b.status
+        FROM booking_staff bs
+        JOIN booking b ON bs.bookingId = b.bookingId
+        JOIN client c ON b.clientID = c.clientID
+        WHERE bs.staff_ID = ?
+    ";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $_SESSION['staff_ID']);
+    $stmt->execute();
+    $result = $stmt->get_result();
 
-                    if ($result && $result->num_rows > 0) {
-                        while ($row = $result->fetch_assoc()) {
-                            echo "<tr>";
-                            echo "<td>" . htmlspecialchars($row['clientID']) . "</td>";
-                            echo "<td>" . htmlspecialchars($row['name']) . "</td>";
-                            echo "<td><a class='upload-btn' href='upload_image.php?client_id=" . urlencode($row['clientID']) . "' aria-label='Upload image for client " . htmlspecialchars($row['name']) . "'>Upload Image</a></td>";
-                            echo "</tr>";
-                        }
-                    } else {
-                        echo "<tr><td colspan='3'>No clients found</td></tr>";
-                    }
-
-                    $stmt->close();
-                    $conn->close();
-                    ?>
+    if ($result && $result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
+            echo "<tr>";
+            echo "<td>" . htmlspecialchars($row['name']) . "</td>";
+            echo "<td>" . htmlspecialchars($row['status']) . "</td>";
+            echo "<td>" . htmlspecialchars($row['title_event']) . "</td>";
+            echo "<td>" . htmlspecialchars($row['eventLocation']) . "</td>";
+            echo "<td>" . htmlspecialchars($row['eventDate']) . "</td>";
+            echo "<td>" . htmlspecialchars($row['deadline']) . "</td>";
+            echo "<td>";
+            if (strtolower($row['status']) === 'completed') { 
+                echo "<a class='upload-btn' href='#' onclick='showUploadModal(" . $row['clientID'] . ")'>Upload Image</a>";
+            } else {
+                echo "Event is in progress";
+            }
+            echo "</td>";
+            echo "</tr>";
+        }
+    } else {
+        echo "<tr><td colspan='7'>No clients found</td></tr>";
+    }
+    $stmt->close();
+    $conn->close();
+    ?>
                 </tbody>
             </table>
         </section>
     </main>
 
     <script>
-        let inactivityTimeout;
+        function showUploadModal(clientID) {
+            const modal = document.getElementById("uploadModal");
+            const modalBody = document.getElementById("modalBody");
 
-        function checkInactivity() {
-            clearTimeout(inactivityTimeout); // Clear the previous timeout
-            inactivityTimeout = setTimeout(function () {
-                window.location.href = '../login.php'; // Redirect to login page after timeout
-            }, 600000); // 10 minutes in milliseconds
+            // Display the modal
+            modal.style.display = "flex";
+
+            // Fetch the content from upload_image.php
+            fetch(`upload_image.php?client_id=${clientID}`)
+                .then(response => response.text())
+                .then(data => {
+                    modalBody.innerHTML = data;
+                })
+                .catch(error => {
+                    modalBody.innerHTML = `<p>Error loading the form. Please try again later.</p>`;
+                    console.error(error);
+                });
         }
 
-        document.addEventListener('DOMContentLoaded', function () {
-            checkInactivity();
+        // Close the modal
+        document.querySelector(".close-btn").addEventListener("click", function () {
+            document.getElementById("uploadModal").style.display = "none";
         });
 
-        document.addEventListener('mousemove', checkInactivity);
-        document.addEventListener('keypress', checkInactivity);
-
-        // Dark Mode Toggle
-        function toggleDarkMode() {
-            const body = document.body;
-            const isDarkMode = body.classList.toggle('dark-mode');
-            const moonIcon = document.querySelector('.dark-mode-toggle i');
-            const dashboardItems = document.querySelectorAll('.dashboard-item');
-
-            if (isDarkMode) {
-                moonIcon.className = 'fas fa-sun';
-                dashboardItems.forEach(item => item.classList.add('dark-mode'));
-            } else {
-                moonIcon.className = 'fas fa-moon';
-                dashboardItems.forEach(item => item.classList.remove('dark-mode'));
+        // Close modal on click outside the content
+        window.addEventListener("click", function (event) {
+            const modal = document.getElementById("uploadModal");
+            if (event.target === modal) {
+                modal.style.display = "none";
             }
-            localStorage.setItem('darkMode', isDarkMode);
-        }
+        });
     </script>
 </body>
 </html>
