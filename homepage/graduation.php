@@ -29,17 +29,31 @@
         <div class="wrapper">
             <div class="service-content">
                 <div class="service-details">
-                    <h2>GRADUATION</h2>
-                    <p>Graduation marks the end of one journey and the beginning of another. At ICSM Creatives, we
-                        capture the pride, joy, and excitement of this unforgettable milestone. Let us preserve these
-                        memories, celebrating your achievements today and your dreams for tomorrow.
-
+                    <h2>Graduation</h2>
+                    <p>Graduation is more than a milestone—it's a celebration of hard work, growth, and new beginnings.
+                        At ICSM Creatives, we honor this achievement by capturing the pride, joy, and excitement of your
+                        graduation day. Let us create stunning images that celebrate your journey and mark this
+                        unforgettable chapter in your life. Together, we’ll preserve memories that inspire you for a
+                        lifetime.
                     </p>
                 </div>
 
-                <div class="gallery-item">
-                    <img src="../picture/graddd.jpg" alt="Team-Picture">
-                    <img src="../picture/graduation1.jpg" alt="Team-Picture">
+                <div class="gallery-carousel">
+                    <button class="carousel-btn left-btn"><i class="fa-solid fa-chevron-left"></i></button>
+                    <div class="gallery-item">
+                        <img src="../picture/graduation1.jpg" alt="Picture">
+                        <img src="../picture/graddd.jpg" alt="Celebration">
+                        <img src="../picture/graduation2.jpg" alt="picture">
+                        <img src="../picture/graduation5.jpg" alt="picture">
+                        <img src="../picture/graduation4.jpg" alt="picture">
+                        <img src="../picture/graduation3.jpg" alt="picture">
+                        <img src="../picture/graduation6.jpg" alt="picture">
+                    </div>
+                    <button class="carousel-btn right-btn"><i class="fa-solid fa-chevron-right"></i></button>
+                </div>
+
+                <div class="see-more-photos">
+                    <a href="graduation-gallery.php" target="_blank">See More Photos</a>
                 </div>
 
                 <div class="service-tips">
@@ -51,10 +65,11 @@
                             <span class="arrow"><i class="fa-solid fa-angle-down"></i></span>
                         </div>
                         <div class="service-item_answer">
-                            <p>We understand that plans can change. If you need to reschedule your session, please
-                                contact us at least 48 hours in advance. We’ll do our best to find a new date that works
-                                for you, depending on availability. Rescheduling within this time frame helps us keep
-                                our schedule organized and fair for all clients.
+                            <p>You may request to reschedule their booking <b>at least 168 hours (7 days)</b> before
+                                the
+                                event date. Rescheduling requests made <b>within 6 days or less </b>of the event date
+                                will not be accepted. <a href="policy.php" class="learn-more-link">Learn
+                                    more</a>.
                             </p>
 
                         </div>
@@ -66,10 +81,12 @@
                             <span class="arrow"><i class="fa-solid fa-angle-down"></i></span>
                         </div>
                         <div class="service-item_answer">
-                            <p>If you must cancel your booking, please notify us at least 48 hours in advance. Deposits
-                                are non-refundable, but if you reschedule within 30 days, we’ll apply your deposit
-                                toward the new date. This policy helps us manage our calendar efficiently and ensures
-                                that each client receives the best possible service.
+                            <p>You may submit a request of cancellation <b>at least 96 hours (4 days)</b> before the
+                                scheduled date.
+                                Cancellations requested <b>3 days or less before </b>the event date will not be
+                                accepted,
+                                ensuring adequate preparation for the event. <a href="policy.php"
+                                    class="learn-more-link">Learn more</a>.
                             </p>
 
                         </div>
@@ -82,10 +99,11 @@
                             <span class="arrow"><i class="fa-solid fa-angle-down"></i></span>
                         </div>
                         <div class="service-item_answer">
-                            <p>Our goal is to deliver high-quality photos and videos within 3-7 days after your event.
-                                We’ll keep you updated on our progress and notify you of any unexpected delays. Fast
-                                delivery without sacrificing quality is our priority, so you can relive your special
-                                moments as soon as possible. Thank you for choosing ICSM Creatives!
+                            <p>Your photos and videos will be delivered to your personalized gallery <b>within 7 days
+                                </b>after
+                                the event date. Our team ensures timely delivery while maintaining the highest quality
+                                standards for your cherished memories.
+                                <a href="policy.php" class="learn-more-link">Learn more</a>.
                             </p>
 
                         </div>
@@ -100,16 +118,15 @@
                         <h3>Graduation</h3>
                         <div class="price-start">
                             <p>START FROM</p>
-                            <h3>5,000</h3>
+                            <h3>4,500</h3>
                         </div>
                     </div>
                     <div class="available-services">
                         <h4>Available Services</h4>
                         <ul>
-                            <li>Basic Package</li>
-                            <li>Standard Package</li>
-                            <li>Premium Package</li>
-                            <li>All-Inclusive Package</li>
+                            <li>Graduation Photoshoot Onlyy</li>
+                            <li>Graduation Video Highlights Only</li>
+                            <li>Graduation Photoshoot and Video</li>
                         </ul>
                         <div class="form-group">
                             <label for="event_location">Where shall we capture your memories?</label>
@@ -282,6 +299,32 @@
                     }
                 });
             });
+        });
+
+
+
+
+        const carousel = document.querySelector('.gallery-item');
+        const leftBtn = document.querySelector('.left-btn');
+        const rightBtn = document.querySelector('.right-btn');
+        let scrollAmount = 0;
+        const scrollStep = 320; // Adjust based on the image width + gap
+
+        leftBtn.addEventListener('click', () => {
+            scrollAmount -= scrollStep;
+            if (scrollAmount < 0) {
+                scrollAmount = 0; // Prevent scrolling beyond the first image
+            }
+            carousel.style.transform = `translateX(-${scrollAmount}px)`;
+        });
+
+        rightBtn.addEventListener('click', () => {
+            const maxScroll = carousel.scrollWidth - carousel.clientWidth;
+            scrollAmount += scrollStep;
+            if (scrollAmount > maxScroll) {
+                scrollAmount = maxScroll; // Prevent scrolling beyond the last image
+            }
+            carousel.style.transform = `translateX(-${scrollAmount}px)`;
         });
 
     </script>

@@ -5,18 +5,18 @@
  }
  
  :root {
-    --BgColor: #EEEEEE;
-    --DarkColor: #1C1C1D;
-    --hoverDark: #444444;
-    --hoverLight: #CCCCCC;
-    --themeColor: #9D7651;
-    --HoverthemeColor: #BC8759;
-    --fontLight: #fcfcf6;
-    --line-border-fill: #1C1C1D;
-    --line-border-empty: #e0e0e0;
-    --linkColor: #0000FF;
-}
-
+     --BgColor: #EEEEEE;
+     --DarkColor: #1C1C1D;
+     --hoverDark: #444444;
+     --hoverLight: #CCCCCC;
+     --themeColor: #9D7651;
+     --HoverthemeColor: #BC8759;
+     --fontLight: #fcfcf6;
+     --line-border-fill: #1C1C1D;
+     --line-border-empty: #e0e0e0;
+     --linkColor: #0000FF;
+ }
+ 
  body {
      background-color: #EFEFEF;
      overflow-x: hidden;
@@ -2412,3 +2412,26 @@
     background-color: #f8d7da;
     color: #721c24;
 }
+ /*****Gallery****/
+ 
+ .gallery {
+     padding: 0px 0px 20px 0px;
+     margin: 9% 0% 0% 0%;
+     border-radius: 10px;
+     background-color: #FCF6F6;
+     height: 75%;
+     position: absolute;
+     box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25), 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+     width: 77%;
+ }
+ 
+ body.dark-mode .gallery {
+     background-color: #1c1c1c;
+ }
+ 
+ .gallery h4 {
+     font: normal 600 16px/normal 'Poppins';
+     color: #1c1c1c;
+     text-align: center;
+     margin-left: 2%;
+ }

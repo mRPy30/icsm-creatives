@@ -1487,13 +1487,13 @@
     flex-wrap: wrap;
     justify-content: center;
     position: absolute;
-    top: 27%;
+    top: 24%;
 }
 .event-card {
     border: 1px solid #ddd;
     border-radius: 4px;
-    padding: 20px;
     margin: 20px;
+    padding-bottom: 10px;
     width: 270px;
     text-align: center;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
@@ -1513,7 +1513,13 @@
 
 .event-card h3 {
     margin-top: 15px;
-    font-family: 'poppins';
+    font: normal 800 20px/normal 'Poppins';
+    color: #9D7651;
+}
+
+.event-card p{
+    font: normal 400 14px/normal 'Poppins';
+    margin: 0 13px 5px 13px;
 }
 
 /*****events*****/
@@ -2692,7 +2698,7 @@
 
 .service-content {
     padding: 20px 25px 0 16px;
-    width: 67%;
+    width: 58%;
 }
 
 .service-details h2 {
@@ -2712,20 +2718,69 @@
 
 }
 
+
+.gallery-carousel {
+    position: relative;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    overflow: hidden;
+}
+
 .gallery-item {
     display: flex;
     gap: 10px;
-    padding-top: 15px ;
+    padding-top: 15px;
     flex-direction: row;
+    transition: transform 0.4s ease-in-out;
 }
-
 
 .gallery-item img {
-    width: 150%;
-    height: 310px;
+    width: 423px;
+    height: 334px;
     border-radius: 8px;
-    background-color: #04abed;
+    object-fit: cover;
 }
+
+.carousel-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(0, 0, 0, 0.5);
+    border: none;
+    color: white;
+    padding: 10px;
+    cursor: pointer;
+    z-index: 10;
+    border-radius: 50%;
+}
+
+.carousel-btn.left-btn {
+    left: 10px;
+}
+
+.carousel-btn.right-btn {
+    right: 10px;
+}
+
+.carousel-btn i {
+    font-size: 18px;
+}
+
+
+.see-more-photos {
+    text-align: center;
+    margin-top: 10px;
+}
+
+.see-more-photos a {
+    text-decoration: none;
+    color: #866043;
+    font:  normal bold 17px/ normal 'poppins';
+    padding: 5px;
+    letter-spacing: 1px;
+}
+
 
 .available-services {
    padding: 20px;
@@ -2749,7 +2804,7 @@
 /*** policy **/
 .service-tips {
     position: relative;
-    margin-top: 45px;
+    margin-top: 25px;
 }
 
 .service-tips h3{
@@ -2822,11 +2877,12 @@
 }
 
 .service-booking {
-    border: solid 1px #B2AAAA;
+    border: solid 2px #B2AAAA;
     margin-bottom: 35px;
     border-radius: 4px;
-    margin-top: 5%;
-    height: 75vh;
+    margin-top: 16%;
+    /* height: 75vh; */
+
 }
 
 
@@ -2837,11 +2893,18 @@
     border-bottom: solid 1px #B2AAAA;
     width: 100%;
     padding: 20px 20px 0 20px;
+    background-image: linear-gradient(147deg, #BC8759 0%, #77563D 100%);
 }
+
 
 .header-service h3{
     margin-top: 1%;
     font:  normal bold 30px/ normal 'poppins';
+    color: #fff;
+}
+
+.header-service p{ 
+    color: #fff;
 }
 
 .service-booking h3 {
@@ -2907,7 +2970,8 @@
     border-radius: 4px;
     cursor: pointer;
     font-size: 16px;
-    margin: 14px 91px;
+    width: 100%;
+    margin: 7px 0;
 }
 
 .btn-book:hover {
@@ -3466,7 +3530,7 @@
   }
   
   .text-section p {
-    font: normal normal 16px / normal 'Poppins' ;
+    font: normal normal 16px / 2.0'Poppins' ;
     color: #1d1d1d;
     margin-bottom: 10px;
   }
@@ -3554,3 +3618,70 @@
     color: red;
     font-weight: bold;
 }
+
+
+
+
+
+
+
+
+
+
+/** Birthday Album **/
+
+  .gallery-container {
+    margin-top: 20%;
+  }
+
+  .gallery_page{
+    position: absolute;
+    top: 15%;
+    left: 10%;
+    font-size: 15px;
+    font-family: 'poppins';
+  }
+  
+  .birthday-gallery-wrapper {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); 
+    gap: 10px;
+    margin: 0 10%;
+    padding-bottom: 3%;
+    
+  }
+  
+  .birthday-gallery-item {
+    position: relative;
+    overflow: hidden;
+    border-radius: 10px;
+  }
+  
+  .birthday-gallery-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease-in-out;
+  }
+  
+  .birthday-gallery-item:hover img {
+    transform: scale(1.1);
+  }
+  
+  .birthday-gallery-item.landscape {
+    grid-column: span 2; 
+    aspect-ratio: 13.5 / 9;
+  }
+  
+  .birthday-gallery-item.portrait {
+    aspect-ratio: 3 / 4;
+  }
+  
+
+
+
+
+
+
+
+/** Wedding Album **/

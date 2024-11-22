@@ -27,7 +27,7 @@ body {
 
 .dashboard {
     margin: 6% 1.5% 0 8%;
-    padding: 1.5%; 
+    padding: 1.5%;
     display: flex;
     justify-content: space-between;
 }
@@ -134,7 +134,7 @@ body {
 
 .dashboard-bottom {
     margin: 0% 1.5% 0 8%;
-    padding: 1% 2% 0% 1.8%; 
+    padding: 1% 2% 0% 1.8%;
     display: flex;
     justify-content: space-between;
 }
@@ -242,12 +242,12 @@ body {
 
 .container-bottom {
     margin: 0% 1.5% 0 8%;
-    padding: 1% 2% 0% 1.8%; 
+    padding: 1% 2% 0% 1.8%;
     display: flex;
     justify-content: space-between;
 }
 
-.tbl-admin{
+.tbl-admin {
     flex: 1 1 calc(47.666% - 10px);
     background-color: var(--tblColor);
     border-radius: 10px;
@@ -258,7 +258,7 @@ body {
 
 .tbl-admin1 {
     flex: 1 1 calc(33.333% - 10px);
-    background-color: var(--tblColor); 
+    background-color: var(--tblColor);
     padding: 0px 0px 50px 0px;
     height: 47vh;
     border-radius: 10px;
@@ -362,30 +362,31 @@ body {
     display: inline-block;
 }
 
-.status-legend{
+.status-legend {
     display: flex;
     justify-content: center;
     margin: 10px 0;
 }
 
-.legend-label{
+.legend-label {
     display: flex;
     flex-direction: column;
     align-items: center;
     margin: 0 15px;
 }
 
-.legend-label p{
+.legend-label p {
     font: italic 500 11px/normal 'Poppins';
     color: var(--hoverDark);
 }
 
 .pending-circle {
-    background-color: #ff8c00; 
+    background-color: #ff8c00;
 }
 
 .accepted-circle {
-    background-color:  #ffde22;;
+    background-color: #ffde22;
+    ;
 }
 
 .declined-circle {
@@ -398,7 +399,6 @@ body {
 
 .completed-circle {
     background-color: var(--acceptColor);
- 
 }
 
 .cancel-reason {
@@ -444,7 +444,6 @@ body {
     background: linear-gradient(147deg, #BC8759 0%, #77563D 100%);
     color: var(--BgColor);
     padding: 3px 10px;
-
 }
 
 .tab:hover {
@@ -605,73 +604,73 @@ body {
     min-width: 10vw;
 }
 
-.booking-table th:nth-child(1), 
-.booking-table td:nth-child(1){
+.booking-table th:nth-child(1),
+.booking-table td:nth-child(1) {
     width: 5%;
 }
 
-.booking-table th:nth-child(2), 
-.booking-table td:nth-child(2){
+.booking-table th:nth-child(2),
+.booking-table td:nth-child(2) {
     width: 6%;
 }
 
-.booking-table th:nth-child(3), 
-.booking-table td:nth-child(3){
+.booking-table th:nth-child(3),
+.booking-table td:nth-child(3) {
     width: 7%;
 }
 
 .booking-table th:nth-child(4),
-.booking-table td:nth-child(4){
+.booking-table td:nth-child(4) {
     width: 5%;
 }
 
-.booking-table th:nth-child(5), 
-.booking-table td:nth-child(5){
+.booking-table th:nth-child(5),
+.booking-table td:nth-child(5) {
     width: 3%;
 }
 
 .booking-table th:nth-child(6),
-.booking-table td:nth-child(6){
+.booking-table td:nth-child(6) {
     width: 5%;
 }
 
-.booking-table th:nth-child(7), 
-.booking-table td:nth-child(7){
+.booking-table th:nth-child(7),
+.booking-table td:nth-child(7) {
     width: 10%;
 }
 
-.booking-table th:nth-child(8), 
-.booking-table td:nth-child(8){
+.booking-table th:nth-child(8),
+.booking-table td:nth-child(8) {
     width: 10%;
 }
 
-.booking-table th:nth-child(9), 
-.booking-table td:nth-child(9){
+.booking-table th:nth-child(9),
+.booking-table td:nth-child(9) {
     width: 30%;
 }
 
-.booking-table th:nth-child(10), 
-.booking-table td:nth-child(10){
+.booking-table th:nth-child(10),
+.booking-table td:nth-child(10) {
     width: 30%;
 }
 
-.booking-table th:nth-child(11), 
-.booking-table td:nth-child(11){
+.booking-table th:nth-child(11),
+.booking-table td:nth-child(11) {
     width: 30%;
 }
 
-.booking-table th:nth-child(12), 
-.booking-table td:nth-child(12){
+.booking-table th:nth-child(12),
+.booking-table td:nth-child(12) {
     width: 30%;
 }
 
-.booking-table th:nth-child(13), 
-.booking-table td:nth-child(13){
+.booking-table th:nth-child(13),
+.booking-table td:nth-child(13) {
     width: 50%;
 }
 
-.booking-table th:nth-child(14), 
-.booking-table td:nth-child(14){
+.booking-table th:nth-child(14),
+.booking-table td:nth-child(14) {
     width: 30%;
 }
 
@@ -688,7 +687,7 @@ body {
     width: 8%;
 }
 
-.header-table th:nth-child(2), 
+.header-table th:nth-child(2),
 .header-table td:nth-child(2) {
     width: 15%;
 }
@@ -698,7 +697,7 @@ body {
     width: 15%;
 }
 
-.header-table th:nth-child(4), 
+.header-table th:nth-child(4),
 .header-table td:nth-child(4) {
     width: 10%;
 }
@@ -713,7 +712,7 @@ body {
     width: 12%;
 }
 
-.header-table th:nth-child(7), 
+.header-table th:nth-child(7),
 .header-table td:nth-child(7) {
     width: 15%;
 }
@@ -840,11 +839,11 @@ td .profile-image {
     background-color: #e1e1e1;
 }
 
-#recommendedStaff h4{
+#recommendedStaff h4 {
     font: normal 500 18px/normal 'Poppins';
 }
 
-.recommended-staff{
+.recommended-staff {
     display: flex;
     flex-direction: row;
     gap: 10px;
@@ -859,12 +858,12 @@ td .profile-image {
     background-color: #f9f9f9;
     border-radius: 10px;
     padding: 10px;
-    width: 15vw;    
+    width: 15vw;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     text-align: center;
 }
 
-.staff-card img{
+.staff-card img {
     width: 60px;
     height: 60px;
     border-radius: 50%;
@@ -873,21 +872,21 @@ td .profile-image {
     border: 1px solid var(--borderTble);
 }
 
-.staff-name{
+.staff-name {
     font: normal 600 16px/normal 'Poppins';
 }
 
-.staff-role{
+.staff-role {
     font: normal 400 13px/normal 'Poppins';
     color: var(--hoverDark);
 }
 
-.staff-rate{
+.staff-rate {
     font: normal 500 11px/normal 'Poppins';
     color: var(--themeColor);
 }
 
-.form-staff h2{
+.form-staff h2 {
     font: normal 500 20px/normal 'Poppins';
     text-align: center;
     margin: 10px 0;
@@ -900,6 +899,7 @@ td .profile-image {
     object-fit: cover;
     margin-bottom: 10px;
 }
+
 .staff-profile-placeholder {
     width: 60px;
     height: 60px;
@@ -1121,11 +1121,10 @@ td .profile-image {
     cursor: pointer;
 }
 
-.close-btn{
+.close-btn {
     font-size: x-large;
     cursor: pointer;
     float: right;
-
 }
 
 .close:hover,
@@ -1356,14 +1355,17 @@ body.dark-mode #calendar td.fc-today {
     color: #ffd700;
     font-size: 1.2em;
 }
+
 .rating-number {
     color: #666;
     font-size: 0.9em;
     margin-left: 5px;
 }
+
 .empty-star {
     color: #ccc;
 }
+
 
 /*******confirmation******/
 
@@ -1484,10 +1486,10 @@ button#acceptNo:hover {
     animation: spin 1s linear infinite;
 }
 
-
-#loading-animation{
+#loading-animation {
     margin: 40px;
 }
+
 @keyframes spin {
     0% {
         transform: rotate(0deg);
@@ -1496,51 +1498,76 @@ button#acceptNo:hover {
         transform: rotate(360deg);
     }
 }
+
 @-webkit-keyframes scaling-dots {
-    0%, 100% {
-      -webkit-transform: scale(0);
-              transform: scale(0); }
-    40%, 60% {
-      -webkit-transform: scale(1);
-              transform: scale(1); } }
-  @keyframes scaling-dots {
-    0%, 100% {
-      -webkit-transform: scale(0);
-              transform: scale(0); }
-    40%, 60% {
-      -webkit-transform: scale(1);
-              transform: scale(1); } }
-  
+    0%,
+    100% {
+        -webkit-transform: scale(0);
+        transform: scale(0);
+    }
+    40%,
+    60% {
+        -webkit-transform: scale(1);
+        transform: scale(1);
+    }
+}
+
+@keyframes scaling-dots {
+    0%,
+    100% {
+        -webkit-transform: scale(0);
+        transform: scale(0);
+    }
+    40%,
+    60% {
+        -webkit-transform: scale(1);
+        transform: scale(1);
+    }
+}
+
 .scaling-dots {
     display: grid;
     height: 10px;
     justify-content: center;
     grid-gap: 5px;
     margin-bottom: 15px;
-    grid-template-columns: repeat(5, 10px); }
+    grid-template-columns: repeat(5, 10px);
+}
+
 .scaling-dots div {
-  -webkit-animation: scaling-dots 1s infinite ease backwards;
-          animation: scaling-dots 1s infinite ease backwards;
-  background: var(--HoverthemeColor); 
-  border-radius: 100%;
-  height: 10px;
-  width: 10px; }
-  .scaling-dots div:nth-child(1) {
+    -webkit-animation: scaling-dots 1s infinite ease backwards;
+    animation: scaling-dots 1s infinite ease backwards;
+    background: var(--HoverthemeColor);
+    border-radius: 100%;
+    height: 10px;
+    width: 10px;
+}
+
+.scaling-dots div:nth-child(1) {
     -webkit-animation-delay: 0.1s;
-            animation-delay: 0.1s; }
-  .scaling-dots div:nth-child(2) {
+    animation-delay: 0.1s;
+}
+
+.scaling-dots div:nth-child(2) {
     -webkit-animation-delay: 0.2s;
-            animation-delay: 0.2s; }
-  .scaling-dots div:nth-child(3) {
+    animation-delay: 0.2s;
+}
+
+.scaling-dots div:nth-child(3) {
     -webkit-animation-delay: 0.3s;
-            animation-delay: 0.3s; }
-  .scaling-dots div:nth-child(4) {
+    animation-delay: 0.3s;
+}
+
+.scaling-dots div:nth-child(4) {
     -webkit-animation-delay: 0.4s;
-            animation-delay: 0.4s; }
-  .scaling-dots div:nth-child(5) {
+    animation-delay: 0.4s;
+}
+
+.scaling-dots div:nth-child(5) {
     -webkit-animation-delay: 0.5s;
-            animation-delay: 0.5s; }
-  
+    animation-delay: 0.5s;
+}
+
 .success-popup {
     display: none;
     position: fixed;
@@ -1917,13 +1944,14 @@ form .profile-section p {
 
 
 /********analytics*******/
+
 .layout-admin {
     margin: 8% 0% 0% 10%;
     height: 70%;
     width: 87%;
 }
 
-.top-analytics{
+.top-analytics {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -1949,7 +1977,7 @@ form .profile-section p {
 .analytics-item h2 {
     font: normal 700 28px/normal 'Poppins';
     color: var(--tblColor);
-    margin: 0; 
+    margin: 0;
 }
 
 .analytics-item p {
@@ -1958,7 +1986,8 @@ form .profile-section p {
     margin-bottom: 10px;
 }
 
-.expense-info, .revenue-info {
+.expense-info,
+.revenue-info {
     background-color: #333;
     color: #fff;
     padding: 10px;
@@ -1972,7 +2001,7 @@ form .profile-section p {
     flex-direction: column;
 }
 
-.container-items{
+.container-items {
     display: flex;
     flex-direction: row;
     width: 43vw;
@@ -1988,23 +2017,21 @@ form .profile-section p {
     height: 35vh;
 }
 
-.tbls-bookings{
+.tbls-bookings {
     border-collapse: collapse;
     width: 100%;
     font: normal 13px/normal 'Poppins';
 }
 
-.tbls-bookings thead th{
+.tbls-bookings thead th {
     background-color: var(--headerTble);
     padding: 10px;
     border: 1px solid #CCCCCC;
-
 }
 
-.tbls-bookings td{
+.tbls-bookings td {
     padding: 10px;
     border: 1px solid #CCCCCC;
-
 }
 
 .services-bar-graph {
@@ -2022,7 +2049,8 @@ form .profile-section p {
     border-collapse: collapse;
 }
 
-.total-bookings th, .total-bookings td {
+.total-bookings th,
+.total-bookings td {
     padding: 8px;
     text-align: left;
     border-bottom: 1px solid #ddd;
@@ -2037,9 +2065,12 @@ form .profile-section p {
     box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25), 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
 }
 
-#servicesBarGraph , #clientPieChart{
+#servicesBarGraph,
+#clientPieChart {
     max-height: 280px;
 }
+
+
 /******Finance********/
 
 .finance {
@@ -2471,18 +2502,15 @@ body.dark-mode .folder-body p {
     color: #FCF6F6;
 }
 
-
-/*****Gallery****/
-
 .gallery {
     padding: 0px 0px 20px 0px;
-    margin: 9% 0% 0% 18.5%;
+    margin: 9% 0% 0% 10%;
     border-radius: 10px;
     background-color: #FCF6F6;
     height: 75%;
     position: absolute;
     box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25), 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
-    width: 77%;
+    width: 75%;
 }
 
 body.dark-mode .gallery {
