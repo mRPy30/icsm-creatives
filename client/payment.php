@@ -135,10 +135,10 @@ $_SESSION['selected_additional_services'] = $selected_additional_services;
                             <div class="top">
                                 <div class="left-details">
                                     <div class="booking-header">
-                                        <h3><?php echo htmlspecialchars($selected_event); ?></h3>
+                                        <h3 style=""><?php echo htmlspecialchars($selected_event); ?></h3>
                                         <div class="detail-item">
-                                            <p class="label">Event Name</p>
-                                            <h6><?php echo htmlspecialchars($_SESSION['booking']['title_event'] ?? 'Not provided'); ?></h6>
+                                            <p class="label" style="color: #e0e0e0;">Event Name:</p>
+                                            <h6 style="color: #fcf6f6;"><?php echo htmlspecialchars($_SESSION['booking']['title_event'] ?? 'Not provided'); ?></h6>
                                         </div>
                                     </div>       
                                     <div class="summary">
@@ -148,19 +148,53 @@ $_SESSION['selected_additional_services'] = $selected_additional_services;
                                         <div class="details-grid">
                                             <div class="detail-item">
                                                 <p class="label">Date:</p>
-                                                <h6><?php echo htmlspecialchars($_SESSION['booking']['event_date'] ?? 'Not provided'); ?></h6>
+                                                <?php 
+                                                // Format the date 
+                                                $original_date = $_SESSION['booking']['event_date'] ?? 'Not provided';
+                                                if ($original_date !== 'Not provided') {
+                                                    // Convert the date to a more readable format
+                                                    $formatted_date = date('F d, Y', strtotime($original_date));
+                                                    echo '<h6>' . htmlspecialchars($formatted_date) . '</h6>';
+                                                } else {
+                                                    echo '<h6>Not provided</h6>';
+                                                }
+                                                ?>                                            
                                             </div>
                                             <div class="detail-item">
                                                 <p class="label">Event Time:</p>
-                                                <h6><?php echo htmlspecialchars($_SESSION['booking']['event_time'] ?? 'Not provided'); ?></h6>
+                                                <?php 
+                                                // Get the original event time
+                                                $original_time = $_SESSION['booking']['event_time'] ?? 'Not provided';
+
+                                                // If time is provided, calculate the end time (+4 hours)
+                                                if ($original_time !== 'Not provided') {
+                                                    // Convert original time to DateTime object
+                                                    $start_time = DateTime::createFromFormat('h:i A', $original_time);
+
+                                                    // Add 4 hours
+                                                    $end_time = clone $start_time;
+                                                    $end_time->modify('+4 hours');
+
+                                                    // Format the time range
+                                                    $time_range = $original_time . ' - ' . $end_time->format('h:i A');
+
+                                                    echo '<h6>' . htmlspecialchars($time_range) . '</h6>';
+                                                } else {
+                                                    echo '<h6>Not provided</h6>';
+                                                }
+                                                ?>
                                             </div>
                                             <div class="detail-item">
-                                                <p class="label">Type of event</p>
+                                                <p class="label">Type of event:</p>
                                                 <h6><?php echo htmlspecialchars($_SESSION['booking']['type_of_event'] ?? 'Not provided'); ?></h6>
                                             </div>
                                             <div class="detail-item">
-                                                <p class="label">Location</p>
+                                                <p class="label">Location:</p>
                                                 <h6><?php echo htmlspecialchars($_SESSION['booking']['event_location'] ?? 'Not provided'); ?></h6>
+                                            </div>
+                                            <div class="detail-item">
+                                                <p class="label">Pax:</p>
+                                                <h6><?php echo htmlspecialchars($_SESSION['booking']['pax'] ?? 'Not provided'); ?></h6>
                                             </div>
                                         </div>
                                     </div>
@@ -202,7 +236,7 @@ $_SESSION['selected_additional_services'] = $selected_additional_services;
                                             <input type="hidden" name="additional_services_data" value="<?php echo htmlspecialchars(json_encode($selected_additional_services)); ?>">
                                         </div>
                                         <div class="detail-item">
-                                            <p class="label">Select Payment option</p>
+                                            <p class="label">Payment option</p>
                                             <select id="payment_option" name="payment_option">
                                                 <option value="Down Payment">50% Down Payment</option>
                                                 <option value="Full Payment">Full Payment</option>
@@ -219,12 +253,16 @@ $_SESSION['selected_additional_services'] = $selected_additional_services;
                                 </div>
                             </div>
                             <div class="bottom">
+                                <h1 style="font: normal 500 18px/normal 'Poppins'; margin-bottom: 10px;">Mode of Payment: </h1>
+
                                 <div class="payment-section">
+
                                     <div class="payment-header">
                                         <h3>PayPal Payment</h3>
                                         <span class="arrow"><i class="fa-solid fa-angle-down"></i></span>
                                     </div>
                                     <div class="payment-content">
+                                        <input type="hidden" name="payment_method" class="payment-method-input" value="PayPal">
                                         <div id="paypal-button-container"></div> <!-- PayPal button will be rendered here -->
                                         <p class="security-note">**Payment - All transactions are secure and encrypted.</p>
                                     </div>
@@ -235,6 +273,7 @@ $_SESSION['selected_additional_services'] = $selected_additional_services;
                                         <span class="arrow"><i class="fa-solid fa-angle-down"></i></span>
                                     </div>
                                     <div class="payment-content">
+                                        <input type="hidden" name="payment_method" class="payment-method-input" value="GCash">
                                         <div class="payment-content-inner">
                                             <div class="qr-code">
                                                 <img src="../picture/qr-code.png" alt="QR Code">
@@ -259,7 +298,7 @@ $_SESSION['selected_additional_services'] = $selected_additional_services;
                                                     </div>
                                                     <br>
                                                     <label>Enter Reference</label>
-                                                    <input type="text" placeholder="Enter Reference Number" name="ref_num" class="reference-input">
+                                                    <input type="text" placeholder="Enter Reference Number" name="gcash_ref" class="reference-input">
                                                 </div>
                                                 <p class="security-note">**Payment - All transactions are secure and encrypted.</p>
                                             </div>
@@ -273,6 +312,7 @@ $_SESSION['selected_additional_services'] = $selected_additional_services;
                                         <span class="arrow"><i class="fa-solid fa-angle-down"></i></span>
                                     </div>
                                     <div class="payment-content">
+                                        <input type="hidden" name="payment_method" class="payment-method-input" value="GCash">
                                         <div class="payment-content-inner">
                                             <div class="qr-code">
                                                 <img src="../picture/bdo.png" alt="QR Code">
@@ -297,7 +337,7 @@ $_SESSION['selected_additional_services'] = $selected_additional_services;
                                                     </div>
                                                     <br>
                                                     <label>Enter Transaction</label>
-                                                    <input type="text" placeholder="Enter Reference Number" class="reference-input">
+                                                    <input type="text" placeholder="Enter Reference Number" name="gcash_ref" class="reference-input">
                                                 </div>
                                                 <p class="security-note">**Payment - All transactions are secure and encrypted.</p>
                                             </div>
@@ -340,26 +380,14 @@ $_SESSION['selected_additional_services'] = $selected_additional_services;
             </div>
         </section>
 
-        <div id="cartPopup" class="popup-overlay">
-    <div class="popup-content">
-        <h3>Add to Cart</h3>
-        <p>Are you sure you want to add this booking to your cart?</p>
-        <form id="addToCartForm" action="../backend/cart_handler.php" method="POST">
-            <!-- Hidden input fields to capture booking details from session -->
-            <input type="hidden" name="title_event" value="<?php echo htmlspecialchars($_SESSION['booking']['title_event'] ?? ''); ?>">
-            <input type="hidden" name="event_date" value="<?php echo htmlspecialchars($_SESSION['booking']['event_date'] ?? ''); ?>">
-            <input type="hidden" name="type_of_event" value="<?php echo htmlspecialchars($_SESSION['booking']['type_of_event'] ?? ''); ?>">
-            <input type="hidden" name="event_location" value="<?php echo htmlspecialchars($_SESSION['booking']['event_location'] ?? ''); ?>">
-            <input type="hidden" name="selected_services" value="<?php echo htmlspecialchars(json_encode($selected_services)); ?>">
-            <input type="hidden" name="selected_additional_services" value="<?php echo htmlspecialchars(json_encode($selected_additional_services)); ?>">
-            
-            <div class="popup-buttons">
-                <button type="submit">Yes</button>
-                <button type="button" onclick="closePopup()">No</button>
-            </div>
-        </form>
-    </div>
-</div>
+        <div id="cartPopup" class="popup-client">
+            <h3>Add to Cart</h3>
+            <p>Are you sure you want to add this booking to your cart?</p>
+                <div class="popup-buttons">
+                    <button onclick="addToCart()">Yes</button>
+                    <button onclick="closePopup()">No</button>
+                </div>
+        </div>
 
         <div id="consentPopup" class="consent-popup-overlay">
             <div class="consent-popup-content">
@@ -387,6 +415,255 @@ $_SESSION['selected_additional_services'] = $selected_additional_services;
     </main>
 </body>
 <script>
+    document.addEventListener('DOMContentLoaded', function() {
+    const paymentSections = document.querySelectorAll('.payment-section');
+    let selectedPaymentMethod = null;
+
+    paymentSections.forEach(section => {
+        const header = section.querySelector('.payment-header');
+        const content = section.querySelector('.payment-content');
+        const methodInput = section.querySelector('.payment-method-input');
+
+        header.addEventListener('click', function() {
+            // Close all other sections
+            paymentSections.forEach(otherSection => {
+                if (otherSection !== section) {
+                    otherSection.querySelector('.payment-content').style.display = 'none';
+                    otherSection.classList.remove('active');
+                }
+            });
+
+            // Toggle current section
+            content.style.display = content.style.display === 'block' ? 'none' : 'block';
+            section.classList.toggle('active');
+
+            if (section.classList.contains('active')) {
+                selectedPaymentMethod = methodInput.value;
+            }
+        });
+    });
+
+    // Form submission handling
+    document.querySelector('form.payment').addEventListener('submit', function(e) {
+        if (!selectedPaymentMethod) {
+            e.preventDefault();
+            alert('Please select a payment method');
+            return;
+        }
+    });
+});
+
+    // Edit booking functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const editButton = document.querySelector('.edit');
+    const detailItems = document.querySelectorAll('.details-grid .detail-item');
+    let isEditing = false;
+
+    // Store original values
+    let originalValues = {};
+
+    function makeEditable(element) {
+        const label = element.querySelector('.label').textContent.replace(':', '');
+        const value = element.querySelector('h6').textContent;
+        originalValues[label] = value;
+
+        // Create input based on field type
+        let input;
+        switch(label.toLowerCase()) {
+            case 'date':
+                input = document.createElement('input');
+                input.type = 'date';
+                input.value = formatDateForInput(value);
+                break;
+            case 'event time':
+                input = document.createElement('input');
+                input.type = 'time';
+                input.value = convertTo24Hour(value.split(' - ')[0]);
+                break;
+            case 'type of event':
+                input = document.createElement('select');
+                const eventTypes = ['Wedding', 'Birthday', 'Debut', 'Corporate', 'Other'];
+                eventTypes.forEach(type => {
+                    const option = document.createElement('option');
+                    option.value = type;
+                    option.text = type;
+                    option.selected = type === value;
+                    input.appendChild(option);
+                });
+                break;
+            case 'pax':
+                input = document.createElement('input');
+                input.type = 'number';
+                input.min = '1';
+                input.value = value;
+                break;
+            default:
+                input = document.createElement('input');
+                input.type = 'text';
+                input.value = value;
+        }
+
+        input.className = 'edit-input';
+        input.name = label.toLowerCase().replace(' ', '_');
+        element.querySelector('h6').replaceWith(input);
+    }
+
+    function revertToOriginal(element) {
+        const label = element.querySelector('.label').textContent.replace(':', '');
+        const input = element.querySelector('.edit-input');
+        const h6 = document.createElement('h6');
+        
+        // Format the value based on field type
+        let displayValue = input.value;
+        if (label.toLowerCase() === 'date') {
+            displayValue = formatDisplayDate(input.value);
+        } else if (label.toLowerCase() === 'event time') {
+            displayValue = formatTimeRange(input.value);
+        }
+        
+        h6.textContent = displayValue;
+        input.replaceWith(h6);
+    }
+
+    function saveChanges() {
+        const formData = new FormData();
+        detailItems.forEach(item => {
+            const input = item.querySelector('.edit-input');
+            if (input) {
+                formData.append(input.name, input.value);
+            }
+        });
+
+        // Send AJAX request to update booking
+        fetch('../backend/update_booking.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                detailItems.forEach(item => revertToOriginal(item));
+                showSuccessMessage('Booking details updated successfully!');
+            } else {
+                showErrorMessage('Failed to update booking details.');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showErrorMessage('An error occurred while updating booking details.');
+        });
+    }
+
+    // Helper functions
+    function formatDateForInput(dateStr) {
+        const date = new Date(dateStr);
+        return date.toISOString().split('T')[0];
+    }
+
+    function formatDisplayDate(dateStr) {
+        return new Date(dateStr).toLocaleDateString('en-US', {
+            month: 'long',
+            day: 'numeric',
+            year: 'numeric'
+        });
+    }
+
+    function convertTo24Hour(timeStr) {
+        const [time, period] = timeStr.split(' ');
+        const [hours, minutes] = time.split(':');
+        let hour = parseInt(hours);
+        
+        if (period === 'PM' && hour !== 12) {
+            hour += 12;
+        } else if (period === 'AM' && hour === 12) {
+            hour = 0;
+        }
+        
+        return `${hour.toString().padStart(2, '0')}:${minutes}`;
+    }
+
+    function formatTimeRange(time24) {
+        const startTime = new Date(`2000-01-01T${time24}`);
+        const endTime = new Date(startTime.getTime() + (4 * 60 * 60 * 1000));
+        
+        return startTime.toLocaleTimeString('en-US', { 
+            hour: 'numeric', 
+            minute: '2-digit', 
+            hour12: true 
+        }) + ' - ' + 
+        endTime.toLocaleTimeString('en-US', { 
+            hour: 'numeric', 
+            minute: '2-digit', 
+            hour12: true 
+        });
+    }
+
+    // Event handler for edit button
+    editButton.addEventListener('click', function() {
+        if (!isEditing) {
+            // Switch to edit mode
+            detailItems.forEach(item => makeEditable(item));
+            this.innerHTML = '<i class="fa-solid fa-check"></i> Save Changes';
+            isEditing = true;
+        } else {
+            // Save changes
+            saveChanges();
+            this.innerHTML = '<i class="fa-regular fa-pen-to-square"></i> Edit Your Booking';
+            isEditing = false;
+        }
+    });
+});
+
+// Add these styles to your CSS
+document.head.insertAdjacentHTML('beforeend', `
+    <style>
+        .edit-input {
+            width: 100%;
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+            margin-top: 2px;
+        }
+        
+        .edit-input:focus {
+            outline: none;
+            border-color: #4a90e2;
+            box-shadow: 0 0 3px rgba(74, 144, 226, 0.3);
+        }
+        
+        .success-message, .error-message {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 4px;
+            color: white;
+            z-index: 1000;
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        .success-message {
+            background-color: #4caf50;
+        }
+        
+        .error-message {
+            background-color: #f44336;
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+    </style>
+`);
+
     document.addEventListener('DOMContentLoaded', function () {
     const paymentOption = document.getElementById('payment_option');
     const totalCostElement = document.getElementById('total-cost');
@@ -419,6 +696,10 @@ $_SESSION['selected_additional_services'] = $selected_additional_services;
     updatePayment(); // Initialize on load
 });
 
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('cartPopup').style.display = 'none';
+});
+
 function showCartConfirmation() {
     document.getElementById('cartPopup').style.display = 'block';
 }
@@ -427,47 +708,38 @@ function closePopup() {
     document.getElementById('cartPopup').style.display = 'none';
 }
 
-// Optional: Add event listener to handle form submission via AJAX
-document.getElementById('addToCartForm').addEventListener('submit', function(e) {
-    e.preventDefault(); // Prevent default form submission
-
-    const formData = new FormData(this);
+function addToCart() {
+    const formData = new FormData();
+    formData.append('action', 'add_to_cart');
 
     fetch('../backend/cart_handler.php', {
         method: 'POST',
         body: formData
     })
-    .then(response => response.text())
-    .then(result => {
-        alert(result); // Show result message
-        closePopup();
-        // Optional: Redirect or refresh page
-        window.location.href = '../client/cart.php';
+    .then(response => response.json())
+    .then(data => {
+        if(data.success) {
+            // Store cart data in localStorage as backup
+            const cartData = localStorage.getItem('cartData') || '{}';
+            const parsedCart = JSON.parse(cartData);
+            parsedCart[data.booking_id] = {
+                timestamp: Date.now(),
+                expiry: Date.now() + (24 * 60 * 60 * 1000) // 24 hours in milliseconds
+            };
+            localStorage.setItem('cartData', JSON.stringify(parsedCart));
+            
+            alert('Successfully added to cart!');
+            window.location.href = 'cart.php';
+        } else {
+            alert('Error adding to cart: ' + data.message);
+        }
     })
     .catch(error => {
         console.error('Error:', error);
-        alert('An error occurred while adding to cart');
+        alert('Error adding to cart. Please try again.');
     });
-});
-
-
-// Add this function to check and restore cart data on page load
-document.addEventListener('DOMContentLoaded', function() {
-    const cartData = localStorage.getItem('cartData');
-    if (cartData) {
-        const parsedCart = JSON.parse(cartData);
-        const now = Date.now();
-        
-        // Clean up expired items
-        Object.keys(parsedCart).forEach(bookingId => {
-            if (parsedCart[bookingId].expiry < now) {
-                delete parsedCart[bookingId];
-            }
-        });
-        
-        localStorage.setItem('cartData', JSON.stringify(parsedCart));
-    }
-});
+    closePopup();
+}
 
 document.addEventListener('DOMContentLoaded', function () {
     const termsCheckbox = document.getElementById('terms-checkbox');
@@ -551,43 +823,90 @@ function closeErrorPopup() {
 }
 
 // PayPal button integration
-// Modify the existing PayPal button integration
-paypal.Buttons({
-    createOrder: function(data, actions) {
-        // Show consent popup when PayPal section is expanded
-        document.querySelector('.payment-section:nth-child(1) .payment-header').addEventListener('click', function() {
-            document.getElementById('consentPopup').style.display = 'flex';
-        });
-
-        return actions.order.create({
-            purchase_units: [{
-                amount: {
-                    value: '<?php echo $_SESSION['total_cost']; ?>'
-                }
-            }]
-        });
-    },
-    onApprove: function(data, actions) {
-        return actions.order.capture().then(function(details) {
-            // Remove the payment proof requirement
-            const form = document.querySelector('.payment');
+// Add this JavaScript code to your payment.php file
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.querySelector('.payment');
+    const paymentOptionSelect = document.getElementById('payment_option');
+    
+    paypal.Buttons({
+        createOrder: function(data, actions) {
+            // Get the current total based on payment option
+            const totalCost = parseFloat(document.getElementById('total-cost').textContent);
+            const paymentOption = paymentOptionSelect.value;
+            const paymentAmount = paymentOption === 'Down Payment' ? totalCost * 0.5 : totalCost;
             
-            // Remove the file input requirement
-            const fileInputs = form.querySelectorAll('input[type="file"]');
-            fileInputs.forEach(input => {
-                input.removeAttribute('required');
+            return actions.order.create({
+                purchase_units: [{
+                    amount: {
+                        value: paymentAmount.toFixed(2)
+                    }
+                }]
             });
-
-            // Submit the form directly to success page
-            form.action = '../client/success.php';
-            form.submit();
-        });
-    },
-    onError: function(err) {
-        console.error(err);
-        alert('An error occurred during the transaction. Please try again.');
-    }
-}).render('#paypal-button-container');
+        },
+        onApprove: function(data, actions) {
+            return actions.order.capture().then(function(details) {
+                // Set payment method to PayPal
+                const paymentMethodInputs = document.querySelectorAll('.payment-method-input');
+                paymentMethodInputs.forEach(input => {
+                    input.value = 'PayPal';
+                });
+                
+                // Create a hidden input for PayPal transaction ID
+                const transactionInput = document.createElement('input');
+                transactionInput.type = 'hidden';
+                transactionInput.name = 'ref_num';
+                transactionInput.value = details.id; // PayPal transaction ID
+                form.appendChild(transactionInput);
+                
+                // Create a dummy file input for payment proof
+                const dummyFile = new File([''], 'paypal-transaction.txt', { type: 'text/plain' });
+                const dataTransfer = new DataTransfer();
+                dataTransfer.items.add(dummyFile);
+                
+                // Find or create payment proof input
+                let paymentProofInput = form.querySelector('input[name="payment_proof"]');
+                if (!paymentProofInput) {
+                    paymentProofInput = document.createElement('input');
+                    paymentProofInput.type = 'file';
+                    paymentProofInput.name = 'payment_proof';
+                    form.appendChild(paymentProofInput);
+                }
+                paymentProofInput.files = dataTransfer.files;
+                
+                // Update form action and submit
+                form.action = '../backend/confirm_booking.php';
+                form.method = 'POST';
+                form.enctype = 'multipart/form-data';
+                
+                // Submit the form
+                form.submit();
+            }).catch(function(error) {
+                console.error('Payment processing error:', error);
+                alert('There was an error processing your payment. Please try again.');
+            });
+        },
+        onError: function(err) {
+            console.error('PayPal error:', err);
+            alert('An error occurred with PayPal. Please try again.');
+        }
+    }).render('#paypal-button-container');
+    
+    // Update payment amount when payment option changes
+    paymentOptionSelect.addEventListener('change', function() {
+        const totalCost = parseFloat(document.getElementById('total-cost').textContent);
+        const remainingBalance = document.getElementById('pending-payment');
+        const hiddenRemainingBalance = document.getElementById('hidden_remaining_balance');
+        
+        if (this.value === 'Down Payment') {
+            const downPayment = totalCost * 0.5;
+            remainingBalance.textContent = `Remaining Balance: ₱ ${downPayment.toFixed(2)}`;
+            hiddenRemainingBalance.value = downPayment.toFixed(2);
+        } else {
+            remainingBalance.textContent = 'Remaining Balance: ₱ 0.00';
+            hiddenRemainingBalance.value = '0';
+        }
+    });
+});
 </script>
 
 </html>

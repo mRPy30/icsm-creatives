@@ -85,12 +85,12 @@ if ($booking) {
                 <div class="booking-header">
                     <h3><?php echo $booking['eventName']; ?></h3>
                     <div class="detail-item">
-                        <p class="label">Event Name</p>
-                        <h6><?php echo $booking['title_event']; ?></h6>
+                        <p class="label" style="color: #fcf6f6;">Event Name</p>
+                        <h6 style="color: #fcf6f6;"><?php echo $booking['title_event']; ?></h6>
                     </div>
                     <div class="detail-item">
-                        <p class="label">Reason of Cancellation</p>
-                        <h6><?php echo $booking['reason']; ?></h6>
+                        <p class="label" style="color: #fcf6f6;">Reason of Cancellation</p>
+                        <h6 style="color: #fcf6f6;"><?php echo $booking['reason']; ?></h6>
                     </div>
                 </div>
                 <div class="summary">
@@ -99,27 +99,27 @@ if ($booking) {
                     </div>
                     <div class="details-grid">
                         <div class="detail-item">
-                            <p class="label"> <i class="fa-solid fa-map-location" style="font-size: large; color: #1C1C1D;"></i> Location</p>
+                            <p class="label"> <i class="fa-solid fa-map-location" style="font-size: medium; color: #1C1C1D;"></i> Location</p>
                             <h6><?php echo $booking['eventLocation']; ?></h6>
                         </div>
                         <div class="detail-item">
-                            <p class="label"> <i class="far fa-calendar" style="font-size: large; color: #1C1C1D;"></i> Date:</p>
+                            <p class="label"> <i class="far fa-calendar" style="font-size: medium; color: #1C1C1D;"></i> Date:</p>
                             <h6> <?php echo $booking['formattedDate']; ?></h6>
                         </div>
                         <div class="detail-item">
-                            <p class="label"><i class="far fa-clock" style="font-size: large; color: #1C1C1D;"></i> Event Time:</p>
+                            <p class="label"><i class="far fa-clock" style="font-size: medium; color: #1C1C1D;"></i> Event Time:</p>
                             <h6><?php echo $booking['formattedTime']; ?></h6>
                         </div>
                         <div class="detail-item">
-                            <p class="label"><i class="fa-solid fa-hand-holding" style="font-size: large; color: #1C1C1D;"></i> Service Package:</p>
+                            <p class="label"><i class="fa-solid fa-hand-holding" style="font-size: medium; color: #1C1C1D;"></i> Service Package:</p>
                             <h6><?php echo $booking['service_name']; ?></h6>
                         </div>
                         <div class="detail-item">
-                            <p class="label"><i class="fa-solid fa-square-plus" style="font-size: large; color: #1C1C1D;"></i> Additional Services:</p>
+                            <p class="label"><i class="fa-solid fa-square-plus" style="font-size: medium; color: #1C1C1D;"></i> Additional Services:</p>
                             <h6><?php echo $booking['additional']; ?></h6>
                         </div>
                         <div class="detail-item">
-                        <p class="label"><i class="fa-solid fa-camera-retro" style="font-size: large; color: #1C1C1D;"></i> Assigned Staff:</p>
+                        <p class="label"><i class="fa-solid fa-camera-retro" style="font-size: medium; color: #1C1C1D;"></i> Assigned Staff:</p>
                         <h6> <?php echo $booking['staff_name']; ?></h6>                        
                     </div>
                 </div>
@@ -127,6 +127,14 @@ if ($booking) {
             </div>
             <div class="top">
                 <div class="left-details">
+                    <div class="detail-item">
+                        <p class="label">Reason of Refund </p>
+                        <select id="" name="">
+                            <option value=""></option>
+                            <option value=""></option>
+                            <option value=""></option>
+                        </select>
+                    </div>
                     <div class="detail-item">
                         <p class="label">Refund to </p>
                         <select id="" name="">
@@ -136,7 +144,7 @@ if ($booking) {
                         </select>
                     </div>
                     <div class="detail-item">
-                        <p class="label">Input your Bank Name / Gcash Number: </p>
+                        <p class="label">Input your Bank Transaction No. / Gcash Number: </p>
                         <input type="text">
                     </div>
                     <div class="detail-item">
@@ -149,7 +157,7 @@ if ($booking) {
                 </div>
             </div>
             <div class="buttons-book">
-                <button class="btn-client" id="">Submit</button>
+                <button class="btn-client" id="">Submit Request</button>
             </div>
         </section>
 

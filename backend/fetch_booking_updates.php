@@ -13,7 +13,7 @@ $endTime = time() + $timeout;
 while (time() <= $endTime) {
     // Modify query to join booking, client, services, booking_staff, and staff tables
     $sql = "
-    SELECT b.bookingId, b.clientID, b.eventLocation, b.additional, b.proof_payment, b.status, b.service_package, b.eventDate, b.event_time, b.payment_option, b.remaining_balance, b.reason,
+    SELECT b.bookingId, b.clientID, b.eventLocation, b.additional, b.proof_payment, b.status, b.service_package, b.eventDate, b.event_time, b.payment_option, b.payment_method, b.remaining_balance, b.reason,
            c.name as client_name, c.cellphone, s.service_name , s.specified_service
     FROM booking b
     LEFT JOIN client c ON b.clientID = c.clientID
@@ -39,6 +39,8 @@ while (time() <= $endTime) {
         $row['service_name'] = $row['service_name'] ? $row['service_name'] : 'Unknown Service';
 
         $row['cellphone'] = $row['cellphone'];
+
+        $row['payment_method'] = $row['payment_method'];
 
         // Fetch assigned staff for the bookingId
         $staffSql = "

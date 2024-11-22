@@ -23,7 +23,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $total_cost = $_SESSION['total_cost'];
     $payment_option = $_POST['payment_option'];
     $remaining_balance = $_POST['remaining_balance'];
-    $ref_num = $_POST['ref_num'];
+    $payment_method = $_POST['payment_method'];
+    $ref_num = '';
 
     $validDate = DateTime::createFromFormat('Y-m-d', $eventDate);
     if (!$validDate || $validDate->format('Y-m-d') !== $eventDate) {
@@ -31,6 +32,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     $eventTime24 = date("H:i", strtotime($eventTime));
+
+    if ($payment_method === 'GCash') {
+        $ref_num = $_POST['gcash_ref'];
+    } else if ($payment_method === 'BDO') {
+        $ref_num = $_POST['bdo_ref'];
+    }
 
     if (is_string($additional_services)) {
         $additional = $additional_services;
@@ -80,17 +87,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
      // Prepare the SQL statement with proof_payment
      $sql = "INSERT INTO booking (clientID, eventDate, event_time, eventLocation, eventID, 
-     title_event, service_package, additional, pax, total_cost, proof_payment, payment_option, 
-     remaining_balance, status, ref_num, created_at)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Pending', ?, CURRENT_TIMESTAMP)";
+     title_event, service_package, additional, pax, total_cost, proof_payment, 
+     payment_option, remaining_balance, status, ref_num, payment_method, created_at)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Pending', ?, ?, CURRENT_TIMESTAMP)";
 
-    $stmt = $conn->prepare($sql);
-    if ($stmt) {
-     $stmt->bind_param("isssisssidssis", 
-         $clientID, $eventDate, $eventTime, $eventLocation, $eventID, 
-         $title_event, $service_package, $additional, $pax, $total_cost, 
-         $proof_payment, $payment_option, $remaining_balance, $ref_num
-     );
+$stmt = $conn->prepare($sql);
+if ($stmt) {
+ $stmt->bind_param("isssisssidssiss", 
+     $clientID, $eventDate, $eventTime, $eventLocation, $eventID, 
+     $title_event, $service_package, $additional, $pax, $total_cost, 
+     $proof_payment, $payment_option, $remaining_balance, $ref_num, $payment_method
+ );
     
      if ($stmt->execute()) {
          // Get the booking ID of the just-inserted record

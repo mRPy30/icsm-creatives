@@ -53,7 +53,7 @@ function formatTime($timestamp) {
                             <div class="cart-details">
                                 <div class="cart-header">
                                     <div class="cart-title">
-                                        <h3><?php echo htmlspecialchars($item['event_type']); ?></h3>
+                                    <h3><?php echo htmlspecialchars($item['event_type']); ?></h3>
                                     </div>
                                     <div class="cart-status" id="status-<?php echo $bookingId; ?>">
                                         <?php echo $isExpired ? 'Expired' : 'WAITING FOR PAYMENT'; ?>
@@ -62,8 +62,10 @@ function formatTime($timestamp) {
                                 <div class="cart-booking-details">
                                     <p>Booking Details:</p>
                                     <p><i class="fas fa-map-marker-alt"></i> <?php echo htmlspecialchars($item['location']); ?></p>
-                                    <p><i class="far fa-calendar"></i> <?php echo htmlspecialchars($item['event_date']); ?>, 
-                                       <?php echo htmlspecialchars($item['start_time']); ?> - <?php echo htmlspecialchars($item['end_time']); ?></p>
+                                    <p><i class="far fa-calendar"></i> <?php echo htmlspecialchars($item['event_date']); ?></p>
+                                    <p><i class="fa-regular fa-clock"></i> 
+                                        <?php echo isset($item['event_time']) ? htmlspecialchars($item['event_time']) : 'Not specified'; ?>
+                                    </p>                                
                                 </div>
                                 <div class="cart-actions">
                                     <?php if (!$isExpired): ?>
@@ -150,7 +152,7 @@ function formatTime($timestamp) {
         .then(response => response.json())
         .then(data => {
             if(data.success) {
-                window.location.href = 'payment.php';
+                window.location.href = '../client/payment.php';
             } else {
                 alert('Error proceeding to payment. Please try again.');
             }

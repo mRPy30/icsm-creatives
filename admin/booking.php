@@ -133,6 +133,7 @@ $page = $components[2];
                             <th>Addtional Services</th>
                             <th>Assigned Staff</th>
                             <th>Payment Status</th>
+                            <th>Payment Method</th>
                             <th>Payment Receipt</th>
                             <th>Remaining Balance</th>
                             <th>Actions</th>

@@ -116,6 +116,156 @@ let selectedMonth = '';
         renderBookings(); // Re-render based on new status filter
     }
 
+    // Add this function to generate individual booking receipt
+    function downloadReceipt(booking) {
+        try {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF('portrait', 'mm', 'a4');
+            
+            // Only proceed if booking status is Accepted
+            if (booking.status !== 'Accepted') {
+                alert('Receipt can only be downloaded for accepted bookings.');
+                return;
+            }
+    
+            const logoPath = '../picture/logo.png';
+            const img = new Image();
+            img.src = logoPath;
+            
+            img.onload = function() {
+                // Add logo
+                doc.addImage(img, 'PNG', 10, 10, 40, 20);
+                
+                // Add title
+                doc.setFontSize(20);
+                doc.text('Booking Receipt', doc.internal.pageSize.getWidth() / 2, 40, { align: 'center' });
+                
+                // Add booking details
+                doc.setFontSize(12);
+                let yPos = 60;
+                const leftMargin = 20;
+                
+                doc.text(`Booking ID: ${booking.bookingId}`, leftMargin, yPos);
+                yPos += 8;
+                doc.text(`Client Name: ${booking.client_name}`, leftMargin, yPos);
+                yPos += 8;
+                doc.text(`Service Package: ${booking.service_name}`, leftMargin, yPos);
+                yPos += 8;
+                doc.text(`Event Location: ${booking.eventLocation}`, leftMargin, yPos);
+                yPos += 8;
+                doc.text(`Date & Time: ${booking.formattedDateTime}`, leftMargin, yPos);
+                yPos += 8;
+                doc.text(`Payment Option: ${booking.payment_option}`, leftMargin, yPos);
+                yPos += 8;
+                doc.text(`Remaining Balance: ${formatCurrency(booking.remaining_balance)}`, leftMargin, yPos);
+                
+                // Add policies
+                yPos += 13;
+                
+                // Reschedule Policy
+                doc.setFontSize(12);
+                doc.text('Reschedule Policy', leftMargin, yPos);
+                doc.setFontSize(9);
+                yPos += 9;
+                const reschedulePolicy = [
+                    '   • Clients may request a Reschedule for their booking at least 168 hours (7 days) before the event date.',
+                    '   • Rescheduling requests within 6 days or less before the event date will not be allowed.',
+                   
+                ];
+                reschedulePolicy.forEach(line => {
+                    doc.text(line, leftMargin, yPos);
+                    yPos += 6;
+                });
+    
+                // Cancellation Policy
+                yPos += 5;
+                doc.setFontSize(12);
+                doc.text('Cancellation Policy', leftMargin, yPos);
+                doc.setFontSize(9);
+                yPos += 9;
+                const cancellationPolicy = [
+                    '   • Clients may submit a request of cancellation at least 96 hours (4 days) before the scheduled date.',
+                    '   • Cancellations requested 3 days or less before the event date will not be accepted, ensuring adequate preparation for the event.',
+                ];
+                cancellationPolicy.forEach(line => {
+                    doc.text(line, leftMargin, yPos);
+                    yPos += 6;
+                });
+
+                // Refund Policy
+                yPos += 5;
+                doc.setFontSize(12);
+                doc.text('Refund Policy', leftMargin, yPos);
+                doc.setFontSize(9);
+                yPos += 9;
+                const refundPolicy = [
+                    ' 1. Clients may request a refund submitting a request at least 48 hours after cancellation.',
+                    ' 2. Refund Rules:',
+                    '    • 100% Refunds will only be processed under the following conditions:',
+                    '    • Natural disasters that prevent the event from proceeding. Health emergencies, provided valid proof is submitted.',
+                    '(Medical Records, Medical Abstract, Doctors clearance, etc.).',
+                    '    • Incorrect payments (e.g., overpayments or system errors).',
+                    ' 3. Refund Processing Time:',
+                    '    • Refunds will be processed within 48 hours during business hours after the request has been approved.'
+                ];
+                refundPolicy.forEach(line => {
+                    doc.text(line, leftMargin, yPos);
+                    yPos += 6;
+                });
+    
+                // Terms & Photo Agreement
+                yPos += 5;
+                doc.setFontSize(10);
+                doc.text('Terms & Photo Agreement', leftMargin, yPos);
+                doc.setFontSize(9);
+                yPos += 9;
+                const terms = [
+                    '  • By proceeding, you agree to share your information with ICSM CREATIVES.',
+                    '  • Photos taken during your event will be featured in our gallery section to showcase',
+                    '  • our services. We ensure to capture and display your special moments professionally.'
+                ];
+                terms.forEach(line => {
+                    doc.text(line, leftMargin, yPos);
+                    yPos += 6;
+                });
+    
+                // Add footer with background color
+                const footerHeight = 25; // Height of footer in mm
+                const pageHeight = doc.internal.pageSize.getHeight();
+                const pageWidth = doc.internal.pageSize.getWidth();
+                
+                // Add dark background for footer
+                doc.setFillColor(28, 28, 29); // #1C1C1D in RGB
+                doc.rect(0, pageHeight - footerHeight, pageWidth, footerHeight, 'F');
+                
+                // Set text color to white for footer content
+                doc.setTextColor(255, 255, 255);
+                doc.setFontSize(10);
+                
+                // Add contact information in footer
+                const footerY = pageHeight - footerHeight + 10;
+                doc.text('Contact Us:', leftMargin, footerY);
+                doc.text('Facebook: facebook.com/icsmcreatives', leftMargin, footerY + 5);
+                doc.text('Phone: 0999999999', pageWidth/2, footerY + 5, { align: 'center' });
+                doc.text('Email: icsmcreatives@gmail.com', pageWidth - leftMargin, footerY + 5, { align: 'right' });
+                
+                // Add generation date in footer
+                doc.setFontSize(8);
+                const currentDate = new Date().toLocaleString();
+                doc.text(`Generated on: ${currentDate}`, pageWidth - leftMargin, footerY + 10, { align: 'right' });
+                
+                // Reset text color to black for future use
+                doc.setTextColor(0, 0, 0);
+    
+                // Save the PDF
+                const fileName = `booking_receipt_${booking.bookingId}.pdf`;
+                doc.save(fileName);
+            };
+        } catch (error) {
+            console.error('PDF Generation Error:', error);
+            alert('Error generating receipt. Please try again.');
+        }
+    }
     // Function to update year/month filters and re-render bookings
     function filterByDate() {
         selectedYear = document.getElementById('year-select').value;
@@ -132,12 +282,10 @@ let selectedMonth = '';
         const cancelledCount = document.getElementById('cancelled-count');
         const completedCount = document.getElementById('completed-count');
 
-
-
         tableBody.innerHTML = ''; 
 
     // Filter bookings based on current status, year, and month
-    const filteredBookings = bookings.filter(booking => {
+        const filteredBookings = bookings.filter(booking => {
         const bookingDate = new Date(booking.eventDate);
         const matchesStatus = currentFilter === 'all' || booking.status.toLowerCase() === currentFilter;
         const matchesYear = !selectedYear || bookingDate.getFullYear() === parseInt(selectedYear);
@@ -175,6 +323,9 @@ let selectedMonth = '';
         } else if (booking.status === 'Accepted') {
             statusCircle = '<span class="status-circle accepted-circle"></span>'
             statusButtons = `
+                <button class="download-receipt" onclick="downloadReceipt(${JSON.stringify(booking).replace(/"/g, '&quot;')})">
+                    <i class="fa-solid fa-download"></i> Download Receipt
+                </button>
                 <button class="archive"> <i class="fa-solid fa-box-archive"></i> Archived</button>`;
         } else if (booking.status === 'Declined') {
             statusCircle = '<span class="status-circle declined-circle"></span>'
@@ -215,8 +366,8 @@ let selectedMonth = '';
         // Add "Send SMS" button next to status buttons
         const sendSmsButton = `
         <button class="send-sms" onclick="openMessageModal('${booking.cellphone}', '${booking.bookingId}')">
-        Send SMS
-    </button>        `;
+            Send SMS
+        </button>`;
 
         const row = `
             <tr>
@@ -230,6 +381,7 @@ let selectedMonth = '';
                 <td>${booking.additional}</td>
                 <td>${assignStaffButton}</td>
                 <td>${booking.payment_option}</td>
+                <td>${booking.payment_method}</td>
                 <td>${receiptLink}</td>
                 <td>${booking.remaining_balance}</td>
                 <td>${statusButtons}</td>
@@ -306,9 +458,6 @@ function sendMessage(event) {
         }
     });
 }
-
-
-
 
 function openAcceptPopup(bookingId) {
     document.getElementById('customPopup').style.display = 'block';
@@ -420,7 +569,7 @@ function generatePDF() {
                 booking.status,
                 booking.service_name,
                 booking.client_name,
-                `${booking.formattedEventDate} ${booking.formattedTimeRange}`,
+                `${booking.formattedDateTime}`,
                 booking.eventLocation,
                 booking.payment_option,
                 formatCurrency(booking.remaining_balance)
@@ -490,15 +639,10 @@ function generatePDF() {
 
 // Updated Helper function to format currency
 function formatCurrency(amount) {
-    if (amount === null || amount === undefined || isNaN(amount)) {
-        return '₱0.00';
-    }
-    return new Intl.NumberFormat('en-PH', {
-        style: 'currency',
-        currency: 'PHP',
+    return `₱${amount.toLocaleString('en-PH', {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2
-    }).format(amount);
+    })}`;
 }
 
 

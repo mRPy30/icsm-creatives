@@ -178,7 +178,7 @@ $page = $components[2];
                     <h4>Pending Bookings</h4>
                 </div>
                 <div class="pending-container">
-                    <table class="header-table">
+                    <table class="prod-table">
                     <thead>
                         <tr>
                             <th class="header">Booked By</th>

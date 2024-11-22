@@ -175,6 +175,8 @@
 .top-book {
     display: flex;
     justify-content: space-between;
+    border-bottom: 1px solid var(--line-border-empty);
+    margin-bottom: 20px;
 }
 
 .top-book h3 {
@@ -187,6 +189,7 @@
     justify-content: space-between;
     position: relative;
     width: 30%;
+    margin-bottom: 15px;
 }
 
 .step1, .step2, .step3 {
@@ -408,6 +411,119 @@
 }
 
 
+.calendar-dates-button {
+    position: fixed;
+    top: 50%;
+    right: 0;
+    transform: translateY(50%);
+    background-color: var(--HoverthemeColor);
+    padding: 12px 16px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    z-index: 9999;
+    font: normal 600 12px/normal 'Poppins';
+    color: var(--fontLight);
+
+  }
+
+  .calendar-dates-button:hover {
+    background-color: var(--themeColor);
+    color: var(--fontLight);
+  }
+
+  #calendarPopup {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    z-index: 1000;
+    width: 90%;
+    max-width: 600px;
+    padding: 10px;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.calendar-container {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+    text-align: center;
+    font-weight: 500 !important;
+    text-transform: uppercase !important;
+    font: normal 500 12px/normal 'Poppins' !important;
+}
+
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    background-color: var(--themeColor) !important;
+    color: var(--fontLight) !important;
+    font: normal 600 16px/normal 'Poppins' !important;
+    padding: 10px;
+}
+
+#prevMonth , #nextMonth{
+    color: var(--fontLight) !important;
+    font-size: large;
+} 
+
+.calendar-header button {
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+}
+
+.calendar-day {
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3px ease;
+}
+
+.calendar-day:hover {
+    background-color: #f0f0f0;
+}
+
+.calendar-day.disabled {
+    cursor: not-allowed;
+    color: rgb(173 173 173) !important;
+    cursor: not-allowed !important;         
+    opacity: 0.5 !important; 
+}
+
+.calendar-day.booked {
+    color: var(--DarkColor) !important;
+    background-color: var(--BgColor) !important;
+    border-radius: 100vw;
+}
+
+.calendar-day.today {
+    background-color: var(--themeColor) !important;
+    color: var(--fontLight) !important;    
+    font-weight: bold;
+    border-radius: 100vw;
+}
+
+.calendar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    z-index: 999;
+    display: none;
+}
+
 .flatpickr-months, 
 .flatpickr-weekdays {
     background-color: var(--themeColor) !important;
@@ -481,38 +597,176 @@
     border-radius: 4px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     z-index: 1000;
+    margin-top: 5px;
 }
 
-.venue-suggestion-item {
-    padding: 12px;
-    cursor: pointer;
-    border-bottom: 1px solid #eee;
+.venue-item {
     display: flex;
     align-items: center;
-    gap: 10px;
+    padding: 10px;
+    cursor: pointer;
+    border-bottom: 1px solid #eee;
 }
 
-.venue-suggestion-item:hover {
+.venue-item:hover {
     background-color: #f5f5f5;
-}
-
-.venue-suggestion-item .venue-name {
-    font-weight: bold;
-    color: #333;
 }
 
 .venue-image {
     width: 60px;
     height: 60px;
     object-fit: cover;
+    margin-right: 10px;
     border-radius: 4px;
 }
 
-.venue-suggestion-item .recommendation-label {
-    font-size: 0.8em;
-    color: #4CAF50;
-    margin-top: 2px;
+.venue-name {
+    font-size: 14px;
+    color: #333;
 }
+.location-button {
+    position: fixed;
+    top: 43%;
+    right: 0;
+    transform: translateY(50%);
+    background-color: var(--HoverthemeColor);
+    padding: 12px 16px;
+    border: none;
+    color: var(--fontLight);
+    border-radius: 10px;
+    cursor: pointer;
+    z-index: 9999;
+    font: normal 600 12px/normal 'Poppins';
+}
+
+.location-button:hover {
+    background-color: var(--themeColor);
+    color: var(--fontLight);
+}
+
+.location-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1001;
+}
+
+.location-popup {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    z-index: 1002;
+    width: 80%;
+    max-width: 800px;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.location-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    font: normal 600 18px/normal 'Poppins';
+}
+
+.location-header h4 {
+    margin: 0;
+    color: var(--themeColor);
+    font-size: 1.5em;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    font-size: 1em;
+    cursor: pointer;
+    color: var(--themeColor);
+}
+
+.event-selector {
+    margin-bottom: 20px;
+}
+
+.event-selector select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-top: 5px;
+}
+
+.recommended-venues {
+    margin-bottom: 20px;
+}
+
+.venue-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-top: 10px;
+}
+
+.venue-card {
+    flex: 1 1 300px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.3s ease;
+}
+
+.venue-card:hover {
+    transform: translateY(-5px);
+}
+
+.venue-card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+.venue-info {
+    padding: 15px;
+}
+
+.venue-info h6 {
+    margin: 0 0 10px 0;
+    color: var(--themeColor);
+    font: normal 600 16px/normal 'Poppins' !important;
+}
+
+.copy-btn {
+    background: var(--themeColor);
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font: normal 600 13px/normal 'Poppins' !important;
+}
+
+.venue-map {
+    height: 300px;
+    margin-top: 20px;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.venue-map iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
 
 .input-with-icon {
     position: relative;
@@ -678,6 +932,25 @@
 }
 
 .refund-button:hover {
+    background-color: var(--HoverthemeColor);
+}
+
+.completed-button{
+    background-color: var(--fontLight);
+    color: var(--themeColor);
+    border: none;
+    padding: 8px 50px;
+    border-radius: 5px;
+    cursor: pointer;
+    font: normal 600 13px/normal 'Poppins';
+    transition: background-color 0.3s ease-in-out;
+    box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    text-decoration: none;
+    height: 35px;
+}
+
+.completed-button:hover {
     background-color: var(--HoverthemeColor);
 }
 
@@ -926,7 +1199,7 @@
     display: flex;
     flex-direction: row;
     border: 1px solid var(--line-border-empty);
-    width: 22%;
+    width: 32%;
     padding: 8px;
 }
 
@@ -1179,7 +1452,7 @@
     width: 100%;
     margin: 15px 0;
     box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.2);
-
+    padding-bottom: 15px;
 }
 
 .right-details ul li{
@@ -1195,14 +1468,16 @@
 
 
 .booking-header h3 {
-    font: normal 600 20px/normal 'Poppins';
+    color: #fcf6f6; 
+    font: normal 700 30px/normal 'Poppins';    
     margin: 0 0 20px 0;
 }
 
 .booking-header {
     display: flex;
     justify-content: space-between;
-    padding: 10px;
+    padding: 20px 20px 0 20px;
+    background-image: linear-gradient(147deg, #BC8759 0%, #77563D 100%);
 }
 
 .summary {
@@ -1213,7 +1488,7 @@
 .header-summary {
     border: 1px solid var(--line-border-empty);
     margin-bottom: 20px;
-    padding: 10px 0;
+    padding: 10px;
 }
 
 .header-summary h4{
@@ -1225,6 +1500,7 @@
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 15px;
+    padding: 0 10px;
 }
 
 .detail-item {
@@ -1244,7 +1520,7 @@
     font: normal 500 13px/normal 'Poppins';
 }
 
-.detail-item select{
+.detail-item select, .detail-item input{
     width: 97%;
     padding: 10px;
     border: 1px solid var(--line-border-empty);
@@ -1263,7 +1539,7 @@
 }
 
 .detail-item .service-price{
-    font: normal 500 18px / normal 'Poppins';
+    font: normal 700 18px / normal 'Poppins';
     margin-right: 15px;
     color: var(--HoverthemeColor);
 }
@@ -1276,13 +1552,13 @@
 
 #total-cost{
     color: var(--HoverthemeColor);
-    font: normal 500 18px / normal 'Roboto';
+    font: normal 600 18px / normal 'Roboto';
     margin-right: 20px;
 }
 
 .subtotal h4{
     margin-left: 10px; 
-    font: normal 500 17px / normal 'Roboto';
+    font: normal 600 17px / normal 'Roboto';
 }
 
 .payment-grid{
@@ -1436,7 +1712,7 @@
     color: var(--DarkColor);
     display: flex;
     justify-content: flex-end;
-    font: normal 400 16px/normal 'Poppins';
+    font: normal 500 14px/normal 'Roboto';
     margin-right: 15px;
 }
 
@@ -1497,11 +1773,14 @@
 .popup-buttons button:first-child {
     background: var(--HoverthemeColor);
     color:var(--fontLight);
+    font: normal 500 15px / normal 'Poppins';
+
 }
 
 .popup-buttons button:last-child {
-    background: var(--BgColor);
-    color: var();
+    background: var(--hoverLight);
+    color: var(--DarkColor);
+    font: normal 500 15px / normal 'Poppins';
 }
 
 .consent-popup-overlay {
@@ -1671,6 +1950,10 @@
 .popup-client h3 {
     font: normal 500 25px/normal 'Poppins';
     margin-bottom: 10px;
+}
+
+.popup-client p {
+    font: normal 400 18px/normal 'Poppins';
 }
 
 .cart-header {
