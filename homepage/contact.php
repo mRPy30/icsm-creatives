@@ -42,7 +42,11 @@
         <div class="text-section">
             <h1>Let's be friends!</h1>
             <p>Choosing a photographer can be a big decision.<br>
-                I would love to hear from you and help you plan your dream session!</p>
+                <b>At ICSM Creatives,</b> we’re more than just a team – we’re passionate storytellers ready to bring
+                your
+                vision to life. Let’s work together to create memories you’ll treasure forever. We’d love to hear from
+                you and help you plan your dream session!"
+            </p>
         </div>
 
         <div class="image-section">
@@ -57,7 +61,7 @@
             </div>
             <div class="contact-fillup">
                 <h2>Contact:</h2>
-                <form action="#" method="post">
+                <form action="send_email.php" method="post">
                     <label for="name">Name: <span class="required-asterisk">*</span></label>
                     <input type="text" id="name" name="name" placeholder="First Name, Last Name" required>
 

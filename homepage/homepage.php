@@ -417,7 +417,7 @@ $result = mysqli_query($conn, $query);
         <section class="ms-testimonials">
             <h2 class="ms-testimonials-title">What our clients say about us.</h2>
             <div class="ms-testimonials-wrapper">
-                <?php while ($row = mysqli_fetch_assoc($result)) : ?>
+                <?php while ($row = mysqli_fetch_assoc($result)): ?>
                     <div class="ms-testimonial">
                         <i class="fa-solid fa-quote-left"></i>
                         <p class="ms-testimonial-quote">
@@ -494,7 +494,7 @@ $result = mysqli_query($conn, $query);
                     <div class="banner-inner-content">
                         <h1>Let's make something incredible together</h1>
                         <div class="CTA-button">
-                            <a href="../homepage/events.php"><button>Inquire about your date </button></a>
+                            <a href="../homepage/event.php"><button>Inquire about your date </button></a>
                         </div>
                     </div>
                 </div>

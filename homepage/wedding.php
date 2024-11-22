@@ -35,9 +35,25 @@
                         your unique story, preserving every smile, tear, and kiss for a lifetime.</p>
                 </div>
 
-                <div class="gallery-item">
-                    <img src="../picture/wedding3.jpg" alt="Team-Picture">
-                    <img src="../picture/wedding1.jpg" alt="Team-Picture">
+                <div class="gallery-carousel">
+                    <button class="carousel-btn left-btn"><i class="fa-solid fa-chevron-left"></i></button>
+                    <div class="gallery-item">
+                        <img src="../picture/wedding3.jpg" alt="Team-Picture">
+                        <img src="../picture/marriage1.jpg" alt="Birthday Celebration">
+                        <img src="../picture/wedding1.jpg" alt="picture">
+                        <img src="../picture/weddingg.jpg" alt="picture">
+                        <img src="../picture/wedding5.jpg" alt="picture">
+                        <img src="../picture/wedding20.jpg" alt="picture">
+                        <img src="../picture/wedding9.jpg" alt="picture">
+                        <img src="../picture/wedding25.jpg" alt="Sample Image 6">
+                        <img src="../picture/wedding12.jpg" alt="Sample Image 7">
+                        <img src="../picture/wedding15.jpg" alt="Sample Image 8">
+                    </div>
+                    <button class="carousel-btn right-btn"><i class="fa-solid fa-chevron-right"></i></button>
+                </div>
+
+                <div class="see-more-photos">
+                    <a href="wedding-gallery.php" target="_blank">See More Photos</a>
                 </div>
 
                 <div class="service-tips">
@@ -49,10 +65,11 @@
                             <span class="arrow"><i class="fa-solid fa-angle-down"></i></span>
                         </div>
                         <div class="service-item_answer">
-                            <p>We understand that plans can change. If you need to reschedule your session, please
-                                contact us at least 48 hours in advance. We’ll do our best to find a new date that works
-                                for you, depending on availability. Rescheduling within this time frame helps us keep
-                                our schedule organized and fair for all clients.
+                            <p>You may request to reschedule their booking <b>at least 168 hours (7 days)</b> before
+                                the
+                                event date. Rescheduling requests made <b>within 6 days or less </b>of the event date
+                                will not be accepted. <a href="reschedule-policy.html" class="learn-more-link">Learn
+                                    more</a>.
                             </p>
 
                         </div>
@@ -64,10 +81,12 @@
                             <span class="arrow"><i class="fa-solid fa-angle-down"></i></span>
                         </div>
                         <div class="service-item_answer">
-                            <p>If you must cancel your booking, please notify us at least 48 hours in advance. Deposits
-                                are non-refundable, but if you reschedule within 30 days, we’ll apply your deposit
-                                toward the new date. This policy helps us manage our calendar efficiently and ensures
-                                that each client receives the best possible service.
+                            <p>You may submit a request of cancellation <b>at least 96 hours (4 days)</b> before the
+                                scheduled date.
+                                Cancellations requested <b>3 days or less before </b>the event date will not be
+                                accepted,
+                                ensuring adequate preparation for the event. <a href="reschedule-policy.html"
+                                    class="learn-more-link">Learn more</a>.
                             </p>
 
                         </div>
@@ -80,10 +99,11 @@
                             <span class="arrow"><i class="fa-solid fa-angle-down"></i></span>
                         </div>
                         <div class="service-item_answer">
-                            <p>Our goal is to deliver high-quality photos and videos within 3-7 days after your event.
-                                We’ll keep you updated on our progress and notify you of any unexpected delays. Fast
-                                delivery without sacrificing quality is our priority, so you can relive your special
-                                moments as soon as possible. Thank you for choosing ICSM Creatives!
+                            <p>Your photos and videos will be delivered to your personalized gallery <b>within 7 days
+                                </b>after
+                                the event date. Our team ensures timely delivery while maintaining the highest quality
+                                standards for your cherished memories.
+                                <a href="reschedule-policy.html" class="learn-more-link">Learn more</a>.
                             </p>
 
                         </div>
@@ -91,7 +111,6 @@
 
                 </div>
             </div>
-
 
             <div class="right-service">
                 <div class="service-booking">
@@ -107,8 +126,8 @@
                         <ul>
                             <li>Wedding Photo Only</li>
                             <li>Wedding Photo and Video</li>
-                            <li>Pre-Nuptial Photo Only </li>
-                            <li>Pre-Wedding Photo and Video</li>
+                            <li>Pre-Nuptia Photoshoot Only</li>
+                            <li>Pre-Wedding Photoshoot and Video</li>
                         </ul>
                         <div class="form-group">
                             <label for="event_location">Where shall we capture your memories?</label>
@@ -281,6 +300,31 @@
                     }
                 });
             });
+        });
+
+
+
+        const carousel = document.querySelector('.gallery-item');
+        const leftBtn = document.querySelector('.left-btn');
+        const rightBtn = document.querySelector('.right-btn');
+        let scrollAmount = 0;
+        const scrollStep = 320; // Adjust based on the image width + gap
+
+        leftBtn.addEventListener('click', () => {
+            scrollAmount -= scrollStep;
+            if (scrollAmount < 0) {
+                scrollAmount = 0; // Prevent scrolling beyond the first image
+            }
+            carousel.style.transform = `translateX(-${scrollAmount}px)`;
+        });
+
+        rightBtn.addEventListener('click', () => {
+            const maxScroll = carousel.scrollWidth - carousel.clientWidth;
+            scrollAmount += scrollStep;
+            if (scrollAmount > maxScroll) {
+                scrollAmount = maxScroll; // Prevent scrolling beyond the last image
+            }
+            carousel.style.transform = `translateX(-${scrollAmount}px)`;
         });
 
     </script>

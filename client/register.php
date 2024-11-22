@@ -108,7 +108,7 @@ if (isset($_GET['event'])) {
             field.setAttribute("type", type);
         }
 
-                // Toggle Password Visibility
+        // Toggle Password Visibility
         document.getElementById('toggle-password').addEventListener('click', function () {
             const passwordField = document.getElementById('password');
             const toggleBtn = document.getElementById('toggle-password');

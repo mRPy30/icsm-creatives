@@ -67,7 +67,7 @@
             <p>Celebrate big event photoshoot.</p>
         </div>
         <div class="event-card" onclick="location.href='maternity.php?event=Maternity'">
-            <img src="../picture/maternity.png" alt="Corpo">
+            <img src="../picture/genderreveal4.jpg" alt="Corpo">
             <h3>Maternity</h3>
             <p>Capture sweet maternity memories.</p>
         </div>
