@@ -28,7 +28,9 @@ if (isset($_GET['clientID']) && filter_var($_GET['clientID'], FILTER_VALIDATE_IN
     $stmt->execute();
     $imagesResult = $stmt->get_result();
 } else {
-    
+    // Handle error if clientID is invalid or missing
+    echo "<div class='error'>Invalid or missing client ID.</div>";
+    exit;
 }
 ?>
 
@@ -57,6 +59,11 @@ if (isset($_GET['clientID']) && filter_var($_GET['clientID'], FILTER_VALIDATE_IN
         body {
             overflow-y: auto;
         }
+        h2 {
+            padding: 30px;
+            text-align: center;
+            font: normal 600 25px/normal 'Poppins';
+        }
         .error {
             color: red;
             font-size: 1.2em;
@@ -65,8 +72,8 @@ if (isset($_GET['clientID']) && filter_var($_GET['clientID'], FILTER_VALIDATE_IN
         .gallery-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-            gap: 15px;
-            padding: 20px;
+            gap: 20px;
+            padding: 30px;
         }
         .gallery-item img {
             width: 100%;
@@ -74,19 +81,39 @@ if (isset($_GET['clientID']) && filter_var($_GET['clientID'], FILTER_VALIDATE_IN
             border-radius: 10px;
             object-fit: cover;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease; /* Added transition */
+        }
+        .gallery-item img:hover {
+            transform: scale(1.2); /* Slightly enlarge the image */
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3); /* Stronger shadow effect */
         }
         .no-images {
             text-align: center;
             font-size: 1.2em;
             color: #555;
         }
+        .no-images {
+            font: normal 600 25px/normal 'Poppins';
+
+    text-align: center;
+    font-size: 1.2em;
+    color: #555;
+    display: flex;
+    align-items: center;
+    min-height: 200px; /* Adjust the minimum height of the container */
+    width: 100%;
+    font-weight: bold; /* Optional: makes the text stand out more */
+    margin-top: 50px; /* Optional: adds some space above the message */
+    margin-left: 32.2em;
+}
+
+
+
     </style>
 </head>
 <body>
 
     <section class="gallery">
-        <h4>Gallery</h4>
-    </section>
 
     <!----Navbar & Sidebar---->
     <?php 
@@ -111,10 +138,10 @@ if (isset($_GET['clientID']) && filter_var($_GET['clientID'], FILTER_VALIDATE_IN
                 }
             }
         } else {
-            echo "<p class='no-images'>No images found for this client.</p>";
+            echo "<p class='no-images'>Please wait for the staff to upload images.</p>";
         }
         ?>
     </div>
-
+    </section>
 </body>
 </html>

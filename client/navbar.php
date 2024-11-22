@@ -433,8 +433,9 @@ $currentPage = basename($_SERVER['PHP_SELF']);
                 <a class="nav <?= $currentPage == 'feedback.php' ? 'active' : '' ?>" href="../client/feedback.php">Feedback</a>
             </li>
             <li>
-                <a class="nav <?= $currentPage == 'Gallery.php' ? 'active' : '' ?>" href="../client/Gallery.php">Gallery</a>
-            </li>
+    <a class="nav <?= $currentPage == 'Gallery.php' ? 'active' : '' ?>" href="../client/gallery.php?clientID=<?= $clientID ?>">Gallery</a>
+</li>
+
         </ul>
     <div class="profile_dropdown">
         <div class="nav-right">
