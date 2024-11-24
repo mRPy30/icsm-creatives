@@ -49,6 +49,7 @@ if ($eventResult === false) {
     exit();
 }
 
+
 // Process form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Capture the start time and end time from the form
@@ -85,6 +86,20 @@ while ($row = $unavailableResult->fetch_assoc()) {
 // Merge fully booked dates and unavailable dates
 $allUnavailableDates = array_merge($fullyBookedDates, $unavailableDates);
 
+// Modified dbcon.php query section
+$sql = "SELECT eventName, picture, recommended_venue, img_venue FROM event";
+$venueResult = $conn->query($sql);
+$venues = [];
+while ($row = $venueResult->fetch_assoc()) {
+    // Convert img_venue binary data to base64
+    if ($row['img_venue']) {
+        $base64Image = base64_encode($row['img_venue']);
+        $row['img_venue'] = 'data:image/jpeg;base64,' . $base64Image;
+    } else {
+        $row['img_venue'] = ''; // Default empty string if no image
+    }
+    $venues[] = $row;
+}
 
 
 ?>
@@ -122,6 +137,57 @@ $allUnavailableDates = array_merge($fullyBookedDates, $unavailableDates);
 <body>
     <!-----Navbar------->
     <?php include '../client/navbar.php'; ?>
+    <nav id="availableDatesButton" class="calendar-dates-button">
+        <i class="fa-solid fa-calendar-days"></i>
+    </nav>
+
+    <!-- Add this button to your navbar -->
+    <nav id="locationButton" class="location-button">
+        <i class="fa-solid fa-location-dot"></i>
+    </nav>
+
+
+    <div class="location-overlay" id="locationOverlay"></div>
+        <div id="locationPopup" class="location-popup">
+        <div class="location-header">
+            <h4>Our Suggested Venues</h4>
+            <button class="close-btn" id="closeLocationBtn"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+    <div class="location-content">
+        <div class="form-group">
+            <div class="left-info">
+                <label for="type_of_event">Type of Event:</label>
+                <div class="input-with-icon"> 
+                    <i class="fa-solid fa-camera"></i>
+                    <select id="venue-event-select" class="input-with-icon">
+                        <option value="">Choose an event type</option>
+                        <?php foreach ($venues as $venue): ?>
+                            <option value="<?php echo htmlspecialchars($venue['eventName']); ?>"
+                                    data-venues="<?php echo htmlspecialchars($venue['recommended_venue']); ?>"
+                                    data-image="<?php echo htmlspecialchars($venue['img_venue']); ?>">
+                                <?php echo htmlspecialchars($venue['eventName']); ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+            </div>
+        </div>
+        
+            <div class="recommended-venues">
+                <div class="title-service">
+                    <i class="fa-regular fa-thumbs-up"></i>
+                    <h4>Recommended venue</h4>
+                </div>
+                <div class="venue-list" id="venueList">
+                    <!-- Venues will be populated here -->
+                </div>
+            </div>
+                    
+            <div class="venue-map" id="venue-map">
+                <!-- Google Map will be displayed here -->
+            </div>
+        </div>
+    </div>
 
     <main class="main-content">
         <section class="coverpage">
@@ -182,7 +248,6 @@ $allUnavailableDates = array_merge($fullyBookedDates, $unavailableDates);
                                             <?php endwhile; ?>
                                         </select> 
                                     </div>
-                                    <br>
                                     <label for="bookingDate">Date</label>
                                     <div class="input-with-icon">
                                         <i class="fa-regular fa-calendar-days"></i>
@@ -193,7 +258,6 @@ $allUnavailableDates = array_merge($fullyBookedDates, $unavailableDates);
                                     <div class="input-with-icon">
                                         <i class="fa-solid fa-location-dot"></i>
                                         <input type="text" id="event_location" name="event_location" required autocomplete="off">
-                                        <div id="venue-suggestions" class="venue-suggestions"> sa imus</div>
                                     </div>
                                 </div>   
                                 <div class="right-info">
@@ -202,7 +266,6 @@ $allUnavailableDates = array_merge($fullyBookedDates, $unavailableDates);
                                         <i class="fa-regular fa-pen-to-square"></i>
                                         <input type="text" id="title_event" name="title_event" required>
                                     </div>
-                                    <br>
                                     <div class="time">
                                         <div class="start">
                                             <label for="event_time">Event Time</label>
@@ -211,11 +274,8 @@ $allUnavailableDates = array_merge($fullyBookedDates, $unavailableDates);
                                                 <select id="event_time" name="event_time" required></select>
                                             </div>
                                             <h4>**Note: Every booking should 4 Hours service</h4>
-                                        </div>
-                                        <br>
-                                        
+                                        </div>                                        
                                     </div>                                     
-                                    <br>
                                     <label for="pax">Pax</label>
                                     <input type="text" id="pax" name="pax" required>
                                 </div>
@@ -274,6 +334,18 @@ $allUnavailableDates = array_merge($fullyBookedDates, $unavailableDates);
             </div>
         </section>
 
+        <div class="calendar-overlay" id="calendarOverlay"></div>
+        <div id="calendarPopup">
+            <div class="calendar-header">
+                <button id="prevMonth"><i class="fa-solid fa-arrow-left"></i></button>
+                <h2 id="currentMonth">Month Year</h2>
+                <button id="nextMonth"><i class="fa-solid fa-arrow-right"></i></button>
+            </div>
+            <div class="calendar-container" id="calendarDays">
+                <!-- Days will be dynamically populated here -->
+            </div>
+        </div>
+
 
         <section class="container-credential">
             <div class="credit-info">
@@ -285,6 +357,449 @@ $allUnavailableDates = array_merge($fullyBookedDates, $unavailableDates);
     </main>
 
 <script>
+
+document.addEventListener('DOMContentLoaded', function() {
+    const locationButton = document.getElementById('locationButton');
+    const locationPopup = document.getElementById('locationPopup');
+    const locationOverlay = document.getElementById('locationOverlay');
+    const closeLocationBtn = document.getElementById('closeLocationBtn');
+    const originalText = locationButton.textContent;
+    const locationIcon = document.createElement('i');
+    const carousel = document.querySelector('.carousel');
+    locationIcon.classList.add('fa-solid', 'fa-location-dot');
+    const venueEventSelect = document.getElementById('venue-event-select');
+    const venueList = document.getElementById('venueList');
+    const venueMap = document.getElementById('venue-map');
+    
+    let animationInterval;
+
+    function isElementInViewport(el) {
+        const rect = el.getBoundingClientRect();
+        return (
+            rect.top >= 0 &&
+            rect.left >= 0 &&
+            rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+            rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+        );
+    }
+
+    function animateLocationButton() {
+        // Slide to right animation
+        locationButton.style.transition = 'transform 0.5s ease';
+        locationButton.style.transform = 'translateX(-5%)';
+        
+        // Change text
+        locationButton.innerHTML = '';
+        locationButton.innerHTML += 'Discover the perfect venue for your event!';
+        
+        // Revert after 3 seconds
+        setTimeout(() => {
+            locationButton.style.transform = 'translateX(0)';
+            
+            // Revert to original text
+            setTimeout(() => {
+                locationButton.innerHTML = '';
+                locationButton.appendChild(locationIcon.cloneNode(true));
+            }, 300);
+        }, 3000);
+    }
+
+    function handleVisibilityChange() {
+        if (isElementInViewport(carousel)) {
+            // Initial animation
+            animateLocationButton();
+
+            // Start periodic animation
+            animationInterval = setInterval(animateLocationButton, 8000);
+        } else {
+            // Stop animations when button is out of view
+            clearInterval(animationInterval);
+        }
+    }
+
+    // Initial check
+    handleVisibilityChange();
+
+    // Check visibility on scroll and resize
+    window.addEventListener('scroll', handleVisibilityChange);
+    window.addEventListener('resize', handleVisibilityChange);
+
+    // Handle click event for showing popup
+    locationButton.addEventListener('click', function() {
+        locationPopup.style.display = 'block';
+        locationOverlay.style.display = 'block';
+        animateLocationButton(); // Optionally trigger animation on click
+    });
+    
+    // Close location popup
+    function closeLocationPopup() {
+        locationPopup.style.display = 'none';
+        locationOverlay.style.display = 'none';
+    }
+    
+    closeLocationBtn.addEventListener('click', closeLocationPopup);
+    locationOverlay.addEventListener('click', closeLocationPopup);
+    
+    // Handle event selection
+    venueEventSelect.addEventListener('change', function() {
+        const selectedOption = this.options[this.selectedIndex];
+        const venues = selectedOption.dataset.venues;
+        const image = selectedOption.dataset.image;
+        
+        if (venues) {
+            const venueArray = venues.split(',').map(venue => venue.trim());
+            
+            // Clear previous venues
+            venueList.innerHTML = '';
+            
+            // Add venue cards
+            venueArray.forEach(venue => {
+                const venueCard = document.createElement('div');
+                venueCard.className = 'venue-card';
+                venueCard.innerHTML = `
+                    <img src="${image}" alt="${venue}">
+                    <div class="venue-info">
+                        <h6>${venue}</h6>
+                        <button class="copy-btn" onclick="copyVenue('${venue}')">
+                            <i class="fa-regular fa-copy"></i> Copy
+                        </button>
+                    </div>
+                `;
+                venueList.appendChild(venueCard);
+                
+                // Update map for the first venue
+                if (venueArray.indexOf(venue) === 0) {
+                    updateMap(venue);
+                }
+            });
+        }
+    });
+    
+    // Function to update map
+    function updateMap(location) {
+        const mapUrl = `https://www.google.com/maps/embed/v1/place?key=AIzaSyAPzSHoxlFDTzFpBHyAKuQAMCadJu0x1Wo&q=${encodeURIComponent(location + ', Philippines')}`;
+        venueMap.innerHTML = `<iframe src="${mapUrl}" allowfullscreen></iframe>`;
+    }
+    
+    // Function to copy venue to clipboard
+    window.copyVenue = function(venue) {
+        const eventLocationInput = document.getElementById('event_location');
+        eventLocationInput.value = venue;
+        closeLocationPopup();
+        
+        const toast = document.createElement('div');
+        toast.className = 'toast';
+        toast.textContent = 'Venue copied to location field!';
+        document.body.appendChild(toast);
+
+        // Make the toast visible
+        setTimeout(() => {
+            toast.classList.add('show');
+        }, 10);
+
+        // Remove the toast after 3 seconds
+        setTimeout(() => {
+            toast.remove();
+        }, 3000);
+    }
+    
+    // Style for toast notification
+    const style = document.createElement('style');
+    style.textContent = `
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--themeColor);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            z-index: 1000;
+            animation: fadeIn 0.3s, fadeOut 0.3s 2.7s;
+            font: normal 600 13px/normal 'Poppins', sans-serif !important;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translate(-50%, 20px); }
+            to { opacity: 1; transform: translate(-50%, 0); }
+        }
+        
+        @keyframes fadeOut {
+            from { opacity: 1; transform: translate(-50%, 0); }
+            to { opacity: 0; transform: translate(-50%, -20px); }
+        }
+    `;
+    document.head.appendChild(style);
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    const locationInput = document.getElementById('event_location');
+    const typeOfEventSelect = document.getElementById('type_of_event');
+    const venueSuggestions = document.getElementById('venue-suggestions');
+    const googleMapContainer = document.createElement('div');
+    googleMapContainer.id = 'google-map-container';
+    googleMapContainer.style.display = 'none';
+    googleMapContainer.style.width = '100%';
+    googleMapContainer.style.height = '300px';
+    googleMapContainer.style.marginTop = '10px';
+
+    // Add the map container after the input
+    locationInput.parentNode.insertBefore(googleMapContainer, locationInput.nextSibling);
+
+    // Function to load Google Maps for any input location
+    function loadGoogleMap(location) {
+        if (!location) return;
+
+        googleMapContainer.style.display = 'block';
+
+        // Create an iframe for Google Maps
+        const mapFrame = document.createElement('iframe');
+        mapFrame.width = '100%';
+        mapFrame.height = '300';
+        mapFrame.style.border = '0';
+        mapFrame.loading = 'lazy';
+        mapFrame.allowFullscreen = true;
+
+        // Construct Google Maps embed URL
+        const mapUrl = `https://www.google.com/maps/embed/v1/place?key=AIzaSyAPzSHoxlFDTzFpBHyAKuQAMCadJu0x1Wo&q=${encodeURIComponent(location + ', Philippines')}`;
+
+        mapFrame.src = mapUrl;
+
+        // Clear previous map and add new one
+        googleMapContainer.innerHTML = '';
+        googleMapContainer.appendChild(mapFrame);
+    }
+
+    // Event listener for location input
+    locationInput.addEventListener('input', function() {
+        const inputLocation = this.value.trim();
+        
+        // Only show map if there's a meaningful input
+        if (inputLocation.length > 2) {
+            // You might want to add a small delay to prevent too frequent map loads
+            clearTimeout(this.mapLoadTimeout);
+            this.mapLoadTimeout = setTimeout(() => {
+                loadGoogleMap(inputLocation);
+            }, 500);
+        }
+    });
+
+    // Optional: Load map when input loses focus
+    locationInput.addEventListener('blur', function() {
+        const inputLocation = this.value.trim();
+        if (inputLocation) {
+            loadGoogleMap(inputLocation);
+        }
+    });
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    const availableDatesButton = document.getElementById('availableDatesButton');
+    const coverPage = document.querySelector('.coverpage');
+
+    function handleScrollStyle() {
+        const coverPageBottom = coverPage.getBoundingClientRect().bottom;
+
+        if (coverPageBottom <= 0) {
+            // Past cover page
+            availableDatesButton.style.borderColor = 'var(--HoverthemeColor)';
+            availableDatesButton.style.color = 'var(--fontLight)';
+        } else {
+            // On cover page
+            availableDatesButton.style.borderColor = 'var(--fontLight)';
+            availableDatesButton.style.color = 'var(--fontLight)';
+        }
+    }
+
+    // Initial check
+    handleScrollStyle();
+
+    // Add scroll event listener
+    window.addEventListener('scroll', handleScrollStyle);
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    const availableDatesButton = document.getElementById('availableDatesButton');
+    const carousel = document.querySelector('.carousel');
+    const originalText = availableDatesButton.textContent;
+    const calendarIcon = document.createElement('i');
+    calendarIcon.classList.add('fa-regular', 'fa-calendar-days');
+    
+    let animationInterval;
+
+    function isElementInViewport(el) {
+        const rect = el.getBoundingClientRect();
+        return (
+            rect.top >= 0 &&
+            rect.left >= 0 &&
+            rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+            rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+        );
+    }
+
+    function animateCalendarButton() {
+        // Slide to right animation
+        availableDatesButton.style.transition = 'transform 0.5s ease';
+        availableDatesButton.style.transform = 'translateX(-5%)';
+        
+        // Change text and add icon
+        availableDatesButton.innerHTML = '';
+        availableDatesButton.innerHTML += ' Check available dates today!';
+        
+        // Revert after 5 seconds
+        setTimeout(() => {
+            availableDatesButton.style.transform = 'translateX(0)';
+            
+            // Revert to original text
+            setTimeout(() => {
+                availableDatesButton.innerHTML = '';
+                availableDatesButton.appendChild(calendarIcon.cloneNode(true));
+            }, 300);
+        }, 3000);
+    }
+
+    function handleVisibilityChange() {
+        if (isElementInViewport(carousel)) {
+            // Initial animation
+            animateCalendarButton();
+
+            // Start periodic animation
+            animationInterval = setInterval(animateCalendarButton, 8000);
+        } else {
+            // Stop animations when carousel is out of view
+            clearInterval(animationInterval);
+        }
+    }
+
+    // Initial check
+    handleVisibilityChange();
+
+    // Check visibility on scroll and resize
+    window.addEventListener('scroll', handleVisibilityChange);
+    window.addEventListener('resize', handleVisibilityChange);
+
+    // Optional: Trigger on click as well
+    availableDatesButton.addEventListener('click', animateCalendarButton);
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    const calendarPopup = document.getElementById('calendarPopup');
+    const calendarOverlay = document.getElementById('calendarOverlay');
+    const availableDatesButton = document.getElementById('availableDatesButton');
+    const prevMonthBtn = document.getElementById('prevMonth');
+    const nextMonthBtn = document.getElementById('nextMonth');
+    const currentMonthEl = document.getElementById('currentMonth');
+    const calendarDaysEl = document.getElementById('calendarDays');
+
+    // Booked and unavailable dates from PHP
+    const bookings = <?php echo json_encode($bookings); ?>;
+    const allUnavailableDates = <?php echo json_encode($allUnavailableDates); ?>;
+
+    let currentDate = new Date();
+
+    function renderCalendar(date) {
+    const firstDayOfMonth = new Date(date.getFullYear(), date.getMonth(), 1);
+    const lastDayOfMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+    const daysInMonth = lastDayOfMonth.getDate();
+    const startingDay = firstDayOfMonth.getDay();
+
+    // Calculate the minimum allowed date (3 days from today)
+    const minAllowedDate = new Date();
+    minAllowedDate.setDate(minAllowedDate.getDate() + 3);
+
+    // Update month and year in header
+    currentMonthEl.textContent = date.toLocaleString('default', { month: 'long', year: 'numeric' });
+
+    // Clear previous calendar
+    calendarDaysEl.innerHTML = '';
+
+    // Add day headers
+    const dayHeaders = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    dayHeaders.forEach(day => {
+        const dayEl = document.createElement('div');
+        dayEl.textContent = day;
+        dayEl.style.fontWeight = 'bold';
+        calendarDaysEl.appendChild(dayEl);
+    });
+
+    // Fill empty days before first day of month
+    for (let i = 0; i < startingDay; i++) {
+        calendarDaysEl.appendChild(document.createElement('div'));
+    }
+
+    // Render days
+    for (let day = 1; day <= daysInMonth; day++) {
+        const dayEl = document.createElement('div');
+        dayEl.textContent = day;
+        dayEl.classList.add('calendar-day');
+
+        const fullDate = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+        const currentDayDate = new Date(fullDate);
+
+        // Disable past dates and dates within 3 days
+        if (currentDayDate < minAllowedDate) {
+            dayEl.classList.add('disabled');
+            dayEl.title = 'Date not available';
+        }
+
+        // Mark today
+        if (fullDate === new Date().toISOString().split('T')[0]) {
+            dayEl.classList.add('today');
+        }
+
+        // Mark booked or unavailable dates
+        if (allUnavailableDates.includes(fullDate) || (bookings[fullDate] && bookings[fullDate].length >= 2)) {
+            dayEl.classList.add('booked', 'disabled');
+            dayEl.title = 'Fully booked or unavailable';
+        }
+
+        // Add click event to fill booking date
+        dayEl.addEventListener('click', function() {
+            if (!dayEl.classList.contains('disabled')) {
+                document.getElementById('event_date').value = fullDate;
+                calendarPopup.style.display = 'none';
+                calendarOverlay.style.display = 'none';
+            }
+        });
+
+        calendarDaysEl.appendChild(dayEl);
+    }
+}
+
+        // Initial render
+        renderCalendar(currentDate);
+
+        // Previous month button
+        prevMonthBtn.addEventListener('click', function() {
+            currentDate.setMonth(currentDate.getMonth() - 1);
+            renderCalendar(currentDate);
+        });
+
+        // Next month button
+        nextMonthBtn.addEventListener('click', function() {
+            currentDate.setMonth(currentDate.getMonth() + 1);
+            renderCalendar(currentDate);
+        });
+
+        // Toggle calendar popup
+        availableDatesButton.addEventListener('click', function() {
+            if (calendarPopup.style.display === 'none' || calendarPopup.style.display === '') {
+                calendarPopup.style.display = 'block';
+                calendarOverlay.style.display = 'block';
+            } else {
+                calendarPopup.style.display = 'none';
+                calendarOverlay.style.display = 'none';
+            }
+        });
+
+        // Close popup when clicking outside
+        calendarOverlay.addEventListener('click', function() {
+            calendarPopup.style.display = 'none';
+            calendarOverlay.style.display = 'none';
+        });
+    });
+
     document.addEventListener('DOMContentLoaded', function () {
         const eventDateInput = document.getElementById('event_date');
         const eventTimeSelect = document.getElementById('event_time');
@@ -293,6 +808,7 @@ $allUnavailableDates = array_merge($fullyBookedDates, $unavailableDates);
         const daysTag = document.querySelector(".days"),
         currentDate = document.querySelector(".current-date"),
         prevNextIcon = document.querySelectorAll(".icons span");
+        
         
     function populateTimeOptions(selectElement) {
        selectElement.innerHTML = '';
@@ -361,7 +877,7 @@ $allUnavailableDates = array_merge($fullyBookedDates, $unavailableDates);
 
 
 
-        function startSSE() {
+    function startSSE() {
     var source = new EventSource("../backend/fetch.php");
 
     source.onmessage = function(event) {
@@ -409,7 +925,7 @@ $allUnavailableDates = array_merge($fullyBookedDates, $unavailableDates);
                     <div class="completed">
                         <div class='booking-header'>
                             <h3>${booking.title_event}</h3>
-                            <button class='view-img-button'>View Photo</button>
+                            <button class="completed-button">View Photo</button>
                         </div>
                         <div class="summary">
                             <div class="header-summary">
@@ -621,98 +1137,7 @@ function update() {
     }
 }
 
-document.addEventListener('DOMContentLoaded', function() {
-    const typeOfEventSelect = document.getElementById('type_of_event');
-    const eventLocationInput = document.getElementById('event_location');
-    const venueSuggestions = document.getElementById('venue-suggestions');
 
-    typeOfEventSelect.addEventListener('change', function() {
-        eventLocationInput.value = ''; // Clear the input when event type changes
-        fetchVenueSuggestions(this.value);
-    });
-
-    eventLocationInput.addEventListener('focus', function() {
-        const eventType = typeOfEventSelect.value;
-        fetchVenueSuggestions(eventType);
-    });
-
-    function fetchVenueSuggestions(eventType) {
-        fetch('booking.php', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: 'get_venues=1&event_type=' + encodeURIComponent(eventType)
-        })
-        .then(response => response.json())
-        .then(venues => {
-            displayVenueSuggestions(venues, eventType);
-        })
-        .catch(error => {
-            console.error('Error fetching venues:', error);
-            venueSuggestions.style.display = 'none';
-        });
-    }
-
-    function displayVenueSuggestions(venues, eventType) {
-        venueSuggestions.innerHTML = '';
-        
-        if (venues.length === 0) {
-            const noVenues = document.createElement('div');
-            noVenues.className = 'no-suggestions';
-            noVenues.textContent = `No recommended venues for ${eventType} events yet.`;
-            venueSuggestions.appendChild(noVenues);
-        } else {
-            venues.forEach(venue => {
-                const div = document.createElement('div');
-                div.className = 'venue-suggestion-item';
-                
-                let venueHtml = '<div class="venue-content">';
-                
-                if (venue.image) {
-                    venueHtml = `
-                        <img src="data:image/jpeg;base64,${venue.image}" 
-                             alt="${venue.name}" 
-                             class="venue-image"
-                        >`;
-                }
-                
-                venueHtml += `
-                    <div class="venue-details">
-                        <div class="venue-name">${venue.name}</div>
-                        <div class="recommendation-label">Recommended for ${eventType}</div>
-                    </div>
-                `;
-                
-                div.innerHTML = venueHtml;
-                
-                div.addEventListener('click', () => {
-                    eventLocationInput.value = venue.name;
-                    venueSuggestions.style.display = 'none';
-                });
-                
-                venueSuggestions.appendChild(div);
-            });
-        }
-        
-        venueSuggestions.style.display = 'block';
-    }
-
-    // Hide suggestions when clicking outside
-    document.addEventListener('click', function(e) {
-        if (!eventLocationInput.contains(e.target)) {
-            venueSuggestions.style.display = 'none';
-        }
-    });
-
-    // Show suggestions when clicking on input
-    eventLocationInput.addEventListener('click', function(e) {
-        e.stopPropagation();
-        if (venueSuggestions.children.length > 0) {
-            venueSuggestions.style.display = 'block';
-        }
-    });
-});
 </script>
 
 </body>

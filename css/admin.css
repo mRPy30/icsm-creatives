@@ -277,8 +277,8 @@ body {
     display: inline-block;
 }
 
-.accept {
-    background-color: var(--acceptColor);
+.accept{
+    background-color: #e0be00;
     border-radius: 5px;
     font: normal 11px/normal 'Poppins';
     height: 5%;
@@ -292,31 +292,52 @@ body {
 }
 
 .accept:hover {
-    background-color: #00861f;
+    background-color: #bea518;
     transition: 0.4s;
 }
 
 .decline {
+    background-color: gray;
+    border-radius: 5px;
+    font: normal 11px/normal 'Poppins';
+    height: 5%;
+    color: #FFF;
+    border: none;
+    padding: 5px 10px;
+    text-align: center;
+    display: inline-block;
+    cursor: pointer;
+    text-decoration: none;
+    margin: 5px 0;
+}
+
+.decline:hover {
+    background-color: rgb(105, 105, 105);
+    transition: 0.4s;
+}
+
+.cancelled {
     background-color: var(--declineColor);
     border-radius: 5px;
     font: normal 11px/normal 'Poppins';
     height: 5%;
     color: #FFF;
     border: none;
-    padding: 5px 10px;
-    text-align: center;
+    padding: 5px 8px;
     display: inline-block;
     cursor: pointer;
     text-decoration: none;
+    margin: 5px 0;
+
 }
 
-.decline:hover {
+.cancelled:hover {
     background-color: rgb(172, 3, 0);
     transition: 0.4s;
 }
 
-.archive {
-    background-color: #17A1FA;
+.archive{
+    background-color: var(--hoverDark);
     border-radius: 5px;
     font: normal 11px/normal 'Poppins';
     height: 5%;
@@ -329,8 +350,8 @@ body {
     text-decoration: none;
 }
 
-.archived:hover {
-    background-color: rgb(0, 62, 120);
+.archive:hover {
+    background-color: rgb(62, 40, 0);
     transition: 0.4s;
 }
 
@@ -501,6 +522,17 @@ body {
     background: var(--BgColor);
 }
 
+.download-receipt {
+    border: 2px solid var(--themeColor);
+    color: var(--themeColor);
+    padding: 3px 7px;
+    border-radius: 5px;
+    cursor: pointer;
+    font: normal 600 13px/normal 'Poppins';
+    box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.2);
+    background: var(--BgColor);
+}
+
 .send-sms {
     border: 2px solid var(--themeColor);
     color: var(--themeColor);
@@ -642,7 +674,8 @@ body {
     width: 30%;
 }
 
-.header-table {
+
+.header-table{
     border-collapse: collapse;
     width: 100%;
     font: normal 13px/normal 'Poppins';

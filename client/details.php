@@ -4,7 +4,7 @@ include '../backend/dbcon.php';
 $bookingID = $_GET['bookingID']; 
 
 // Modified query to use LEFT JOIN for booking_staff and staff tables
-$sql = "SELECT b.*, s.service_name, b.additional, b.payment_option, b.remaining_balance, e.eventName, st.staff_name
+$sql = "SELECT b.*, s.service_name, b.additional, b.payment_option, b.remaining_balance, b.created_at, e.eventName, st.staff_name
         FROM booking b
         LEFT JOIN booking_staff bs ON b.bookingId = bs.bookingId
         LEFT JOIN staff st ON bs.staff_ID = st.staff_ID
@@ -23,6 +23,8 @@ if ($booking) {
     // Format the date and time
     $booking['formattedDate'] = date('F j, Y', strtotime($booking['eventDate']));
     $booking['formattedTime'] = date('g:i A', strtotime($booking['event_time']));
+    $booking['formattedBooked'] = date('F j, Y | g:i A', strtotime($booking['created_at']));
+
     
     // Set default values for null fields
     $booking['eventName'] = $booking['eventName'] ?? 'No Event Name';
@@ -83,10 +85,10 @@ if ($booking) {
         <section class="booking-status">
             <div class="upcoming-details">
                 <div class="booking-header">
-                    <h3 style="color: #BC8759; font: normal 600 30px/normal 'Poppins';"><?php echo $booking['eventName']; ?></h3>
+                    <h3><?php echo $booking['eventName']; ?></h3>
                     <div class="detail-item">
-                        <p class="label">Event Name</p>
-                        <h6><?php echo $booking['title_event']; ?></h6>
+                        <p class="label" class="label" style="color: #fcf6f6;">Event Name</p>
+                        <h6 style="color: #fcf6f6;"><?php echo $booking['title_event']; ?></h6>
                     </div>
                 </div>
                 <div class="summary">
@@ -95,31 +97,35 @@ if ($booking) {
                     </div>
                     <div class="details-grid">
                         <div class="detail-item">
-                            <p class="label"> <i class="fa-solid fa-map-location" style="font-size: large; color: #1C1C1D;"></i> Location</p>
+                            <p class="label"> <i class="fa-solid fa-map-location" style="font-size: medium; color: #1C1C1D;"></i> Location</p>
                             <h6><?php echo $booking['eventLocation']; ?></h6>
                         </div>
                         <div class="detail-item">
-                            <p class="label"> <i class="far fa-calendar" style="font-size: large; color: #1C1C1D;"></i> Date:</p>
+                            <p class="label"> <i class="far fa-calendar" style="font-size: medium; color: #1C1C1D;"></i> Booked Date:</p>
+                            <h6> <?php echo $booking['formattedBooked']; ?></h6>
+                        </div>
+                        <div class="detail-item">
+                            <p class="label"> <i class="far fa-calendar" style="font-size: medium; color: #1C1C1D;"></i> Event Date:</p>
                             <h6> <?php echo $booking['formattedDate']; ?></h6>
                         </div>
                         <div class="detail-item">
-                            <p class="label"><i class="far fa-clock" style="font-size: large; color: #1C1C1D;"></i> Event Time:</p>
+                            <p class="label"><i class="far fa-clock" style="font-size: medium; color: #1C1C1D;"></i> Event Time:</p>
                             <h6><?php echo $booking['formattedTime']; ?></h6>
                         </div>
                         <div class="detail-item">
-                            <p class="label"><i class="fa-solid fa-hand-holding" style="font-size: large; color: #1C1C1D;"></i> Service Package:</p>
+                            <p class="label"><i class="fa-solid fa-hand-holding" style="font-size: medium; color: #1C1C1D;"></i> Service Package:</p>
                             <h6><?php echo $booking['service_name']; ?></h6>
                         </div>
                         <div class="detail-item">
-                            <p class="label"><i class="fa-solid fa-square-plus" style="font-size: large; color: #1C1C1D;"></i> Additional Services:</p>
+                            <p class="label"><i class="fa-solid fa-square-plus" style="font-size: medium; color: #1C1C1D;"></i> Additional Services:</p>
                             <h6><?php echo $booking['additional']; ?></h6>
                         </div>
                         <div class="detail-item">
-                            <p class="label"><i class="fa-solid fa-camera-retro" style="font-size: large; color: #1C1C1D;"></i> Assigned Staff:</p>
+                            <p class="label"><i class="fa-solid fa-camera-retro" style="font-size: medium; color: #1C1C1D;"></i> Assigned Staff:</p>
                             <h6> <?php echo $booking['staff_name']; ?></h6>                        
                         </div>
                         <div class="detail-item">
-                            <p class="label"><i class="fa-solid fa-receipt" style="font-size: large; color: #1C1C1D;"></i> Payment:</p>
+                            <p class="label"><i class="fa-solid fa-receipt" style="font-size: medium; color: #1C1C1D;"></i> Payment:</p>
                             <h6> <?php echo $booking['payment_option']; ?> ( <i class="fa-solid fa-peso-sign"></i> <?php echo $booking['remaining_balance']; ?> )</h6>             
                         </div>
                     </div>
