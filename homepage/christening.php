@@ -67,7 +67,7 @@
                             <p>You may request to reschedule their booking <b>at least 168 hours (7 days)</b> before
                                 the
                                 event date. Rescheduling requests made <b>within 6 days or less </b>of the event date
-                                will not be accepted. <a href="reschedule-policy.html" class="learn-more-link">Learn
+                                will not be accepted. <a href="policy.php" class="learn-more-link">Learn
                                     more</a>.
                             </p>
 
@@ -84,7 +84,7 @@
                                 scheduled date.
                                 Cancellations requested <b>3 days or less before </b>the event date will not be
                                 accepted,
-                                ensuring adequate preparation for the event. <a href="reschedule-policy.html"
+                                ensuring adequate preparation for the event. <a href="policy.php"
                                     class="learn-more-link">Learn more</a>.
                             </p>
 
@@ -102,7 +102,7 @@
                                 </b>after
                                 the event date. Our team ensures timely delivery while maintaining the highest quality
                                 standards for your cherished memories.
-                                <a href="reschedule-policy.html" class="learn-more-link">Learn more</a>.
+                                <a href="policy.php" class="learn-more-link">Learn more</a>.
                             </p>
 
                         </div>

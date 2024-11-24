@@ -37,16 +37,16 @@
                 <div class="gallery-carousel">
                     <button class="carousel-btn left-btn"><i class="fa-solid fa-chevron-left"></i></button>
                     <div class="gallery-item">
-                        <img src="../picture/bday.jpg" alt="Team-Picture">
-                        <img src="../picture/birthdayyy.jpg" alt="Birthday Celebration">
-                        <img src="../picture/debut1.jpg" alt="picture">
+                        <img src="../picture/birthday17.jpg" alt="Team-Picture">
+                        <img src="../picture/birthday2.jpg" alt="Birthday Celebration">
                         <img src="../picture/bornday.jpg" alt="picture">
-                        <img src="../picture/bday.jpg" alt="picture">
-                        <img src="../picture/birthdayyy.jpg" alt="picture">
-                        <img src="../picture/birthdayyy.jpg" alt="picture">
-                        <img src="../picture/birthdayyy.jpg" alt="Sample Image 6">
-                        <img src="../picture/birthdayyy.jpg" alt="Sample Image 7">
-                        <img src="../picture/birthdayyy.jpg" alt="Sample Image 8">
+                        <img src="../picture/birthday8.jpg" alt="picture">
+                        <img src="../picture/bbirthday.jpg" alt="picture">
+                        <img src="../picture/birthday15.jpg" alt="picture">
+                        <img src="../picture/debut00.jpg" alt="picture">
+                        <img src="../picture/birthday13.jpg" alt="Sample Image 6">
+                        <img src="../picture/7birthday.jpg" alt="Sample Image 7">
+                        <img src="../picture/18birthday.jpg" alt="Sample Image 8">
                     </div>
                     <button class="carousel-btn right-btn"><i class="fa-solid fa-chevron-right"></i></button>
                 </div>

@@ -565,7 +565,71 @@
     }
 }
 
+/****Policy*****/
+.policy-container {
+    margin: 10px auto;
+    padding: 0 20px;
+    width: 75%;
+}
 
+
+.policy-header p {
+    color: #666;
+    font: normal 600 20px / normal 'poppins' ;
+}
+
+
+.policy-card h2 {
+    color: #333;
+    font-size: 1.5em;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border-top: 2px solid #BC8759;
+    font-family: 'poppins';
+}
+
+.policy-card ul {
+    list-style: none;
+    font-size: 16px;
+    padding-left: 33px;
+    font-family: 'poppins';
+}
+
+.policy-card li {
+    margin-bottom: 15px;
+    color: #555;
+    line-height: 1.6;
+    position: relative;
+    padding-left: 25px;
+}
+
+.policy-card li:before {
+    content: "•";
+    color: #BC8759;
+    font-weight: bold;
+    position: absolute;
+    left: 0;
+    font-size: 15px;
+}
+
+.refund-details {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 20px;
+    margin: 15px 0 15px 0;
+}
+
+.refund-details h3 {
+    color: #333;
+    font-size: 1.1em;
+    margin-bottom: 10px;
+    font-family: 'poppins';
+}
+
+.refund-details ul {
+    list-style: none;
+    margin-left: 15px;
+}
 
 
 

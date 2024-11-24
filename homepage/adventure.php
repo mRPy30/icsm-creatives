@@ -37,12 +37,12 @@
                 <div class="gallery-carousel">
                     <button class="carousel-btn left-btn"><i class="fa-solid fa-chevron-left"></i></button>
                     <div class="gallery-item">
-                        <img src="../picture/outdoor.png" alt="Picture">
-                        <img src="../picture/outdoor1.jpg" alt="Celebration">
+                        <img src="../picture/outdoor14.jpg" alt="Picture">
+                        <img src="../picture/outdoor2.jpg" alt="Celebration">
                         <img src="../picture/outdoor12.jpg" alt="picture">
-                        <img src="../picture/outdoor14.jpg" alt="picture">
+                        <img src="../picture/outdoor.png" alt="picture">
                         <img src="../picture/outdoor5.jpg" alt="picture">
-                        <img src="../picture/outdoor2.jpg" alt="picture">
+                        <img src="../picture/outdoor1.jpg" alt="picture">
                         <img src="../picture/Outdoor10.jpg" alt="picture">
                     </div>
                     <button class="carousel-btn right-btn"><i class="fa-solid fa-chevron-right"></i></button>
