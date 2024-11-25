@@ -31,7 +31,7 @@
         <div class="birthday-gallery-wrapper">
             <!----Line 1--->
             <div class="birthday-gallery-item portrait">
-                <img src="../picture/birthdayyy.jpg" alt="Birthday Celebration 2">
+                <img src="../picture/birthday17.jpg" alt="Birthday Celebration 2">
             </div>
             <div class="birthday-gallery-item landscape">
                 <img src="../picture/birthday2.jpg" alt="Birthday Celebration 1">
