@@ -137,6 +137,8 @@ if ($resultClientRegistration->num_rows > 0) {
     <!--FONT LINKS-->
     <link rel="stylesheet" href="../css/fonts.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
     
 </head>
     
@@ -144,7 +146,7 @@ if ($resultClientRegistration->num_rows > 0) {
     
 
 <section class="layout-admin">
-
+    <button class="download-receipt" id="download-analytics">Download Reports</button>        
     <!-- Middle Section -->
     <div class="top-analytics">
         <div class="left-analytics">
@@ -302,6 +304,170 @@ if ($resultClientRegistration->num_rows > 0) {
 
     <script>
 
+                
+function downloadAnalyticsReport() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    
+    // Title and Date
+    doc.setFontSize(20);
+    doc.text('Analytics Report', 14, 20);
+    doc.setFontSize(10);
+    doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 14, 30);
+
+    let yOffset = 40;
+
+    // Add Financial Summary
+    doc.setFontSize(14);
+    doc.text('Financial Summary', 14, yOffset);
+    yOffset += 10;
+    
+    doc.setFontSize(10);
+    doc.text(`Total Expenses: ₱ ${document.querySelector('.analytics-item:nth-child(1) h2').textContent.trim()}`, 14, yOffset);
+    yOffset += 7;
+    doc.text(`Overall Revenue: ₱ ${document.querySelector('.analytics-item:nth-child(2) h2').textContent.trim()}`, 14, yOffset);
+    yOffset += 15;
+
+    // Add Bookings Table
+    doc.setFontSize(14);
+    doc.text('Total Bookings by Year', 14, yOffset);
+    yOffset += 10;
+
+    const bookingsTable = document.querySelector('.tbls-bookings');
+    const bookingsData = Array.from(bookingsTable.querySelectorAll('tbody tr')).map(row => [
+        row.cells[0].textContent.trim(),
+        row.cells[1].textContent.trim()
+    ]);
+
+    doc.autoTable({
+        head: [['Year', 'Number of Bookings']],
+        body: bookingsData,
+        startY: yOffset,
+        theme: 'grid',
+        styles: {
+            fontSize: 9,
+            cellPadding: 3,
+        },
+        headStyles: {
+            fillColor: [188, 135, 89],
+            textColor: [255, 255, 255],
+            fontSize: 10,
+            fontStyle: 'bold',
+        }
+    });
+
+    yOffset = doc.lastAutoTable.finalY + 15;
+
+    // Add Services Data
+    doc.setFontSize(14);
+    doc.text('Top Services Analysis', 14, yOffset);
+    yOffset += 10;
+
+    // Convert chart data to table
+    const servicesData = serviceNames.map((name, index) => [
+        name,
+        totalBookings[index].toString()
+    ]);
+
+    doc.autoTable({
+        head: [['Service Name', 'Total Bookings']],
+        body: servicesData,
+        startY: yOffset,
+        theme: 'grid',
+        styles: {
+            fontSize: 9,
+            cellPadding: 3,
+        },
+        headStyles: {
+            fillColor: [188, 135, 89],
+            textColor: [255, 255, 255],
+            fontSize: 10,
+            fontStyle: 'bold',
+        }
+    });
+
+    yOffset = doc.lastAutoTable.finalY + 15;
+
+    // Add Client Registration Data
+    doc.setFontSize(14);
+    doc.text('Client Registration Statistics', 14, yOffset);
+    yOffset += 10;
+
+    const clientData = [
+        ['Google Registration', googleCount],
+        ['Website Registration', websiteCount]
+    ];
+
+    doc.autoTable({
+        head: [['Registration Method', 'Number of Clients']],
+        body: clientData,
+        startY: yOffset,
+        theme: 'grid',
+        styles: {
+            fontSize: 9,
+            cellPadding: 3,
+        },
+        headStyles: {
+            fillColor: [188, 135, 89],
+            textColor: [255, 255, 255],
+            fontSize: 10,
+            fontStyle: 'bold',
+        }
+    });
+
+    // Add Expenses Table on a new page
+    doc.addPage();
+    doc.setFontSize(14);
+    doc.text('Detailed Expenses', 14, 20);
+
+    const expensesTable = document.querySelector('.header-table');
+    const expensesData = Array.from(expensesTable.querySelectorAll('tbody tr')).map(row => [
+        row.cells[0].textContent.trim(),
+        row.cells[1].textContent.trim(),
+        row.cells[2].textContent.trim(),
+        row.cells[3].textContent.trim(),
+        row.cells[4].textContent.trim()
+    ]);
+
+    doc.autoTable({
+        head: [['Expenses ID', 'Date', 'Category', 'Description', 'Amount']],
+        body: expensesData,
+        startY: 30,
+        theme: 'grid',
+        styles: {
+            fontSize: 9,
+            cellPadding: 3,
+        },
+        headStyles: {
+            fillColor: [188, 135, 89],
+            textColor: [255, 255, 255],
+            fontSize: 10,
+            fontStyle: 'bold',
+        }
+    });
+
+    // Add page numbers
+    const pageCount = doc.internal.getNumberOfPages();
+    for (let i = 1; i <= pageCount; i++) {
+        doc.setPage(i);
+        doc.setFontSize(8);
+        doc.text(
+            `Page ${i} of ${pageCount}`,
+            doc.internal.pageSize.width / 2,
+            doc.internal.pageSize.height - 10,
+            { align: 'center' }
+        );
+    }
+
+    // Download the PDF
+    doc.save('Analytics_Report.pdf');
+}
+
+// Add event listener to the download analytics button
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('download-analytics').addEventListener('click', downloadAnalyticsReport);
+});
+
         // Function to show the popup
         function showPopup() {
             var popup = document.getElementById("popup");
@@ -440,6 +606,7 @@ if ($resultClientRegistration->num_rows > 0) {
             clearTimeout(checkInactivity);
             checkInactivity();
         });
+
 
         
     </script>

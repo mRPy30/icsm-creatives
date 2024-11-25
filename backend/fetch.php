@@ -25,6 +25,8 @@ while (time() <= $endTime) {
             b.status, 
             b.additional,
             b.reason,
+            b.cancelled_by,
+            b.payment_option,
             e.picture,
             s.service_name 
         FROM booking AS b

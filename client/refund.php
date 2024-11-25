@@ -4,7 +4,7 @@ include '../backend/dbcon.php';
 $bookingID = $_GET['bookingID']; 
 
 
-$sql = "SELECT b.*, s.service_name, b.additional, b.reason, e.eventName, st.staff_name
+$sql = "SELECT b.*, s.service_name, b.additional, b.reason, b.payment_option, e.eventName, st.staff_name
         FROM booking b
         LEFT JOIN booking_staff bs ON b.bookingId = bs.bookingId
         LEFT JOIN staff st ON bs.staff_ID = st.staff_ID
@@ -120,9 +120,13 @@ if ($booking) {
                         </div>
                         <div class="detail-item">
                         <p class="label"><i class="fa-solid fa-camera-retro" style="font-size: medium; color: #1C1C1D;"></i> Assigned Staff:</p>
-                        <h6> <?php echo $booking['staff_name']; ?></h6>                        
+                            <h6> <?php echo $booking['staff_name']; ?></h6>                        
+                        </div>
+                        <div class="detail-item">
+                            <p class="label"><i class="fa-solid fa-receipt" style="font-size: medium; color: #1C1C1D;"></i> Payment:</p>
+                            <h6> <?php echo $booking['payment_option']; ?> ( <i class="fa-solid fa-peso-sign"></i> <?php echo $booking['remaining_balance']; ?> )</h6>             
+                        </div>
                     </div>
-                </div>
                 </div>
             </div>
             <div class="top">

@@ -47,10 +47,10 @@ $result = mysqli_query($conn, $query);
             <div class="cover-content">
                 <div class="carousel">
                     <img src="../picture/coverpage1.jpg" alt="coverpage">
-                    <img src="../picture/christening1.jpg" alt="coverpage">
-                    <img src="../picture/corporate.jpg" alt="coverpage">
-                    <img src="../picture/coverpage5.jpg" alt="coverpage">
-                    <img src="../picture/family.jpg" alt="coverpage">
+                    <img src="../picture/outdoor144.jpg" alt="coverpage">
+                    <img src="../picture/corporate1.jpg" alt="coverpage">
+                    <img src="../picture/wedding3.jpg" alt="coverpage">
+                    <img src="../picture/family5.jpg" alt="coverpage">
                 </div>
                 <div class="Center-text">
                     <h2>Capture Every Precious Moments, Through our Lenses </h2>

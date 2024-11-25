@@ -152,6 +152,7 @@ $outsource_services = $outsource_result->fetch_all(MYSQLI_ASSOC);
                                 <div id="recommendedServices" class="recommended-services">
 
                                 </div>
+                                
                             </div>
                             <h2>Additional Services:</h2>
                                 <div class="price">
@@ -192,10 +193,12 @@ $outsource_services = $outsource_result->fetch_all(MYSQLI_ASSOC);
                                         </div>                                   
                                     </div>
                                     <input type="hidden" name="total_price" id="totalPriceInput" value="0">  
-                                    <button id="next" type="submit">Next</button>
+                                    <div class="navigation-buttons">
+                                        <button type="button" class="prev-btn" onclick="window.location.href='booking.php'">Previous</button>
+                                        <button id="next" type="submit">Next</button>
+                                    </div>                                
                                 </div>
                             </div>
-
                             <div class="outsource">
                                 <?php if (!empty($outsource_services)): ?>
                                     <h2>Please contact them for your other needs</h2>
@@ -239,8 +242,46 @@ $outsource_services = $outsource_result->fetch_all(MYSQLI_ASSOC);
             </div>
         </section>
     </main>
+
+    <div class="popup-overlay" id="popupOverlay"></div>
+<div class="error-popup" id="errorPopup">
+    <div class="icon">
+        <i class="fas fa-times-circle"></i>
+    </div>
+    <div class="message" id="popupMessage"></div>
+    <button class="ok-btn" id="closePopupBtn">OK</button>
+</div>
+
+
 </body>
 <script>
+
+function showErrorPopup(message) {
+    const overlay = document.getElementById('popupOverlay');
+    const popup = document.getElementById('errorPopup');
+    const popupMessage = document.getElementById('popupMessage');
+    
+    popupMessage.textContent = message;
+    overlay.style.display = 'block';
+    popup.style.display = 'block';
+}
+
+function closeErrorPopup() {
+    const overlay = document.getElementById('popupOverlay');
+    const popup = document.getElementById('errorPopup');
+    
+    overlay.style.display = 'none';
+    popup.style.display = 'none';
+}
+
+// Event listeners
+document.addEventListener('DOMContentLoaded', function() {
+    // Close popup when OK button is clicked
+    document.getElementById('closePopupBtn').addEventListener('click', closeErrorPopup);
+    
+    // Close popup when clicking outside (optional)
+    document.getElementById('popupOverlay').addEventListener('click', closeErrorPopup);
+});
 $(document).ready(function() {
     let selectedServices = [];
     let selectedAdditionalServices = [];
@@ -276,6 +317,7 @@ $(document).ready(function() {
             });
         }, 3000);
     });
+
 
     // Fetch available discounts
     function fetchDiscounts() {
@@ -468,8 +510,22 @@ document.head.appendChild(style);
     }
 
     // Modify form submission to include discount information
+    // Modified form submission
     $('#serviceForm').submit(function(e) {
         e.preventDefault();
+
+        // Check if at least one service is selected
+        if (selectedServices.length === 0) {
+            showErrorPopup('Please select at least one service before proceeding.');
+            return false;
+        }
+
+        // Check if budget is entered
+        const budget = $('#budget').val();
+        if (!budget || budget <= 0) {
+            showErrorPopup('Please enter a valid budget amount.');
+            return false;
+        }
 
         // Add selected services to form
         $('<input>').attr({
@@ -478,21 +534,19 @@ document.head.appendChild(style);
             value: JSON.stringify(selectedServices.map(service => service.id))
         }).appendTo(this);
 
-        // Add service names and prices
+        // Rest of your form submission code remains the same
         $('<input>').attr({
             type: 'hidden',
             name: 'service_names',
             value: JSON.stringify(selectedServices)
         }).appendTo(this);
 
-        // Add additional services
         $('<input>').attr({
             type: 'hidden',
             name: 'additional_services_data',
             value: JSON.stringify(selectedAdditionalServices)
         }).appendTo(this);
 
-        // Add discount information
         if (appliedDiscount) {
             $('<input>').attr({
                 type: 'hidden',

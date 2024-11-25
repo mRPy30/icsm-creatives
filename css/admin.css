@@ -195,6 +195,10 @@ body {
     font: normal 500 15px/normal 'Poppins';
 }
 
+td a{
+    font: normal 600 13px/normal 'Poppins';
+}
+
 .prod-table .td-name span {
     font: normal 400 11px/normal 'Poppins';
     color: #929292;
@@ -1955,6 +1959,7 @@ form .profile-section p {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    margin-top: 10px;
 }
 
 .analytics-item {

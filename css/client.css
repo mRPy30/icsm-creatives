@@ -15,6 +15,7 @@
      --line-border-fill: #1C1C1D;
      --line-border-empty: #e0e0e0;
      --linkColor: #0000FF;
+     --okBtnColor: #00c72e;
  }
  
  body {
@@ -373,22 +374,22 @@
     opacity: 0.5; 
 }
 
-.buttons-book #prev {
-    margin-left: 10px;
-    font: normal 600 13px/normal 'Poppins';
-    color: #1c1c1c;
-    padding: 5px 30px;
+.prev-btn {
     border: none;
-    border-radius: 10px;
+    padding: 8px 50px;
+    border-radius: 5px;
+    cursor: pointer;
+    font: normal 600 13px/normal 'Poppins';
+    transition: all .6s ease;
+    text-decoration: none;
     cursor: pointer;
     text-align: center;
     text-decoration: none;
     background-color: #aeaeae;
-    transition: background-color 0.3s ease-in-out;
     box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.2);
 }
 
-.buttons-book #prev:hover {
+.prev-btn:hover {
     background-color: #8f8f8f;
 }
 
@@ -952,6 +953,7 @@
 
 .completed-button:hover {
     background-color: var(--HoverthemeColor);
+    color: var(--fontLight);
 }
 
 .details-disabled{
@@ -1214,6 +1216,9 @@
     color: var(--themeColor);
 
 }
+
+
+
 .service-card {
     width: 30%; 
     border: 2px solid #BCB4B5;
@@ -1901,7 +1906,7 @@
 }
 
 .error-popup .ok-btn {
-    background: var(--HoverthemeColor);
+    background: var(--okBtnColor);
     color: white;
     border: none;
     padding: 10px 30px;

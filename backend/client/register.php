@@ -1,5 +1,11 @@
 <?php
 include '../backend/dbcon.php';
+if(isset($_GET['event'])) {
+    $_SESSION['selected_event'] = $_GET['event'];
+}
+if(isset($_GET['location'])) {
+    $_SESSION['event_location'] = $_GET['location'];
+}
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = $conn->real_escape_string($_POST['email']);

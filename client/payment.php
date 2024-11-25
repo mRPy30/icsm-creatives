@@ -74,6 +74,7 @@ $_SESSION['selected_additional_services'] = $selected_additional_services;
     <link rel="stylesheet" href="../css/fonts.css">
 
     <script src="https://www.paypal.com/sdk/js?client-id=AYxfBFJZ00ltfER7C43lf4d1F68bm2gHTBgeY25sTzr5APmdHZ09p-Om0EkWfmiVf_9Wisx-gIlFQ2K-"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 </head>
 
@@ -822,15 +823,128 @@ function closeErrorPopup() {
     window.location.href = '../client/payment.php'; // Redirect to payment page
 }
 
-// PayPal button integration
-// Add this JavaScript code to your payment.php file
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.querySelector('.payment');
     const paymentOptionSelect = document.getElementById('payment_option');
+    const termsCheckbox = document.getElementById('terms-checkbox');
+    const requestBookingButton = document.getElementById('next');
+    let paypalTransactionComplete = false;
+    let paypalTransactionDetails = null;
+
+    // File upload handling
+    document.querySelectorAll('.browse-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const fileInput = btn.nextElementSibling;
+            const textInput = btn.previousElementSibling;
+            
+            fileInput.click();
+            
+            fileInput.addEventListener('change', () => {
+                textInput.value = fileInput.files[0] ? fileInput.files[0].name : '';
+            });
+        });
+    });
+
+    // Modified next button click handler
+    document.getElementById('next').addEventListener('click', function(event) {
+        const paymentProof = document.getElementById('paymentProof');
+        const paypalSection = document.querySelector('.payment-section');
+        const isPaypalActive = paypalSection.classList.contains('active');
+
+        // Only check for payment proof if PayPal transaction is not complete
+        if (!paypalTransactionComplete && !paymentProof.files.length && !isPaypalActive) {
+            event.preventDefault(); // Prevent form submission
+            showErrorPopup('Please upload your payment of proof to continue.');
+        }
+    });
+
+    function generatePayPalReceipt(details) {
+        // Create canvas
+        const canvas = document.createElement('canvas');
+        canvas.width = 600;
+        canvas.height = 400;
+        const ctx = canvas.getContext('2d');
+        
+        // Set white background
+        ctx.fillStyle = 'white';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        // Add receipt styling
+        ctx.fillStyle = '#003087'; // PayPal blue
+        ctx.fillRect(0, 0, canvas.width, 60);
+        
+        // Add PayPal text
+        ctx.fillStyle = 'white';
+        ctx.font = 'bold 30px Arial';
+        ctx.fillText('PayPal', 30, 40);
+        
+        // Add receipt header
+        ctx.fillStyle = '#1e1e1e';
+        ctx.font = 'bold 24px Arial';
+        ctx.fillText('Payment Receipt', 30, 100);
+        
+        // Add transaction details
+        ctx.font = '16px Arial';
+        const details_y_start = 150;
+        const line_height = 25;
+        let current_y = details_y_start;
+        
+        ctx.fillText(`Transaction ID: ${details.id}`, 30, current_y);
+        current_y += line_height;
+        
+        ctx.fillText(`Date: ${new Date().toLocaleString()}`, 30, current_y);
+        current_y += line_height;
+        
+        ctx.fillText(`Payer: ${details.payer.name.given_name} ${details.payer.name.surname}`, 30, current_y);
+        current_y += line_height;
+        
+        ctx.fillText(`Email: ${details.payer.email_address}`, 30, current_y);
+        current_y += line_height * 1.5;
+        
+        // Add payment details
+        const amount = details.purchase_units[0].amount;
+        ctx.fillText(`Amount Paid: ${amount.value} ${amount.currency_code}`, 30, current_y);
+        current_y += line_height;
+        
+        ctx.fillText(`Payment Status: ${details.status}`, 30, current_y);
+        
+        // Add footer
+        ctx.font = '12px Arial';
+        ctx.fillText('This is an automatically generated receipt for your PayPal payment.', 30, 350);
+    
+        // Convert canvas to blob
+        return new Promise((resolve) => {
+            canvas.toBlob((blob) => {
+                const imageFile = new File([blob], 'paypal-receipt.png', { type: 'image/png' });
+                resolve(imageFile);
+            }, 'image/png');
+        });
+    }
+
+    function showErrorPopup(message) {
+        document.getElementById('popupMessage').textContent = message;
+        document.getElementById('errorPopup').style.display = 'block';
+        document.getElementById('popupOverlay').style.display = 'block';
+    }
+
+    function closeErrorPopup() {
+        document.getElementById('errorPopup').style.display = 'none';
+        document.getElementById('popupOverlay').style.display = 'none';
+        window.location.href = '../client/payment.php'; // Redirect to payment page
+    }
+
+    
+
+    // Add PayPal payment info element
+    const paypalPaymentInfo = document.createElement('div');
+    paypalPaymentInfo.className = 'detail-item paypal-payment-info';
+    paypalPaymentInfo.style.display = 'none';
+    
+    const serviceRatingsDetails = document.querySelector('.payment-grid');
+    serviceRatingsDetails.appendChild(paypalPaymentInfo);
     
     paypal.Buttons({
         createOrder: function(data, actions) {
-            // Get the current total based on payment option
             const totalCost = parseFloat(document.getElementById('total-cost').textContent);
             const paymentOption = paymentOptionSelect.value;
             const paymentAmount = paymentOption === 'Down Payment' ? totalCost * 0.5 : totalCost;
@@ -844,69 +958,167 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         },
         onApprove: function(data, actions) {
-            return actions.order.capture().then(function(details) {
-                // Set payment method to PayPal
-                const paymentMethodInputs = document.querySelectorAll('.payment-method-input');
-                paymentMethodInputs.forEach(input => {
-                    input.value = 'PayPal';
-                });
-                
-                // Create a hidden input for PayPal transaction ID
-                const transactionInput = document.createElement('input');
-                transactionInput.type = 'hidden';
-                transactionInput.name = 'ref_num';
-                transactionInput.value = details.id; // PayPal transaction ID
-                form.appendChild(transactionInput);
-                
-                // Create a dummy file input for payment proof
-                const dummyFile = new File([''], 'paypal-transaction.txt', { type: 'text/plain' });
+        return actions.order.capture().then(function(details) {
+            paypalTransactionComplete = true;
+            paypalTransactionDetails = details;
+            
+            // Generate receipt and handle the promise
+            generatePayPalReceipt(details).then(receiptFile => {
+                // Add receipt to file input
+                const paymentProof = document.getElementById('paymentProof');
                 const dataTransfer = new DataTransfer();
-                dataTransfer.items.add(dummyFile);
+                dataTransfer.items.add(receiptFile);
+                paymentProof.files = dataTransfer.files;
                 
-                // Find or create payment proof input
-                let paymentProofInput = form.querySelector('input[name="payment_proof"]');
-                if (!paymentProofInput) {
-                    paymentProofInput = document.createElement('input');
-                    paymentProofInput.type = 'file';
-                    paymentProofInput.name = 'payment_proof';
-                    form.appendChild(paymentProofInput);
+                // Update the text input to show the receipt filename
+                const textInput = document.querySelector('.payment-proof-input');
+                if (textInput) {
+                    textInput.value = 'paypal-receipt.png';
                 }
-                paymentProofInput.files = dataTransfer.files;
                 
-                // Update form action and submit
-                form.action = '../backend/confirm_booking.php';
-                form.method = 'POST';
-                form.enctype = 'multipart/form-data';
+                // Update UI with PayPal payment info
+                paypalPaymentInfo.innerHTML = `
+                    <p class="label">Payment Status:</p>
+                    <ul>
+                        <li>
+                            <span class="service-name">Pay via PayPal</span>
+                            <span class="service-price">Transaction ID: ${details.id}</span>
+                        </li>
+                    </ul>
+                `;
+                paypalPaymentInfo.style.display = 'block';
                 
-                // Submit the form
-                form.submit();
-            }).catch(function(error) {
-                console.error('Payment processing error:', error);
-                alert('There was an error processing your payment. Please try again.');
+                // Close PayPal section and show success message
+                const paypalSection = document.querySelector('.payment-section');
+                paypalSection.querySelector('.payment-content').style.display = 'none';
+                paypalSection.classList.remove('active');
+                
+                showSuccessPopup('PayPal payment completed successfully! Please accept the terms and conditions to proceed.');
+                
+                // Enable terms checkbox section
+                document.querySelector('.policy-section').style.opacity = '1';
+                termsCheckbox.disabled = false;
             });
-        },
-        onError: function(err) {
-            console.error('PayPal error:', err);
-            alert('An error occurred with PayPal. Please try again.');
-        }
+        });
+    },
     }).render('#paypal-button-container');
     
-    // Update payment amount when payment option changes
-    paymentOptionSelect.addEventListener('change', function() {
-        const totalCost = parseFloat(document.getElementById('total-cost').textContent);
-        const remainingBalance = document.getElementById('pending-payment');
-        const hiddenRemainingBalance = document.getElementById('hidden_remaining_balance');
-        
-        if (this.value === 'Down Payment') {
-            const downPayment = totalCost * 0.5;
-            remainingBalance.textContent = `Remaining Balance: ₱ ${downPayment.toFixed(2)}`;
-            hiddenRemainingBalance.value = downPayment.toFixed(2);
+    // Modify form submission handler to handle the image receipt
+    form.addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        if (!paypalTransactionComplete && !document.getElementById('paymentProof').files.length) {
+            showErrorPopup('Please complete the payment process first.');
+            return;
+        }
+
+        if (!termsCheckbox.checked) {
+            showErrorPopup('Please accept the terms and conditions.');
+            return;
+        }
+
+        // If PayPal transaction is complete, add transaction details and generate receipt
+        if (paypalTransactionComplete) {
+            // Add transaction ID
+            const transactionInput = document.createElement('input');
+            transactionInput.type = 'hidden';
+            transactionInput.name = 'ref_num';
+            transactionInput.value = paypalTransactionDetails.id;
+            form.appendChild(transactionInput);
+
+            // Add payment method
+            const paymentMethodInput = document.createElement('input');
+            paymentMethodInput.type = 'hidden';
+            paymentMethodInput.name = 'payment_method';
+            paymentMethodInput.value = 'PayPal';
+            form.appendChild(paymentMethodInput);
+
+            // Generate image receipt
+            generatePayPalReceipt(paypalTransactionDetails).then(receiptFile => {
+                // Add the receipt to the payment proof input
+                const paymentProofInput = document.getElementById('paymentProof');
+                const dataTransfer = new DataTransfer();
+                dataTransfer.items.add(receiptFile);
+                paymentProofInput.files = dataTransfer.files;
+
+                // Submit form to confirm_booking.php
+                form.action = '../backend/confirm_booking.php';
+                form.submit();
+            });
         } else {
-            remainingBalance.textContent = 'Remaining Balance: ₱ 0.00';
-            hiddenRemainingBalance.value = '0';
+            // If not PayPal, just submit the form
+            form.action = '../backend/confirm_booking.php';
+            form.submit();
         }
     });
 });
+
+// Add success popup function
+function showSuccessPopup(message) {
+    const popup = document.createElement('div');
+    popup.className = 'success-popup';
+    popup.innerHTML = `
+        <div class="success-content">
+            <i class="fas fa-check-circle"></i>
+            <p>${message}</p>
+            <button onclick="this.parentElement.parentElement.remove()">OK</button>
+        </div>
+    `;
+    document.body.appendChild(popup);
+}
+
+// Add this CSS to your existing styles
+const styles = `
+    .success-popup {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+    }
+    
+    .success-content {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        text-align: center;
+        max-width: 400px;
+    }
+    
+    .success-content i {
+        color: #4CAF50;
+        font-size: 48px;
+        margin-bottom: 15px;
+    }
+    
+    .success-content button {
+        margin-top: 15px;
+        padding: 8px 20px;
+        background: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+    
+    .success-content button:hover {
+        background: #45a049;
+    }
+    
+    .paypal-payment-info {
+        margin-top: 15px;
+        padding: 10px;
+        background: #f8f9fa;
+        border-radius: 4px;
+    }
+`;
+
+document.head.insertAdjacentHTML('beforeend', `<style>${styles}</style>`);
 </script>
 
 </html>

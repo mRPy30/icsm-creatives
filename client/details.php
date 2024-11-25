@@ -126,7 +126,12 @@ if ($booking) {
                         </div>
                         <div class="detail-item">
                             <p class="label"><i class="fa-solid fa-receipt" style="font-size: medium; color: #1C1C1D;"></i> Payment:</p>
-                            <h6> <?php echo $booking['payment_option']; ?> ( <i class="fa-solid fa-peso-sign"></i> <?php echo $booking['remaining_balance']; ?> )</h6>             
+                            <h6>
+                                <?php echo $booking['payment_option']; ?> ( <i class="fa-solid fa-peso-sign"></i> <?php echo $booking['remaining_balance']; ?> )
+                                <?php if ($booking['payment_option'] === "Down Payment"): ?>
+                                    <span style="color: #ff4444; font-size: 0.8em; display: block; margin-top: 4px;">Note: Not Refundable</span>
+                                <?php endif; ?>
+                            </h6>             
                         </div>
                     </div>
                 </div>

@@ -43,6 +43,38 @@ function declineBooking() {
     xhr.send('schedule_id=' + bookingId + '&decline=1&reason=' + encodeURIComponent(reason));
 }
 
+function openCancelPopup(bookingId) {
+    document.getElementById('cancelPopup').style.display = 'block';
+    document.getElementById('cancelBookingId').value = bookingId;
+}
+
+function closeCancelPopup() {
+    document.getElementById('cancelPopup').style.display = 'none';
+}
+
+function cancelBooking() {
+    var bookingId = document.getElementById('cancelBookingId').value;
+    var reasonSelect = document.getElementById('cancelReason');
+    var reason = reasonSelect.options[reasonSelect.selectedIndex].value;
+
+    if (!reason) {
+        alert('Please select a reason for cancelling');
+        return;
+    }
+
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '../backend/cancelled.php', true);
+    xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+            closeCancelPopup();
+            showSuccessPopup('Booking successfully cancelled!');
+        }
+    };
+
+    xhr.send('schedule_id=' + bookingId + '&cancel=1&reason=' + encodeURIComponent(reason));
+}
+
 
 
 
@@ -325,17 +357,25 @@ let selectedMonth = '';
             statusButtons = `
                 <button class="download-receipt" onclick="downloadReceipt(${JSON.stringify(booking).replace(/"/g, '&quot;')})">
                     <i class="fa-solid fa-download"></i> Download Receipt
-                </button>
-                <button class="archive"> <i class="fa-solid fa-box-archive"></i> Archived</button>`;
+                </button> 
+                <button class="cancelled" onclick="openCancelPopup('${booking.bookingId}')">
+                <i class="fa-solid fa-minus"></i> Cancel
+            </button>`;        
         } else if (booking.status === 'Declined') {
             statusCircle = '<span class="status-circle declined-circle"></span>'
             statusButtons = `
-                <button class="archive"> <i class="fa-solid fa-box-archive"></i> Archived</button>`;;
+                <button class="archive" onclick="archiveBooking('${booking.bookingId}')"> 
+                    <i class="fa-solid fa-box-archive"></i> Archive
+                </button>`;
         } else if (booking.status === 'Cancelled') {
             statusCircle = '<span class="status-circle cancelled-circle"></span>';
             statusButtons = `<div class="cancel-reason">Reason: ${booking.reason}')"</div>`;
         } else if (booking.status === 'Completed') {
             statusCircle = '<span class="status-circle completed-circle"></span>';
+            statusButtons = `
+                <button class="archive" onclick="archiveBooking('${booking.bookingId}')"> 
+                    <i class="fa-solid fa-box-archive"></i> Archive
+                </button>`;
         }
 
         const receiptLink = booking.proof_payment ?
@@ -482,6 +522,19 @@ function acceptBooking() {
     };
 
     xhr.send('schedule_id=' + bookingId + '&accept=1');
+}
+
+function archiveBooking(bookingId) {
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '../backend/archive.php', true);
+    xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+            showSuccessPopup('Booking successfully archived!');
+        }
+    };
+
+    xhr.send('booking_id=' + bookingId + '&archive=1');
 }
 
 function startSSE() {

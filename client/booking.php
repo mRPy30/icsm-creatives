@@ -10,18 +10,18 @@ if (!isset($_SESSION['clientID'])) {
 
 $clientID = $_SESSION['clientID'];
 $type_of_event = isset($_SESSION['selected_event']) ? $_SESSION['selected_event'] : '';
+$event_location = isset($_SESSION['event_location']) ? $_SESSION['event_location'] : '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Store the selected event in the session
     $_SESSION['selected_event'] = $_POST['type_of_event'];
+    $_SESSION['event_location'] = $_POST['event_location'];
 
     // Capture other booking details and redirect to service.php
     $_SESSION['booking'] = $_POST;
     header("Location: service.php");
     exit();
 }
-
-
 
 // Fetch all bookings with 'Accepted' status
 $sql = "SELECT eventDate, event_time FROM booking WHERE status = 'Accepted' ORDER BY eventDate, event_time";
@@ -257,7 +257,7 @@ while ($row = $venueResult->fetch_assoc()) {
                                     <label for="event_location">Venue Location:</label>
                                     <div class="input-with-icon">
                                         <i class="fa-solid fa-location-dot"></i>
-                                        <input type="text" id="event_location" name="event_location" required autocomplete="off">
+                                        <input type="text" id="event_location" name="event_location" value="<?php echo htmlspecialchars($event_location); ?>" required autocomplete="off">
                                     </div>
                                 </div>   
                                 <div class="right-info">
@@ -321,7 +321,7 @@ while ($row = $venueResult->fetch_assoc()) {
                     } elseif ($status == 'Declined') {
                         echo "<p>Here`s your Declined bookings overview with ICSM Creatives.</p>";
                     } elseif ($status == 'Cancelled') {
-                        echo "<p>List of your cancell bookings</p>";
+                        echo "<p>List of your cancel bookings</p>";
                     } elseif ($status == 'Completed') {
                         echo "<p>Your completed events are here for you to cherish.</p>";
                     } 
@@ -925,7 +925,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <div class="completed">
                         <div class='booking-header'>
                             <h3>${booking.title_event}</h3>
-                            <button class="completed-button">View Photo</button>
+                            <button class="completed-button" onclick="location.href='../client/gallery.php?clientID=<?= $clientID ?>'">View Photo</button>
                         </div>
                         <div class="summary">
                             <div class="header-summary">
@@ -954,12 +954,21 @@ document.addEventListener('DOMContentLoaded', function() {
             } else if (status === 'Cancelled') {
                 const eventDate = new Date(booking.eventDate);
                 const today = new Date();
-                const showRefundButton = eventDate > today;
+
+                // Calculate if we're more than 48 hours before the event
+                const twoDaysBeforeEvent = new Date(eventDate);
+                twoDaysBeforeEvent.setHours(twoDaysBeforeEvent.getHours() - 48);
+
+                // Show refund button if it's full payment and we're more than 48 hours before event
+                const showRefundButton = booking.payment_option === "Full Payment" && today < twoDaysBeforeEvent;
 
                 eventCard = `
                     <div class='event-card'>
                         <div class='event-details-disabled'>
-                            <img src='${booking.picture}' alt='Event Image'>
+                            <div class="decline-reason">
+                                <h6>Cancelled ${booking.cancelled_by} || ${booking.reason}</h6>
+                                <img src='${booking.picture}' alt='Event Image'>
+                            </div>
                             <div class='details-disabled'>
                                 <h5>${booking.title_event}</h5>
                                 <p><i class='fas fa-map-marker-alt'></i> ${booking.eventLocation}</p>

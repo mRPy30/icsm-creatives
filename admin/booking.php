@@ -307,6 +307,23 @@ $page = $components[2];
             </div>
         </div>
         </div>
+
+        <div id="cancelPopup" class="popup">
+    <span class="close" onclick="closeCancelPopup()">&times;</span>
+    <div class="form-decline">
+        <label for="cancelReason">Reason for cancelling booking?</label>
+        <input type="hidden" id="cancelBookingId">
+        <select id="cancelReason" name="cancelReason">
+            <option value="" selected disabled>Select a reason</option>
+            <option value="Event Cancelled by Client">Event Cancelled by Client</option>
+            <option value="Scheduling Conflict">Scheduling Conflict</option>
+            <option value="Weather Conditions">Weather Conditions</option>
+            <option value="Emergency Situation">Emergency Situation</option>
+            <option value="Other">Other</option>
+        </select>
+        <button class="btn-save-event" onclick="cancelBooking()">Submit</button>
+    </div>
+</div>
         
         <div id="receiptModal">
             <div class="modal-receipt">

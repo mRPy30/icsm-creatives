@@ -21,6 +21,11 @@
     <!-----Navbar------->
     <?php include '../homepage/navbar.php'; ?>
 
+    <!--Google Map Api-->
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAPzSHoxlFDTzFpBHyAKuQAMCadJu0x1Wo&libraries=places"></script>
+
+
+
 </head>
 
 <body>
@@ -132,23 +137,13 @@
                             <label for="event_location">Where shall we capture your memories?</label>
                             <div class="input-with-icon">
                                 <i class="fa-solid fa-location-dot"></i>
-                                <select id="event_location" name="event_location" required>
-                                    <option class="placeholder-location" value="" disabled selected>Choose a location
-                                    </option>
-                                    <!-- Placeholder -->
-                                    <option>Imus</option>
-                                    <option>Bacoor</option>
-                                    <option>Kawit</option>
-                                    <option>Dasmarinas</option>
-                                    <option>Tagaytay</option>
-                                    <option>Batangas</option>
-                                    <option>Manila</option>
-                                </select>
+                                <input type="text" id="event_location" name="event_location" placeholder="Input your event location" required autocomplete="off">
                             </div>
+                            <!-- Add container for Google Map -->
+                            <div id="google-map-container" "></div>
                         </div>
-                        <button class="btn-book" onclick="location.href='../client/login.php?event=Birthday'">Start
-                            Booking
-                            Now</button>
+                        <button class="btn-book" onclick="redirectToLogin()">Start Booking Now</button>
+
                     </div>
                 </div>
                 <div class="promo-container">
@@ -284,6 +279,10 @@
     </section>
 
     <script>
+        function redirectToLogin() {
+    const location = document.getElementById('event_location').value;
+    window.location.href = `../client/login.php?event=Wedding&location=${encodeURIComponent(location)}`;
+}
         document.querySelectorAll('.service-item_question').forEach(header => {
             header.addEventListener('click', () => {
                 const content = header.nextElementSibling;
@@ -300,7 +299,6 @@
                 });
             });
         });
-
 
 
 
@@ -326,6 +324,53 @@
             }
             carousel.style.transform = `translateX(-${scrollAmount}px)`;
         });
+
+        document.addEventListener('DOMContentLoaded', function() {
+        const locationInput = document.getElementById('event_location');
+        const googleMapContainer = document.getElementById('google-map-container');
+
+        // Function to load Google Maps for any input location
+        function loadGoogleMap(location) {
+            if (!location) return;
+            googleMapContainer.style.display = 'block';
+            
+            // Create an iframe for Google Maps
+            const mapFrame = document.createElement('iframe');
+            mapFrame.width = '100%';
+            mapFrame.height = '300';
+            mapFrame.style.border = '0';
+            mapFrame.loading = 'lazy';
+            mapFrame.allowFullscreen = true;
+            
+            // Construct Google Maps embed URL
+            const mapUrl = `https://www.google.com/maps/embed/v1/place?key=AIzaSyAPzSHoxlFDTzFpBHyAKuQAMCadJu0x1Wo&q=${encodeURIComponent(location + ', Philippines')}`;
+            mapFrame.src = mapUrl;
+            
+            // Clear previous map and add new one
+            googleMapContainer.innerHTML = '';
+            googleMapContainer.appendChild(mapFrame);
+        }
+
+        // Event listener for location input
+        locationInput.addEventListener('input', function() {
+            const inputLocation = this.value.trim();
+            
+            if (inputLocation.length > 2) {
+                clearTimeout(this.mapLoadTimeout);
+                this.mapLoadTimeout = setTimeout(() => {
+                    loadGoogleMap(inputLocation);
+                }, 500);
+            }
+        });
+
+        // Load map when input loses focus
+        locationInput.addEventListener('blur', function() {
+            const inputLocation = this.value.trim();
+            if (inputLocation) {
+                loadGoogleMap(inputLocation);
+            }
+        });
+    });
 
     </script>
 
