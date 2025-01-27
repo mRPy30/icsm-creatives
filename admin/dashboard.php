@@ -70,6 +70,15 @@ if ($resultPendingBookings->num_rows > 0) {
     $pendingBookings = array(); // No pending bookings found
 }
 
+$sqlInquiries = "SELECT name, email, cellphone, message, created_at FROM inquiries ORDER BY created_at DESC";
+$resultInquiries = $conn->query($sqlInquiries);
+
+if ($resultInquiries->num_rows > 0) {
+    $inquiriesData = $resultInquiries->fetch_all(MYSQLI_ASSOC);
+} else {
+    $inquiriesData = array(); // No inquiries found
+}
+
 // Active Page
 $directoryURI = $_SERVER['REQUEST_URI'];
 $path = parse_url($directoryURI, PHP_URL_PATH);
@@ -102,14 +111,6 @@ $page = $components[2];
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    <!----css---->
-    <style>
-        body {
-            overflow-y: hidden;
-        }       
-    </style>
-
-    
 </head>
     
 <body>
@@ -189,7 +190,7 @@ $page = $components[2];
                         <tbody class="booking-table-body">
                             <?php if (!empty($pendingBookings)): ?>
                                 <?php foreach ($pendingBookings as $booking): ?>
-                                    <tr>
+                                    <tr style="color: #ff8800;">
                                         <td><?php echo htmlspecialchars($booking['name']); ?></td>
                                         <td>
                                             <?php
@@ -243,6 +244,48 @@ $page = $components[2];
                 </div>
             </div>
         </div>
+        <section class="container-bottom">
+            <div class="inquiries">
+                <div class="title-bar">
+                    <h4>Inquiries</h4>
+                </div>
+                <div class="table-container">
+                    <table class="prod-table">
+                        <thead>
+                            <tr>
+                                <th class="header">Name</th>
+                                <th class="header">Email</th>
+                                <th class="header">Cellphone</th>
+                                <th class="header">Message</th>
+                                <th class="header">Date Created</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php if (!empty($inquiriesData)): ?>
+                                <?php foreach ($inquiriesData as $inquiry): ?>
+                                    <tr>
+                                        <td><?php echo htmlspecialchars($inquiry['name']); ?></td>
+                                        <td><?php echo htmlspecialchars($inquiry['email']); ?></td>
+                                        <td><?php echo htmlspecialchars($inquiry['cellphone']); ?></td>
+                                        <td><?php echo htmlspecialchars($inquiry['message']); ?></td>
+                                        <td>
+                                            <?php
+                                            $createdAt = date('F d, Y', strtotime($inquiry['created_at']));
+                                            echo $createdAt;
+                                            ?>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            <?php else: ?>
+                                <tr>
+                                    <td colspan="5">No inquiries found.</td>
+                                </tr>
+                            <?php endif; ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
     <main>
     
     <script>        

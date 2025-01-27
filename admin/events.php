@@ -61,15 +61,16 @@ if ($resultEvents->num_rows > 0) {
             </div>    
         </div>
         <div class="tbl-container">
-            <table class="header-table">
+            <table class="booking-table">
                 <thead>
                     <tr>
                         <th>Event ID</th>
                         <th>Event Name</th>
                         <th>Description</th>
+                        <th>Event Text</th>
                         <th>Picture</th>
-                        <th>Recommended Venue</th>
-                        <th>Image Venue</th>
+                        <th>Milestone Image</th>
+                        <th>Milestone Text</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -84,6 +85,7 @@ if ($resultEvents->num_rows > 0) {
                                 <td><?php echo $events['eventID']; ?></td>
                                 <td><?php echo $events['eventName']; ?></td>
                                 <td><?php echo $events['description']; ?></td>
+                                <td><?php echo htmlspecialchars($events['eventText']); ?></td>
                                 <td>
                                     <?php if (!empty($events['picture'])): ?>
                                         <?php $base64EventImage = 'data:image/jpeg;base64,' . base64_encode($events['picture']); ?>
@@ -92,15 +94,15 @@ if ($resultEvents->num_rows > 0) {
                                         No image
                                     <?php endif; ?>
                                 </td>
-                                <td><?php echo htmlspecialchars($events['recommended_venue']); ?></td>
                                 <td>
-                                    <?php if (!empty($events['img_venue'])): ?>
-                                        <?php $base64VenueImage = 'data:image/jpeg;base64,' . base64_encode($events['img_venue']); ?>
-                                        <img src="<?php echo $base64VenueImage; ?>" alt="Venue Image" width="150">
+                                    <?php if (!empty($events['milestone_img'])): ?>
+                                        <?php $base64VenueImage = 'data:image/jpeg;base64,' . base64_encode($events['milestone_img']); ?>
+                                        <img src="<?php echo $base64VenueImage; ?>" alt="Venue Image" width="90">
                                     <?php else: ?>
                                         No image
                                     <?php endif; ?>
                                 </td>
+                                <td><?php echo htmlspecialchars($events['milestone_text']); ?></td>
                                 <td>
                                     <form method="post" action="../backend/events.php">
                                         <input type="hidden" name="eventID" value="<?php echo $events['eventID']; ?>">

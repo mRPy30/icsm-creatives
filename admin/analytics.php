@@ -112,6 +112,38 @@ if ($resultClientRegistration->num_rows > 0) {
     $websiteCount = 0;
 }
 
+// Fetch bookings by event location over time
+$sqlEventLocationBookings = "
+    SELECT 
+        DATE_FORMAT(created_at, '%Y-%m') AS month,
+        eventLocation, 
+        COUNT(*) AS bookingCount
+    FROM booking
+    WHERE YEAR(created_at) >= 2024
+    GROUP BY month, eventLocation
+    ORDER BY month, eventLocation
+";
+$resultEventLocationBookings = $conn->query($sqlEventLocationBookings);
+
+$eventLocationBookingsData = [];
+$uniqueLocations = [];
+
+if ($resultEventLocationBookings->num_rows > 0) {
+    while ($row = $resultEventLocationBookings->fetch_assoc()) {
+        $month = $row['month'];
+        $location = $row['eventLocation'];
+        $count = $row['bookingCount'];
+
+        if (!in_array($location, $uniqueLocations)) {
+            $uniqueLocations[] = $location;
+        }
+
+        if (!isset($eventLocationBookingsData[$location])) {
+            $eventLocationBookingsData[$location] = [];
+        }
+        $eventLocationBookingsData[$location][$month] = $count;
+    }
+}
 
 ?>
 
@@ -155,7 +187,7 @@ if ($resultClientRegistration->num_rows > 0) {
                     <div class="analytics-item-content" >
                         <p>Expenses</p>
                         <div class="metric-container">
-                            <h2>₱ <?php echo number_format($totalExpenses, 2); ?></h2>
+                            <h2>₱ <?php echo number_format($totalExpenses, 0); ?></h2>
                         </div>
                     </div>
                     <div class="icon-container-client">
@@ -166,7 +198,7 @@ if ($resultClientRegistration->num_rows > 0) {
                     <div class="analytics-item-content">
                         <p>Overall Revenue</p>
                         <div class="metric-container">
-                            <h2>₱ <?php echo number_format($totalAcceptedRevenue, 2); ?></h2>
+                            <h2>₱ <?php echo number_format($totalAcceptedRevenue, 0); ?></h2>
                         </div>
                     </div>
                     <div class="icon-container-client">
@@ -294,7 +326,14 @@ if ($resultClientRegistration->num_rows > 0) {
         </div>
     </section>
 
-    
+    <section class="container-bottom">
+    <div class="event-location-line-graph">
+            <div class="top-book">
+                <h4>Bookings by Event Location</h4>
+            </div>
+            <canvas id="eventLocationLineGraph"></canvas>
+        </div>
+    </section>
 
     <!----Navbar&Sidebar----->
     <?php 
@@ -304,168 +343,252 @@ if ($resultClientRegistration->num_rows > 0) {
 
     <script>
 
-                
-function downloadAnalyticsReport() {
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
-    
-    // Title and Date
-    doc.setFontSize(20);
-    doc.text('Analytics Report', 14, 20);
-    doc.setFontSize(10);
-    doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 14, 30);
+        // Function to generate full analytics report PDF
+        function generateFullAnalyticsReport() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
 
-    let yOffset = 40;
+        const logoPath = '../picture/logo.png';
+        const img = new Image();
+        img.src = logoPath;
 
-    // Add Financial Summary
-    doc.setFontSize(14);
-    doc.text('Financial Summary', 14, yOffset);
-    yOffset += 10;
-    
-    doc.setFontSize(10);
-    doc.text(`Total Expenses: ₱ ${document.querySelector('.analytics-item:nth-child(1) h2').textContent.trim()}`, 14, yOffset);
-    yOffset += 7;
-    doc.text(`Overall Revenue: ₱ ${document.querySelector('.analytics-item:nth-child(2) h2').textContent.trim()}`, 14, yOffset);
-    yOffset += 15;
+        img.onload = function() {
+        // Add logo
+        doc.addImage(img, 'PNG', 10, 10, 40, 20);
 
-    // Add Bookings Table
-    doc.setFontSize(14);
-    doc.text('Total Bookings by Year', 14, yOffset);
-    yOffset += 10;
+        // Set up document properties
+        doc.setFontSize(18);
+        doc.text('ICSM Creatives Reports', doc.internal.pageSize.getWidth() / 2, 40, { align: 'center' });
 
-    const bookingsTable = document.querySelector('.tbls-bookings');
-    const bookingsData = Array.from(bookingsTable.querySelectorAll('tbody tr')).map(row => [
-        row.cells[0].textContent.trim(),
-        row.cells[1].textContent.trim()
-    ]);
+        let yPosition = 60;
 
-    doc.autoTable({
-        head: [['Year', 'Number of Bookings']],
-        body: bookingsData,
-        startY: yOffset,
-        theme: 'grid',
-        styles: {
-            fontSize: 9,
-            cellPadding: 3,
-        },
-        headStyles: {
-            fillColor: [188, 135, 89],
-            textColor: [255, 255, 255],
-            fontSize: 10,
-            fontStyle: 'bold',
-        }
-    });
+        // Key Metrics Section
+        doc.setFontSize(14);
+        doc.text('Key Metrics', 14, yPosition);
+        yPosition += 10;
 
-    yOffset = doc.lastAutoTable.finalY + 15;
+        doc.setFontSize(10);
+        doc.text(`Total Expenses: Php. ${document.querySelector('.analytics-item:first-child h2').textContent}`, 14, yPosition);
+        yPosition += 7;
+        doc.text(`Overall Revenue: Php. ${document.querySelector('.analytics-item:nth-child(2) h2').textContent}`, 14, yPosition);
+        yPosition += 15;
 
-    // Add Services Data
-    doc.setFontSize(14);
-    doc.text('Top Services Analysis', 14, yOffset);
-    yOffset += 10;
+        // Bookings Per Year
+        doc.setFontSize(14);
+        doc.text('Bookings Per Year', 14, yPosition);
+        yPosition += 10;
 
-    // Convert chart data to table
-    const servicesData = serviceNames.map((name, index) => [
-        name,
-        totalBookings[index].toString()
-    ]);
+        const bookingsTable = document.querySelector('.tbls-bookings');
+        const bookingsData = Array.from(bookingsTable.querySelectorAll('tbody tr')).map(row => [
+            row.querySelector('td:first-child').textContent,
+            row.querySelector('td:last-child').textContent
+        ]);
 
-    doc.autoTable({
-        head: [['Service Name', 'Total Bookings']],
-        body: servicesData,
-        startY: yOffset,
-        theme: 'grid',
-        styles: {
-            fontSize: 9,
-            cellPadding: 3,
-        },
-        headStyles: {
-            fillColor: [188, 135, 89],
-            textColor: [255, 255, 255],
-            fontSize: 10,
-            fontStyle: 'bold',
-        }
-    });
+        doc.autoTable({
+            startY: yPosition,
+            head: [['Year', 'Number of Bookings']],
+            body: bookingsData,
+            headStyles: {
+                fillColor: [66, 66, 66],
+                textColor: 255,
+                fontSize: 10,
+                fontStyle: 'bold',
+            }
+        });
 
-    yOffset = doc.lastAutoTable.finalY + 15;
+        // Top Services Chart (convert to table)
+        yPosition = doc.autoTable.previous.finalY + 15;
+        doc.setFontSize(14);
+        doc.text('Top Services', 14, yPosition);
+        yPosition += 10;
 
-    // Add Client Registration Data
-    doc.setFontSize(14);
-    doc.text('Client Registration Statistics', 14, yOffset);
-    yOffset += 10;
+        const topServicesData = serviceNames.map((service, index) => [
+            service,
+            totalBookings[index]
+        ]);
 
-    const clientData = [
-        ['Google Registration', googleCount],
-        ['Website Registration', websiteCount]
-    ];
+        doc.autoTable({
+            startY: yPosition,
+            head: [['Service', 'Total Bookings']],
+            body: topServicesData,
+            headStyles: {
+                fillColor: [66, 66, 66],
+                textColor: 255,
+                fontSize: 10,
+                fontStyle: 'bold',
+            }
+        });
 
-    doc.autoTable({
-        head: [['Registration Method', 'Number of Clients']],
-        body: clientData,
-        startY: yOffset,
-        theme: 'grid',
-        styles: {
-            fontSize: 9,
-            cellPadding: 3,
-        },
-        headStyles: {
-            fillColor: [188, 135, 89],
-            textColor: [255, 255, 255],
-            fontSize: 10,
-            fontStyle: 'bold',
-        }
-    });
+        // Client Registration Pie Chart Data
+        yPosition = doc.autoTable.previous.finalY + 15;
+        doc.setFontSize(14);
+        doc.text('Client Registration Methods', 14, yPosition);
+        yPosition += 10;
 
-    // Add Expenses Table on a new page
-    doc.addPage();
-    doc.setFontSize(14);
-    doc.text('Detailed Expenses', 14, 20);
+        doc.autoTable({
+            startY: yPosition,
+            head: [['Registration Method', 'Count']],
+            body: [
+                ['Registered via Google', googleCount],
+                ['Registered via Website', websiteCount]
+            ],
+            margin: { bottom: 0 }, // Reduce bottom margin
+            headStyles: {
+                fillColor: [66, 66, 66],
+                textColor: 255,
+                fontSize: 10,
+                fontStyle: 'bold',
+            }
+        });
 
-    const expensesTable = document.querySelector('.header-table');
-    const expensesData = Array.from(expensesTable.querySelectorAll('tbody tr')).map(row => [
-        row.cells[0].textContent.trim(),
-        row.cells[1].textContent.trim(),
-        row.cells[2].textContent.trim(),
-        row.cells[3].textContent.trim(),
-        row.cells[4].textContent.trim()
-    ]);
 
-    doc.autoTable({
-        head: [['Expenses ID', 'Date', 'Category', 'Description', 'Amount']],
-        body: expensesData,
-        startY: 30,
-        theme: 'grid',
-        styles: {
-            fontSize: 9,
-            cellPadding: 3,
-        },
-        headStyles: {
-            fillColor: [188, 135, 89],
-            textColor: [255, 255, 255],
-            fontSize: 10,
-            fontStyle: 'bold',
-        }
-    });
+        // Add Event Location Line Graph Data
+        yPosition = doc.autoTable.previous.finalY + 15;
+        doc.setFontSize(14);
+        doc.text('Bookings by Event Location', 14, yPosition);
+        yPosition += 10;
 
-    // Add page numbers
-    const pageCount = doc.internal.getNumberOfPages();
-    for (let i = 1; i <= pageCount; i++) {
-        doc.setPage(i);
-        doc.setFontSize(8);
-        doc.text(
-            `Page ${i} of ${pageCount}`,
-            doc.internal.pageSize.width / 2,
-            doc.internal.pageSize.height - 10,
-            { align: 'center' }
-        );
-    }
+        const eventLocationData = months.map((month, index) => {
+            return [
+                month,
+                ...uniqueLocations.map(location => 
+                    datasets.find(ds => ds.label === location).data[index].toString()
+                )
+            ];
+        });
 
-    // Download the PDF
-    doc.save('Analytics_Report.pdf');
+        doc.autoTable({
+            head: [['Month', ...uniqueLocations]],
+            body: eventLocationData,
+            startY: yPosition,
+            styles: {
+                fontSize: 9,
+                cellPadding: 3,
+            },
+            headStyles: {
+                fillColor: [66, 66, 66],
+                textColor: 255,
+                fontSize: 10,
+                fontStyle: 'bold',
+            }
+        });
+
+        yPosition = doc.autoTable.previous.finalY + 15;
+        doc.setFontSize(10);
+        doc.text(`Generated on: ${new Date().toLocaleString()}`, 14, yPosition);
+        // Save the document
+        doc.save(`Analytics_Report_${new Date().toISOString().split('T')[0]}.pdf`);
+    };
 }
 
-// Add event listener to the download analytics button
+function generateExpensesReport() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF('landscape');
+
+    // Set up document properties
+    doc.setFontSize(18);
+    doc.text('Expenses Report', 14, 22);
+    doc.setFontSize(10);
+    doc.text(`Generated on: ${new Date().toLocaleString()}`, 14, 30);
+
+    // Extract expenses data from the table
+    const expensesTable = document.querySelector('.header-table');
+    const expensesData = Array.from(expensesTable.querySelectorAll('tbody tr'))
+        .map(row => [
+            row.querySelector('td:nth-child(1)').textContent,
+            row.querySelector('td:nth-child(2)').textContent,
+            row.querySelector('td:nth-child(3)').textContent,
+            row.querySelector('td:nth-child(4)').textContent,
+            row.querySelector('td:nth-child(5)').textContent
+        ]);
+
+    // Add table with expenses
+    doc.autoTable({
+        startY: 40,
+        head: [['Expenses ID', 'Date', 'Category', 'Description', 'Amount']],
+        body: expensesData,
+        theme: 'striped',
+        headStyles: {
+            fillColor: [66, 66, 66],
+            textColor: 255,
+            fontSize: 10,
+            fontStyle: 'bold',
+        }
+    });
+
+    // Add summary at the bottom
+    const totalExpenses = document.querySelector('.analytics-item h2').textContent;
+    doc.setFontSize(12);
+    doc.text(`Total Expenses: ${totalExpenses}`, 14, doc.autoTable.previous.finalY + 15);
+
+    // Save the document
+    doc.save(`Expenses_Report_${new Date().toISOString().split('T')[0]}.pdf`);
+}
+
+// Add event listeners to the existing download buttons
 document.addEventListener('DOMContentLoaded', function() {
-    document.getElementById('download-analytics').addEventListener('click', downloadAnalyticsReport);
+    const fullReportDownloadBtn = document.getElementById('download-analytics');
+    const expensesDownloadBtn = document.getElementById('download-btn');
+
+    if (fullReportDownloadBtn) {
+        fullReportDownloadBtn.addEventListener('click', generateFullAnalyticsReport);
+    }
+
+    if (expensesDownloadBtn) {
+        expensesDownloadBtn.addEventListener('click', generateExpensesReport);
+    }
+});
+
+
+// Event Location Bookings Line Graph
+var eventLocationData = <?php echo json_encode($eventLocationBookingsData); ?>;
+var uniqueLocations = <?php echo json_encode($uniqueLocations); ?>;
+
+// Prepare data for Chart.js
+var months = Object.keys(Object.values(eventLocationData)[0] || {}).sort();
+var datasets = uniqueLocations.map(location => ({
+    label: location,
+    data: months.map(month => eventLocationData[location][month] || 0),
+    fill: false,
+    borderColor: getRandomColor(), // You'll need to add this function
+    tension: 0.1
+}));
+
+function getRandomColor() {
+    var letters = '0123456789ABCDEF';
+    var color = '#';
+    for (var i = 0; i < 6; i++) {
+        color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+}
+
+var ctx3 = document.getElementById('eventLocationLineGraph').getContext('2d');
+var eventLocationLineGraph = new Chart(ctx3, {
+    type: 'line',
+    data: {
+        labels: months,
+        datasets: datasets
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+            y: {
+                beginAtZero: true,
+                title: {
+                    display: true,
+                    text: 'Number of Bookings'
+                }
+            },
+            x: {
+                title: {
+                    display: true,
+                    text: 'Month'
+                }
+            }
+        }
+    }
 });
 
         // Function to show the popup

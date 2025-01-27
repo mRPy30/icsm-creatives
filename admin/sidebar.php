@@ -207,7 +207,7 @@
                         echo "nav-link active";
                     } else {
                         echo "nav-link";
-                    } ?> "><i class="fa-solid fa-hand-holding"></i></a>
+                    } ?> "><i class="fa-solid fa-camera-retro"></i></a>
                     <span class="bottom_curve"></span>
                 </li>
                 <li class="nav-link">
@@ -217,6 +217,15 @@
                     } else {
                         echo "nav-link";
                     } ?> "><i class="fa-regular fa-calendar-plus"></i></a>
+                    <span class="bottom_curve"></span>
+                </li>
+                <li class="nav-link">
+                    <span class="top_curve"></span>
+                    <a href="control.php" title="Website Control" class="<?php if ($page == "..admin/control.php") {
+                        echo "nav-link active";
+                    } else {
+                        echo "nav-link";
+                    } ?> "><i class="fa-solid fa-gears"></i></i></a>
                     <span class="bottom_curve"></span>
                 </li>
                 <li class="nav-link">

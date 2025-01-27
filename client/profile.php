@@ -80,7 +80,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_profile'])) {
 }
 
 // Fetch gallery images
-$galleryQuery = "SELECT * FROM client_gallery WHERE clientID = ? ORDER BY uploaded_at DESC";
+$galleryQuery = "SELECT * FROM gallery WHERE clientID = ? ORDER BY uploaded_at DESC";
 $stmt = $conn->prepare($galleryQuery);
 $stmt->bind_param("i", $clientID);
 $stmt->execute();

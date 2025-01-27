@@ -31,46 +31,34 @@
         <p>Select an event type for photography or videography services.</p>
     </div>
     <main class="events-container">
-        <div class="event-card" onclick="location.href='birthday.php?event=Birthday'">
-            <img src="../picture/birthday1.jpg" alt="Birthday Event">
-            <h3>Birthday</h3>
-            <p>Capture the special moments of your birthday celebration.</p>
-        </div>
-        <div class="event-card" onclick="location.href='wedding.php?event=Wedding'">
-            <img src="../picture/marriage1.jpg" alt="Wedding Event">
-            <h3>Wedding</h3>
-            <p>Make your wedding day unforgettable with our photography and videography.</p>
-        </div>
-        <div class="event-card" onclick="location.href= 'graduation.php?event=Graduation'">
-            <img src="../picture/graduation1.jpg" alt="Graduation Event">
-            <h3>Graduation</h3>
-            <p>Celebrate your academic achievements with a memorable photoshoot.</p>
-        </div>
-        <div class="event-card" onclick="location.href='christening.php?event=Christening'">
-            <img src="../picture/christening1.jpg" alt="Christening">
-            <h3>Christening</h3>
-            <p>We capture sweet memories for your baby Christening.</p>
-        </div>
-        <div class="event-card" onclick="location.href='adventure.php?event=Outdoors Adventures'">
-            <img src="../picture/outdoor.png" alt="Outdoor Adventures">
-            <h3>Outdoor Adventures</h3>
-            <p>We capture the best moments of your outdoor adventures.</p>
-        </div>
-        <div class="event-card" onclick="location.href='family-portrait.php?event=Family Portraits'">
-            <img src="../picture/family.jpg" alt="Family Portraits">
-            <h3>Family Portraits</h3>
-            <p>Create lifelong memories with a beautiful family portrait session.</p>
-        </div>
-        <div class="event-card" onclick="location.href='corporate.php?event=Corporate'">
-            <img src="../picture/corporate1.jpg" alt="Corpo">
-            <h3>Corporate</h3>
-            <p>Celebrate big event photoshoot.</p>
-        </div>
-        <div class="event-card" onclick="location.href='maternity.php?event=Maternity'">
-            <img src="../picture/genderreveal4.jpg" alt="Corpo">
-            <h3>Maternity</h3>
-            <p>Capture sweet maternity memories.</p>
-        </div>
+    <?php
+        // Database connection
+        include '../backend/dbcon.php'; // Adjust path based on your project structure
+        
+        // Query to fetch events
+        $query = "SELECT eventName, description, picture FROM event";
+        $result = mysqli_query($conn, $query);
+
+        if ($result && mysqli_num_rows($result) > 0) {
+            while ($row = mysqli_fetch_assoc($result)) {
+                $eventName = htmlspecialchars($row['eventName']);
+                $description = htmlspecialchars($row['description']);
+                $picture = base64_encode($row['picture']); // Encode the binary data to Base64
+                $eventUrl = strtolower(str_replace(' ', '-', $eventName)) . ".php?event=" . urlencode($eventName);
+
+                echo "
+                <div class='event-card' onclick=\"location.href='$eventUrl'\">
+                    <img src='data:image/jpeg;base64,$picture' alt='$eventName Event'>
+                    <h3>$eventName</h3>
+                    <p>$description</p>
+                </div>";
+            }
+        } else {
+            echo "<p>No events available at the moment. Please check back later!</p>";
+        }
+
+        mysqli_close($conn);
+        ?>
 
         <section class="footer-page">
             <div class="footer">

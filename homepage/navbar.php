@@ -1,3 +1,8 @@
+<?php
+// Page titles, navigation, etc. (rest of the code remains unchanged)
+$currentPage = basename($_SERVER['PHP_SELF']);
+
+?>
 <style>
     /***** Homepage Navbar *****/
 
@@ -53,32 +58,34 @@
     }
 
     .nav-links {
-        list-style: none;
-        display: flex;
-        gap: 20px 50px;
+      list-style: none;
+      display: flex;
+      gap: 20px 50px; 
     }
-
+  
     .nav-links li {
-        padding: 0;
-        display: inline-block;
+      padding: 0;
+      display: inline-block;
     }
 
-    .nav-links li a {
-        color: #1c1c1c;
-        font: normal 600 17px/normal 'Poppins';
-        cursor: pointer;
-        letter-spacing: 1px;
-        text-decoration: none;
+    .nav-links li .nav {
+      color: #1c1c1c;
+      font: normal 600 17px/normal 'Poppins';
+      cursor: pointer;
+      letter-spacing: 1px;
+      text-decoration: none;
+    }
+    .nav-links li .nav.active {
+        color: #dd9e66 !important;
+        border-bottom: 3px solid #dd9e66;
     }
 
-    .nav-links li a.active {
-        color: #9D7651;
-    }
-
-    .nav-links li a:hover {
-        color: #BC8759;
+    .nav-links li .nav:hover {
+        color: #dd9e66;
         transition: all 0.3s;
     }
+
+
 
     .nav-item {
         list-style: none;
@@ -97,14 +104,14 @@
         background-image: linear-gradient(147deg, #BC8759 0%, #77563D 100%);
         border-radius: 25px;
         padding: 3px 17px;
-        transition: background-color 0.3s;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
         color: #FCF6F6;
         border: none;
     }
 
     .register button:hover {
-        background-color: #454548;
-        color: #fcfcfc;
+        transform: scale(1.02);
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
     }
 
     .hamburger-menu {
@@ -128,13 +135,13 @@
             display: none;
         }
 
-        .register {
-            display: none;
-        }
-
         .hamburger-menu {
             display: block;
             animation: rotateMenu 0.5s ease-in-out forwards;
+        }
+
+        .header-section .logo img {
+            width: 70px;
         }
 
 
@@ -151,7 +158,7 @@
             flex-direction: column;
             position: absolute;
             background-color: #fbfbfb;
-            top: 30px;
+            top: 36px;
             left: 0;
             right: 0;
             text-align: center;
@@ -160,6 +167,33 @@
         .nav-active li {
             margin: 10px 0;
         }
+
+        .register{
+            display: none;
+        }
+
+        /***00.registerBtn button {
+            width: 100px;
+            height: 34px;
+            left: 95vw;
+            font: normal 500 15px/normal 'Poppins';
+            filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+            display: inline-block;
+            cursor: pointer;
+            background-image: linear-gradient(147deg, #BC8759 0%, #77563D 100%);
+            border-radius: 25px;
+            padding: 3px 17px;
+            transition: background-color 0.3s;
+            color: #FCF6F6;
+            border: none;
+        }
+
+        .registerBtn:hover {
+            background-color: #454548;
+            color: #fcfcfc;
+        }****/
+
+
 
 
     }
@@ -172,15 +206,15 @@
                 <img src="../picture/logo.png" alt="logo">
             </a>
         </div>
-        <ul class="nav-links ">
+        <ul class="nav-links">
             <li>
-                <a href="homepage.php">Home</a>
+                <a class="nav <?= $currentPage == 'homepage.php' ? 'active' : '' ?>" href="../homepage/homepage.php">Home</a>
             </li>
             <li>
-                <a href="about.php">About</a>
+                <a class="nav <?= $currentPage == 'about.php' ? 'active' : '' ?>" href="../homepage/about.php">About</a>
             </li>
             <li>
-                <a href="contact.php">Contact</a>
+                <a class="nav <?= $currentPage == 'contact.php' ? 'active' : '' ?>" href="../homepage/contact.php">Contact</a>
             </li>
         </ul>
         <a class="register" href="../client/register.php"><button>Register</button></a>
@@ -190,11 +224,14 @@
     <script>
         const hamburgerMenu = document.querySelector('.hamburger-menu');
         const navLinks = document.querySelector('.nav-links');
+        const register = document.querySelector('.register');
 
         function toggleMenu() {
             hamburgerMenu.classList.toggle('rotate');
             navLinks.classList.toggle('nav-active');
         }
+
+        
 
     </script>
 </body>

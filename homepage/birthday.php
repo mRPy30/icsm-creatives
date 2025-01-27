@@ -1,11 +1,3 @@
-<?php 
-    session_start();
-    if(isset($_POST['event_location'])) {
-        $_SESSION['event_location'] = $_POST['event_location'];
-        header("Location: ../client/booking.php");
-        exit();
-    }
-?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -288,7 +280,7 @@
     <script>
         function redirectToLogin() {
     const location = document.getElementById('event_location').value;
-    window.location.href = `../client/login.php?event=Wedding&location=${encodeURIComponent(location)}`;
+    window.location.href = `../client/login.php?event=Birthday&location=${encodeURIComponent(location)}`;
 }
         document.querySelectorAll('.service-item_question').forEach(header => {
             header.addEventListener('click', () => {

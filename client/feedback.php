@@ -9,8 +9,9 @@ $clientID = $_SESSION['clientID'];
 $query = "
     SELECT 
         b.*,
-        GROUP_CONCAT(s.staff_name SEPARATOR ', ') as staff_names,
-        GROUP_CONCAT(s.staff_ID) as staff_ids,
+        DATE_FORMAT(b.eventDate, '%M %d, %Y') as formattedDate, -- Format date as 'November 24, 2024'
+        GROUP_CONCAT(DISTINCT s.staff_name SEPARATOR ', ') as staff_names, -- Prevent duplicate staff names
+        GROUP_CONCAT(DISTINCT s.staff_ID) as staff_ids, -- Prevent duplicate staff IDs
         f.rating 
     FROM booking b
     LEFT JOIN booking_staff bs ON b.bookingId = bs.bookingId
@@ -19,6 +20,7 @@ $query = "
     WHERE b.clientID = ? AND b.status = 'Completed'
     GROUP BY b.bookingId
 ";
+
 
 
 $stmt = $conn->prepare($query);
@@ -38,7 +40,7 @@ $result = $stmt->get_result();
     <!---WEB TITLE--->
     <link rel="short icon" href="../picture/shortcut-logo.png" type="x-icon">
     <title>
-        <?php echo "User Feedback"; ?>
+        <?php echo "Client Feedback"; ?>
     </title>
 
     <!---CSS--->
@@ -65,32 +67,37 @@ $result = $stmt->get_result();
         </section>
         <section class="client-section">
             <?php while ($booking = $result->fetch_assoc()) { ?>
-                <div class="booking-card">
-                    <div class="feedback-details">
-                    <h3><?php echo htmlspecialchars($booking['title_event']); ?></h3>
-                    <p>Date: <?php echo htmlspecialchars($booking['eventDate']); ?></p>
-                    <p>Location: <?php echo htmlspecialchars($booking['eventLocation']); ?></p>
-                    <p>Assigned Staff: <?php echo htmlspecialchars($booking['staff_names']); ?></p>
-                    
-                    <?php if ($booking['rating']) { ?>
-                        <div class="star-display">
-                            <?php 
-                            for ($i = 1; $i <= 5; $i++) {
-                                echo ($i <= $booking['rating']) ? '★' : '☆';
-                            }
-                            ?>
+                <div class='event-card'>
+                    <div class='event-details'>
+                            <h5><?php echo htmlspecialchars($booking['title_event']); ?></h5>
+                        <div class="summary">
+                            <div class="event-details">
+                                <p><i class='far fa-calendar'></i>Date: <?php echo htmlspecialchars($booking['formattedDate']); ?></p>
+                                <p><i class='fas fa-map-marker-alt'></i>Location: <?php echo htmlspecialchars($booking['eventLocation']); ?></p>
+                                <p><i class="fa-solid fa-camera-retro"></i>Assigned Staff: <?php echo htmlspecialchars($booking['staff_names']); ?></p>
+                        
+                                <?php if ($booking['rating']) { ?>
+                                    <style>
+                                        .star-display {
+                                            color: #FFD700; 
+                                            font-size: 1.5rem; 
+                                            display: inline-block; 
+                                        }
+                                    </style>
+                                    <div class="star-display">
+                                        <?php 
+                                        for ($i = 1; $i <= 5; $i++) {
+                                            echo ($i <= $booking['rating']) ? '★' : '☆';
+                                        }
+                                        ?>
+                                    </div>
+                            </div>
+                            <?php } else { ?>
+                                <button class="btn-client" onclick="openFeedbackModal(<?php echo $booking['bookingId']; ?>, '<?php echo $booking['staff_ids']; ?>')">
+                                    Add Feedback
+                                </button>
+                            <?php } ?>
                         </div>
-                        <button class="button" class="btn-client" onclick="openRatingModal(<?php echo $booking['bookingId']; ?>, '<?php echo $booking['staff_ids']; ?>')">
-                            Rate Photographers
-                        </button>
-                    <?php } else { ?>
-                        <button class="button" class="btn-client" onclick="openFeedbackModal(<?php echo $booking['bookingId']; ?>, '<?php echo $booking['staff_ids']; ?>')">
-                            Add Feedback
-                        </button>
-                        <button class="button" class="btn-client" onclick="openRatingModal(<?php echo $booking['bookingId']; ?>, '<?php echo $booking['staff_ids']; ?>')">
-                            Rate Photographers
-                        </button>
-                    <?php } ?>
                     </div>
                 </div>
 
@@ -99,42 +106,22 @@ $result = $stmt->get_result();
     </main>
 
     <div id="feedbackModal" class="popup-client" style="display: none;">
-    <div class="modal-content">
-        <span class="close" onclick="closeFeedbackModal()">&times;</span>
-        <h2>Add Feedback</h2>
-        <div class="rating-section">
-            <h4>Rate our overall service:</h4>
-            <div class="company-rating">
-                <span class="company-star" onclick="setRating(1)" onmouseover="highlightStars(1)" onmouseout="resetStars()">★</span>
-                <span class="company-star" onclick="setRating(2)" onmouseover="highlightStars(2)" onmouseout="resetStars()">★</span>
-                <span class="company-star" onclick="setRating(3)" onmouseover="highlightStars(3)" onmouseout="resetStars()">★</span>
-                <span class="company-star" onclick="setRating(4)" onmouseover="highlightStars(4)" onmouseout="resetStars()">★</span>
-                <span class="company-star" onclick="setRating(5)" onmouseover="highlightStars(5)" onmouseout="resetStars()">★</span>
+            <span class="close" onclick="closeFeedbackModal()">&times;</span>
+            <div class="rating-section">
+                <h4>Rate our overall service</h4>
+                <div class="company-rating">
+                    <span class="company-star" onclick="setRating(1)" onmouseover="highlightStars(1)" onmouseout="resetStars()">★</span>
+                    <span class="company-star" onclick="setRating(2)" onmouseover="highlightStars(2)" onmouseout="resetStars()">★</span>
+                    <span class="company-star" onclick="setRating(3)" onmouseover="highlightStars(3)" onmouseout="resetStars()">★</span>
+                    <span class="company-star" onclick="setRating(4)" onmouseover="highlightStars(4)" onmouseout="resetStars()">★</span>
+                    <span class="company-star" onclick="setRating(5)" onmouseover="highlightStars(5)" onmouseout="resetStars()">★</span>
+                </div>
             </div>
-        </div>
-        <textarea id="feedbackText" placeholder="Share your experience..."></textarea>
-        <button class="button" onclick="submitFeedback()">Submit Feedback</button>
+            <textarea id="feedbackText" placeholder="Share your experience..."></textarea>
+            <button class="submit-btn" onclick="submitFeedback()">Submit Feedback</button>
     </div>
-</div>
 
 
-    
-    <!-- Rating Modal -->
-    <div id="ratingModal" class="popup-client" style="display: none;">
-        <div class="modal-content">
-            <span class="close" onclick="closeRatingModal()">&times;</span>
-            <h2>Rate Photographer</h2>
-            <div class="star-rating" id="starRating">
-                <span class="star" data-rating="1">★</span>
-                <span class="star" data-rating="2">★</span>
-                <span class="star" data-rating="3">★</span>
-                <span class="star" data-rating="4">★</span>
-                <span class="star" data-rating="5">★</span>
-            </div>
-            <button class="button" onclick="submitRating()">Submit Rating</button>
-        </div>
-    </div>
-	
 	<!----Navbar&Sidebar----->
     <?php 
         include '../client/navbar.php';
@@ -221,18 +208,7 @@ function submitFeedback() {
         alert('Error submitting feedback');
     });
 }
-        
-        
 
-        function openRatingModal(bookingId, staffIds) {
-    currentBookingId = bookingId;
-    currentStaffId = staffIds;
-    document.getElementById('ratingModal').style.display = 'block'; // Display the modal
-}
-
-function closeRatingModal() {
-    document.getElementById('ratingModal').style.display = 'none'; // Hide the modal
-}
 
     </script>
 </html>

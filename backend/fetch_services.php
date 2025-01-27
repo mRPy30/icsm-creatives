@@ -1,37 +1,36 @@
 <?php
 include('../backend/dbcon.php');
 
+// Ensure selected_event is set
 if (isset($_POST['selected_event'])) {
     $selected_event = $_POST['selected_event'];
-    $budget = isset($_POST['budget']) ? $_POST['budget'] : null;
+    $budget = isset($_POST['budget']) && $_POST['budget'] !== '' ? $_POST['budget'] : null;
 
-    // Modified query using JOIN instead of subquery
+    // Build the query based on whether a budget is provided
     $query = "SELECT s.serviceID, s.service_name, s.specified_service, s.price, s.image_url, s.inclusions 
               FROM services s
               INNER JOIN event e ON s.eventID = e.eventID 
               WHERE e.eventName = ?";
 
-    if ($budget !== null && $budget !== '') {
+    // Add budget condition dynamically
+    if ($budget !== null) {
         $query .= " AND s.price <= ?";
-    }
-
-    $stmt = $conn->prepare($query);
-
-    // Bind parameters based on whether budget is provided or not
-    if ($budget !== null && $budget !== '') {
+        $stmt = $conn->prepare($query);
         $stmt->bind_param('sd', $selected_event, $budget);
     } else {
+        $stmt = $conn->prepare($query);
         $stmt->bind_param('s', $selected_event);
     }
 
+    // Execute the query
     $stmt->execute();
     $result = $stmt->get_result();
 
+    // Display the services
     if ($result->num_rows > 0) {
         while ($row = $result->fetch_assoc()) {
-            // Convert the image blob to base64
             $base64Image = base64_encode($row['image_url']);
-            $mimeType = 'image/png'; // or image/jpeg, depending on the image type you're storing
+            $mimeType = 'image/png'; // Adjust based on your actual image type
 
             echo '<div class="service-card" data-serviceid="' . $row['serviceID'] . '" data-price="' . $row['price'] . '" data-service="' . htmlspecialchars($row['service_name']) . '">';
             echo '<div class="service-image">';
@@ -60,7 +59,10 @@ if (isset($_POST['selected_event'])) {
             echo '</div>';
         }
     } else {
-        echo '<p>No services available' . ($budget ? ' within your budget.' : '.') . '</p>';
+        // Display a message if no services are found
+        echo '<p>No services available' . ($budget !== null ? ' within your budget.' : '.') . '</p>';
     }
+} else {
+    echo '<p>Invalid request. Please try again.</p>';
 }
 ?>

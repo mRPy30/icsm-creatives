@@ -43,9 +43,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 }
                 .loading-circle {
                     display: inline-block;
-                    width: 40px;
-                    height: 40px;
-                    border: 7px solid #E1DE8F;
+                    width: 50px;
+                    height: 50px;
+                    border: 7px solid #9D7651;
                     border-radius: 50%;
                     border-top: 5px solid transparent;
                     animation: spin 1s linear infinite;
@@ -85,7 +85,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <!---WEB TITLE--->
     <link rel="short icon" href="../picture/shortcut-logo.png" type="x-icon">
     <title>
-        <?php echo "Icsm Production | Admin Login"; ?>
+        <?php echo "Icsm Production | Staff Login"; ?>
     </title>
 
     <!---CSS--->

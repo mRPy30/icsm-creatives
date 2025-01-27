@@ -213,12 +213,7 @@ $currentPage = basename($_SERVER['PHP_SELF']);
 
     .profile_info h3 {
         margin-right: 10px;
-        font: normal 600 95%/normal 'Poppins';
-    }
-
-    .profile_info p {
-        margin-right: 10px;
-        font: normal 400 70%/normal 'Poppins';
+        font: normal 600 17px/normal 'Poppins';
     }
 
     .profile_pic{
@@ -236,7 +231,7 @@ $currentPage = basename($_SERVER['PHP_SELF']);
 
     .profile_pic .name{
         display: flex;
-        flex-direction: column;
+        align-items: center;
     }
 
     .profile_dropdown {
@@ -305,7 +300,7 @@ $currentPage = basename($_SERVER['PHP_SELF']);
     button#logoutYes {
         padding: 10px 25px;
         margin: 5px;
-        background: #FF8787;
+        background: #bc8759;
         border: none;
         border-radius: 8px;
         color: #1c1c1c;
@@ -315,7 +310,7 @@ $currentPage = basename($_SERVER['PHP_SELF']);
         transition: all 200ms linear;
     }
     button#logoutYes:hover{
-        background: #D25A5A;
+        background: #9d7651;
     }
 
     button#logoutNo {
@@ -351,7 +346,7 @@ $currentPage = basename($_SERVER['PHP_SELF']);
         display: inline-block;
         width: 50px;
         height: 50px;
-        border: 7px solid #E1DE8F;
+        border: 7px solid #9D7651;
         border-radius: 50%;
         border-top: 5px solid transparent;
         animation: spin 1s linear infinite;
@@ -433,13 +428,11 @@ $currentPage = basename($_SERVER['PHP_SELF']);
                 <a class="nav <?= $currentPage == 'feedback.php' ? 'active' : '' ?>" href="../client/feedback.php">Feedback</a>
             </li>
             <li>
-    <a class="nav <?= $currentPage == 'Gallery.php' ? 'active' : '' ?>" href="../client/gallery.php?clientID=<?= $clientID ?>">Gallery</a>
-</li>
-
+                <a class="nav <?= $currentPage == 'gallery.php' ? 'active' : '' ?>" href="../client/gallery.php?clientID=<?= $clientID ?>">Gallery</a>
+            </li>
         </ul>
     <div class="profile_dropdown">
         <div class="nav-right">
-            <i class="fa-solid fa-cart-flatbed" onclick="location.href='cart.php'"></i>
             <div class="divider"></div>
             <div class="profile_info">
             <?php if ($clientName != "Guest") { ?>
@@ -447,7 +440,6 @@ $currentPage = basename($_SERVER['PHP_SELF']);
                     <div class="profile_pic">
                         <div class="name">
                             <h3><?php echo htmlspecialchars($clientName); ?></h3>
-                            <p>Client ID: <?php echo htmlspecialchars($clientID); ?></p>
                         </div>
                         <img src="data:image/jpeg;base64,<?php echo $profilePictureBase64; ?>" alt="Profile Picture">
                     </div>
@@ -467,8 +459,8 @@ $currentPage = basename($_SERVER['PHP_SELF']);
     <div id="logoutPopup" class="popup">
         <div class="popup-content">
             <p>Are you sure you want to logout?</p>
-            <button id="logoutNo">No</button>
             <button id="logoutYes">Yes</button>
+            <button id="logoutNo">No</button>
         </div>
 
         <div id="loadingOverlay">
@@ -540,10 +532,12 @@ $currentPage = basename($_SERVER['PHP_SELF']);
             }, 3000);
         }
     
-    const hamburgerMenu = document.querySelector('.hamburger-menu');
-    const navLinks = document.querySelector('.nav-links');
+        const hamburgerMenu = document.querySelector('.hamburger-menu');
+        const navLinks = document.querySelector('.nav-links');
 
         function toggleMenu() {
+            hamburgerMenu.classList.toggle('rotate');
             navLinks.classList.toggle('nav-active');
         }
+
 </script>

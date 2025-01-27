@@ -171,26 +171,6 @@
                     } ?> "><i class="fa-solid fa-image"></i></a>
                     <span class="bottom_curve"></span>
                 </li>
-
-
-                <li class="nav-link">
-                    <span class="top_curve"></span>
-                    <a href="booking.php" title="Booking Management" class="<?php if ($page == "..staff/booking.php") {
-                        echo "nav-link active";
-                    } else {
-                        echo "nav-link";
-                    } ?> "><i class="fa-solid fa-calendar-check" ></i></a>
-                    <span class="bottom_curve"></span>
-                </li>
-                <li class="nav-link">
-                    <span class="top_curve"></span>
-                    <a href="production.php" title="Production Team" class="<?php if ($page == "..staff/production.php") {
-                        echo "nav-link active";
-                    } else {
-                        echo "nav-link";
-                    } ?> "><i class="fa-solid fa-users-gear"></i></a>
-                    <span class="bottom_curve"></span>
-                </li>
             </ul>
         </div>
     </nav>

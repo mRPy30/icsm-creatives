@@ -291,7 +291,7 @@
     font: normal 500 14px/normal 'Poppins';
 }
 
-.form-group input, select {
+.form-group input, select, textarea {
     width: 100%;
     padding: 10px;
     border: 1px solid #e0e0e0;
@@ -335,6 +335,14 @@
 .start h4{
     color: #fb0019;
     opacity: 0.7;
+    font: normal 400 12px/normal 'Poppins';
+
+}
+
+.note{
+    color: #fb0019;
+    opacity: 0.7;
+    font: normal 400 12px/normal 'Poppins';
 }
 
 
@@ -524,6 +532,11 @@
     z-index: 999;
     display: none;
 }
+
+#event_time option:disabled {
+    opacity: 0.9; 
+    color: #fb0019; 
+  }
 
 .flatpickr-months, 
 .flatpickr-weekdays {
@@ -718,11 +731,12 @@
 }
 
 .venue-card {
-    flex: 1 1 300px;
-    border: 1px solid #ddd;
+    /***flex: 1 1 300px;****/
+    border: 2px solid #ddd;
     border-radius: 8px;
     overflow: hidden;
     transition: transform 0.3s ease;
+    margin-top: 15px;
 }
 
 .venue-card:hover {
@@ -900,6 +914,21 @@
 
 }
 
+.cancelled-reason{
+    display: flex;
+    flex-direction: column;
+    width: 15%;
+}
+
+.cancelled-reason h6 {
+    color: var(--fontLight) !important;
+    font: normal 600 13px/normal 'Poppins';
+    text-align: center;
+    width: 150%;
+    height: 20px;
+    background-color: var(--themeColor);
+}
+
 .event-details-disabled h5 {
     margin: 0 0 10px 0;
     font: normal 600 23px/normal 'Poppins' ;
@@ -921,7 +950,7 @@
     background-color: var(--themeColor);
     color: var(--fontLight);
     border: none;
-    padding: 8px 50px;
+    padding: 8px 15px;
     border-radius: 5px;
     cursor: pointer;
     font: normal 600 13px/normal 'Poppins';
@@ -960,6 +989,18 @@
     display: flex;
     flex-direction: column;
     margin: 20px 0 0 10px;
+}
+
+.details-cancelled-disabled{
+    display: flex;
+    flex-direction: column;
+    margin: 20px 0 0 30px;
+}
+
+.cancelled-right{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 .event-container h6{
@@ -1312,11 +1353,11 @@
     font: normal 700 18px / normal 'poppins';
 }
 .service-inclusions ul {
-    padding-left: 30px; /* Add padding to the whole list for more space */
+    padding-left: 30px; 
 }
 
 .service-inclusions ul li {
-    font: normal 15px 'Poppins', sans-serif; /* Ensure correct font styling */
+    font: normal 15px 'Poppins', sans-serif; 
     color: #222222;
     margin-bottom: 5px;
     position: relative;
@@ -1361,12 +1402,40 @@
     font: normal 500 15px / normal 'Poppins';
     width: 35vw;
     height: 50%;
-    transition: all 0.3s ease;
-
+    cursor: pointer;
 }
 
 .add-services label.selected {
     border: 3px solid var(--HoverthemeColor); 
+
+}
+
+.add-services label:hover {
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.4);
+
+}
+
+
+.additional-service-checkbox {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  width: 16px;
+  height: 16px;
+  border: 1px solid #ccc; 
+  border-radius: 3px;
+  margin-right: 8px;
+  vertical-align: middle;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.additional-service-checkbox:checked {
+  background-color: var(--HoverthemeColor); 
+  border-color: var(--HoverthemeColor);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 448 512'%3E%3Cpath fill='%23fff' d='M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
 }
 
 .buttons-book h1{
@@ -1411,9 +1480,99 @@
 }
 
 
+.filter-section {
+    margin-bottom: 2rem;
+  }
+  
+  
+.filter-options span, .theme-options span {
+  font-weight: normal;
+  font-size: 1rem;
+}
 
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4rem;
+  justify-content: center;
+}
 
+.filter-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+ 
+}
 
+.filter-item img {
+  width: 170px;
+  height: 170px;
+  object-fit: cover;
+  border-radius: 50%;
+  margin-bottom: 0.5rem;
+  transform: translate 0.3, box-shadow 0.3s;
+  border: 2px solid #BCB4B5;
+}
+
+.filter-item span{
+  font: normal 600 13px/normal 'Poppins';
+  text-align: center;
+}
+.filter-item img.selected {
+    border: 10px solid var(--HoverthemeColor); 
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.4);
+
+}
+
+.filter-item img:hover {
+    transform: translateY(-5px);
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.4);
+}
+
+.theme-section {
+    margin-bottom: 2rem;
+  }
+
+.theme {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4rem;
+    justify-content: center;
+  }
+  
+  .theme-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+   
+  }
+  
+  .theme-item img {
+    width: 170px;
+    height: 170px;
+    object-fit: cover;
+    border-radius: 50%;
+    margin-bottom: 0.5rem;
+    transform: translate 0.3, box-shadow 0.3s;
+    border: 2px solid #BCB4B5;
+  }
+  
+  .theme-item span{
+    font: normal 600 13px/normal 'Poppins';
+    text-align: center;
+  }
+  .theme-item img.selected {
+      border: 10px solid var(--HoverthemeColor); 
+      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.4);
+  
+  }
+  
+  .theme-item img:hover {
+      transform: translateY(-5px);
+      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.4);
+  }
 
 /*****Payment****/
 .payment-btn{
@@ -1465,6 +1624,11 @@
     list-style: none;
     display: flex;
     justify-content: space-between;
+}
+
+.right-details h3{
+    font: normal 600 18px / normal 'Poppins';
+    margin: 10px;
 }
 
 .left-details{
@@ -1666,7 +1830,7 @@
 }
 
 .payment-form {
-    margin: 20px 12px 15px 12px;
+    margin: 20px 50px 15px 50px;
 }
 
 .payment-form label {
@@ -1917,7 +2081,7 @@
 }
 
 .error-popup .ok-btn:hover {
-    background: var(--themeColor);
+    background: #45a049;
 }
 
 .cart-item {
@@ -1933,7 +2097,7 @@
     background: #f5f5f5;
 }
 
-.cart-details {
+.cart-details, .feedback-details {
     flex: 1;
 }
 
@@ -2148,13 +2312,15 @@
 }
 
 .rating-section h4 {
-    margin-bottom: 10px;
+    margin-bottom: 5px;
+    font: normal 600 23px/normal 'Poppins';
+    text-align: center;
 }
 
 .company-rating {
     display: flex;
     gap: 5px;
-    justify-content: flex-start;
+    justify-content: center;
     margin-bottom: 15px;
 }
 
@@ -2319,7 +2485,7 @@
 
 /****Profile Client****/
 .profile-container {
-    max-width: 950px;
+    max-width: 1025px;
     margin: 130px auto;
     padding: 20px;
     background: white;
@@ -2387,14 +2553,47 @@
     margin-top: 20px;
 }
 
+.submit-btn {
+    width: 100%;
+    padding: 12px;
+    background-color: var(--BgColor);
+    border: 2px solid var(--themeColor);
+    color: var(--DarkColor);
+    border-radius: 6px;
+    cursor: pointer;
+    font: normal 400 14px / normal 'Poppins';
+    margin-top: 20px;
+}
+
+.submit-btn:hover {
+    background-color: var(--fontLight);
+    color: var(--tblColor);
+}
+
+
+ /*****Gallery****/
+ 
+ .gallery {
+     padding: 0px 0px 20px 0px;
+     margin: 9% 0% 0% 0%;
+     height: 75%;
+     width: 77%;
+ }
+ 
+ .top-gallery {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
 .gallery-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 28px;
-    padding: 20px;
+    grid-template-columns: repeat(4, 1fr); 
+    gap: 10px;
+    padding-bottom: 3%;
 }
+
 .gallery-item {
-    aspect-ratio: 1;
     overflow: hidden;
     background: #fafafa;
 }
@@ -2402,6 +2601,11 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
+    transition: transform 0.3s ease-in-out;
+}
+
+.gallery-item img:hover {
+    transform: scale(1.2); /* Slightly enlarge the image */
 }
 .alert {
     padding: 15px;
@@ -2417,26 +2621,114 @@
     background-color: #f8d7da;
     color: #721c24;
 }
- /*****Gallery****/
- 
- .gallery {
-     padding: 0px 0px 20px 0px;
-     margin: 9% 0% 0% 0%;
-     border-radius: 10px;
-     background-color: #FCF6F6;
-     height: 75%;
-     position: absolute;
-     box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25), 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
-     width: 77%;
- }
- 
- body.dark-mode .gallery {
-     background-color: #1c1c1c;
- }
+.no-images {
+    font: normal 600 17px/normal 'Poppins' ;
+    color: var(--DarkColor);
+}
  
  .gallery h4 {
-     font: normal 600 16px/normal 'Poppins';
-     color: #1c1c1c;
-     text-align: center;
-     margin-left: 2%;
+    font: normal 600 30px / normal 'Poppins';
+    color: var(--themeColor);
  }
+
+ .view-image {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    z-index: 9999;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    overflow: auto;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.view-image.active {
+    display: flex;
+}
+
+.view-image img {
+    max-width: 90%;
+    max-height: 90vh;
+    object-fit: contain;
+    border-radius: 5px;
+}
+
+.view-image .close-btn {
+    position: fixed;
+    top: 20px;
+    right: 30px;
+    color: #fff;
+    font-size: 35px;
+    cursor: pointer;
+}
+
+.nav-btn {
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #fff;
+    font-size: 35px;
+    cursor: pointer;
+    padding: 10px;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.3s;
+}
+
+.nav-btn:hover {
+    background: rgba(77, 77, 77, 0.8);
+}
+
+.prev-btn {
+    left: 20px;
+}
+
+.next-btn {
+    right: 20px;
+}
+
+.view-image .tabs {
+    position: fixed;
+    top: 13px;
+    right: 60px;
+    color: #fff;
+    font-size: 35px;
+    cursor: pointer;
+}
+
+#download-btn {
+    color: #fff;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+
+.date-separator {
+    grid-column: 1 / -1; /* Span across all columns */
+    display: flex;
+    align-items: center;
+    color: var(--DarkColor);
+    font: normal 400 13px/normal 'Poppins';
+    margin: 20px 0;
+}
+.date-separator span {
+    margin: 0 10px;
+    white-space: nowrap;
+}
+.date-separator::before,
+.date-separator::after {
+    content: '';
+    flex-grow: 1;
+    height: 1px;
+    background-color: #ccc;
+}

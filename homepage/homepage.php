@@ -46,17 +46,43 @@ $result = mysqli_query($conn, $query);
         <section class="coverpage">
             <div class="cover-content">
                 <div class="carousel">
-                    <img src="../picture/coverpage1.jpg" alt="coverpage">
-                    <img src="../picture/outdoor144.jpg" alt="coverpage">
-                    <img src="../picture/corporate1.jpg" alt="coverpage">
-                    <img src="../picture/wedding3.jpg" alt="coverpage">
-                    <img src="../picture/family5.jpg" alt="coverpage">
+                    <?php
+                    include '../backend/dbcon.php';
+                    $query = "SELECT picture FROM homepage_carousel WHERE is_active = 1";
+                    $result = mysqli_query($conn, $query);
+        
+                    if ($result && mysqli_num_rows($result) > 0) {
+                        while ($row = mysqli_fetch_assoc($result)) {
+                            $picture = base64_encode($row['picture']); 
+                            echo "<img src='data:image/jpeg;base64,$picture' alt='Carousel Image'>";
+                        }
+                    } else {
+                        echo "<p>No active carousel images available at the moment.</p>";
+                    }
+                
+                    mysqli_close($conn);
+                    ?>
                 </div>
                 <div class="Center-text">
-                    <h2>Capture Every Precious Moments, Through our Lenses </h2>
-                    <p>Customize Your Package with Flexible Options and Budget-Friendly Add-Ons That Fits Your
-                        Unique
-                        Style and Budget.</p>
+                    <?php
+                        include '../backend/dbcon.php';
+
+                        $query = "SELECT heading, subheading FROM homepage_cover_text WHERE is_active = 1 LIMIT 1";
+                        $result = mysqli_query($conn, $query);
+
+                        if ($result && mysqli_num_rows($result) > 0) {
+                            $row = mysqli_fetch_assoc($result);
+                            $heading = htmlspecialchars($row['heading']); 
+                            $subheading = htmlspecialchars($row['subheading']); 
+                        
+                            echo "<h2>$heading</h2>";
+                            echo "<p>$subheading</p>";
+                        } else {
+                            echo "HELLO CLIENT!";
+                        }
+                    
+                        mysqli_close($conn);
+                    ?>
                     <button id="book-now-btn" class="btn-cover">Book Now</button>
                 </div>
                 <div class="carousel-page-numbers">
@@ -66,77 +92,27 @@ $result = mysqli_query($conn, $query);
             </div>
         </section>
 
-
-
-
         <section class="milestone-gallery">
             <div class="milestone-header">
                 <h2>Capture for Every Milestone</h2>
                 <p>Make every occasion unforgettable—start creating your perfect moment today.</p>
             </div>
             <div class="milestone-grid">
-                <div class="milestone-card" onclick="location.href='birthday.php'">
-                    <a href="birthday.php" class="icon-link">
-                        <i class="fa-solid fa-arrow-right"></i>
-                    </a>
-                    <h3>Birthdays:</h3>
-                    <p>Every year is a reason to celebrate.</p>
-                    <img src="../picture/cake.png" alt="Birthday Cake">
-                </div>
-
-                <div class="milestone-card" onclick="location.href='wedding.php'">
-                    <a href="marriage.php" class="icon-link"> <i class="fa-solid fa-arrow-right"></i>
-                    </a>
-                    <h3>Wedding:</h3>
-                    <p>Capturing every step of your journey to love.</p>
-                    <img src="../picture/marriage-ring.png" alt="Marriage">
-                </div>
-
-                <div class="milestone-card" onclick="location.href='family-portrait.php'">
-                    <a href="family-portrait.php" class="icon-link">
-                        <i class="fa-solid fa-arrow-right"></i>
-                    </a>
-                    <h3>Family Portraits:</h3>
-                    <p>Highlight your growing family.</p>
-                    <img src="../picture/family.png" alt="Family Portraits">
-                </div>
-
-                <div class="milestone-card" onclick="location.href='graduation.php'">
-                    <a href="graduation.php" class="icon-link">
-                        <i class="fa-solid fa-arrow-right"></i>
-                    </a>
-                    <h3>Graduation:</h3>
-                    <p>Capture your academic achievements.</p>
-                    <img src="../picture/graduation.png" alt="Graduation">
-                </div>
-
-                <div class="milestone-card" onclick="location.href='christening.php'">
-                    <a href="christening.php" class="icon-link">
-                        <i class="fa-solid fa-arrow-right"></i>
-                    </a>
-                    <h3>Baby:</h3>
-                    <p>Capture the precious moments of your baby's early days.</p>
-                    <img src="../picture/baby.png" alt="Baby">
-                </div>
-
-                <div class="milestone-card" onclick="location.href='corporate.php'">
-                    <a href="corporate.php" class="icon-link">
-                        <i class="fa-solid fa-arrow-right"></i>
-                    </a>
-                    <h3>Corporate Events:</h3>
-                    <p>Showcase your business milestones and team achievements.</p>
-                    <img src="../picture/business.png" alt="Corporate Events">
-                </div>
-
-                <div class="milestone-card" onclick="location.href='adventure.php'">
-                    <a href="adventure.php" class="icon-link">
-                        <i class="fa-solid fa-arrow-right"></i>
-                    </a>
-                    <h3>Outdoor Adventures:</h3>
-                    <p>Capture the thrill of your outdoor experiences.</p>
-                    <img src="../picture/adventure.png" alt="Outdoor Adventures">
-                </div>
-
+                <?php
+                include '../backend/dbcon.php';
+                $query = "SELECT eventName, milestone_img, milestone_text FROM event WHERE milestone_img IS NOT NULL AND milestone_text IS NOT NULL";
+                $result = mysqli_query($conn, $query);
+                while ($row = mysqli_fetch_assoc($result)) {
+                    echo "<div class='milestone-card' onclick=\"location.href='{$row['eventName']}.php'\">
+                            <a href='{$row['eventName']}.php' class='icon-link'>
+                                <i class='fa-solid fa-arrow-right'></i>
+                            </a>
+                            <h3>{$row['eventName']}</h3>
+                            <p>{$row['milestone_text']}</p>
+                            <img src='data:image/jpeg;base64," . base64_encode($row['milestone_img']) . "' alt='{$row['eventName']}'>
+                          </div>";
+                }
+                ?>
                 <div class="milestone-card" onclick="location.href='event.php'">
                     <a href="event.php" class="icon-link">
                         <i class="fa-solid fa-arrow-right"></i>
@@ -147,154 +123,73 @@ $result = mysqli_query($conn, $query);
             </div>
         </section>
 
-
-
-
         <section class="why-choose">
             <div class="choose-us-section">
                 <h2>Why Choose Us?</h2>
                 <div class="features-grid">
-                    <div class="feature-box">
-                        <div class="choose-us-icon"><img src="../picture/folder.png" alt="Budget Friendly Icon">
-                        </div>
-                        <div class="choose-us-box-right">
-                            <h3>Budget Friendly</h3>
-                            <p>We believe great photography and videography should be accessible to everyone. That’s
-                                why
-                                we offer affordable packages that fit your budget while still delivering amazing
-                                results.
-                            </p>
-                        </div>
-                    </div>
+                <?php
+                    // Database connection
+                    include '../backend/dbcon.php'; // Adjust path if necessary
 
-                    <div class="feature-box">
-                        <div class="choose-us-icon"><img src="../picture/hassle-free.png" alt="Hassle Free Icon">
-                        </div>
-                        <div class="choose-us-box-right">
-                            <h3>Hassle-Free Booking</h3>
-                            <p>Simply select a package and a photographer will be assigned to you shortly.</p>
-                        </div>
-                    </div>
+                    $query = "SELECT icon, title, description FROM homepage_choose_us WHERE is_active = 1";
+                    $result = mysqli_query($conn, $query);
 
-                    <div class="feature-box">
-                        <div class="choose-us-icon"><img src="../picture/fast-delivery.png" alt="Fast Delivery Icon">
-                        </div>
-                        <div class="choose-us-box-right">
-                            <h3>Fast Delivery</h3>
-                            <p>You won’t have to wait long to relive your special moments. We ensure quick delivery
-                                of
-                                your
-                                photos and videos, so you can start enjoying and sharing them as soon as possible.
-                            </p>
-                        </div>
-                    </div>
-
-                    <div class="feature-box">
-                        <div class="choose-us-icon"><img src="../picture/camera.png" alt="Great Photographers Icon">
-                        </div>
-                        <div class="choose-us-box-right">
-                            <h3>Great Photographers</h3>
-                            <p>Our photographers and videographers are passionate about capturing your story. They
-                                know
-                                how to make you feel comfortable and bring out the best in every shot.</p>
-                        </div>
-                    </div>
-
-                    <div class="feature-box">
-                        <div class="choose-us-icon"><img src="../picture/picture.png" alt="Great Photos Icon"></div>
-                        <div class="choose-us-box-right">
-                            <h3>Great Photos</h3>
-                            <p>We don’t just take pictures—we capture emotions, details, and memories that will last
-                                a
-                                lifetime. Our high-quality photos will make you smile every time you look at them.
-                            </p>
-                        </div>
-                    </div>
-
-                    <div class="feature-box">
-                        <div class="choose-us-icon"><img src="../picture/peace-of-mind.png" alt="Peace of Mind Icon">
-                        </div>
-                        <div class="choose-us-box-right">
-                            <h3>Peace of Mind</h3>
-                            <p>When you book with us, you can relax knowing everything is in good hands. We take
-                                care of
-                                all the details, so you can focus on enjoying your day while we capture every
-                                special
-                                moment.
-                            </p>
-                        </div>
-                    </div>
+                    if ($result && mysqli_num_rows($result) > 0) {
+                        while ($row = mysqli_fetch_assoc($result)) {
+                            $icon = base64_encode($row['icon']); 
+                            $title = htmlspecialchars($row['title']); 
+                            $description = htmlspecialchars($row['description']); 
+                        
+                            echo "
+                            <div class='feature-box'>
+                                <div class='choose-us-icon'>
+                                    <img src='data:image/png;base64,$icon' alt='$title Icon'>
+                                </div>
+                                <div class='choose-us-box-right'>
+                                    <h3>$title</h3>
+                                    <p>$description</p>
+                                </div>
+                            </div>";
+                        }
+                    } else {
+                        echo "<p>No features available at the moment. Please check back later.</p>";
+                    }
+                
+                    mysqli_close($conn);
+                ?>
                 </div>
             </div>
         </section>
-
-
-
-
 
         <section class="how-it-works">
             <div class="how-it-works__container">
                 <h2 class="how-it-works__title">How it Works?</h2>
 
                 <div class="how-it-works__steps-wrapper">
+                <?php
+                include '../backend/dbcon.php';
 
-                    <div class="how-it-works__step-box">
-                        <div class="how-it-works__step-content">
-                            <span class="how-it-works__step-number">01</span>
-                            <h3 class="how-it-works__step-heading">Book</h3>
-                            <p class="how-it-works__step-text">We don't just take pictures—we capture emotions,
-                                stories,
-                                and memories that will last a lifetime. Our high-quality photos will make you smile
-                                every time you look at them.</p>
+                // Fetch the steps from the database
+                $query = "SELECT step_number, heading, description FROM homepage_instruction WHERE is_active = 1 ORDER BY step_number ASC";
+                $result = mysqli_query($conn, $query);
+
+                while ($row = mysqli_fetch_assoc($result)) {
+                    echo "
+                    <div class='how-it-works__step-box'>
+                        <div class='how-it-works__step-content'>
+                            <span class='how-it-works__step-number'>" . str_pad($row['step_number'], 2, '0', STR_PAD_LEFT) . "</span>
+                            <h3 class='how-it-works__step-heading'>{$row['heading']}</h3>
+                            <p class='how-it-works__step-text'>{$row['description']}</p>
                         </div>
-                    </div>
-
-                    <div class="how-it-works__step-box">
-                        <div class="how-it-works__step-content">
-                            <span class="how-it-works__step-number">02</span>
-                            <h3 class="how-it-works__step-heading">Plan</h3>
-                            <p class="how-it-works__step-text">We don't just take pictures—we capture emotions,
-                                stories,
-                                and memories that will last a lifetime. Our high-quality photos will make you smile
-                                every time you look at them.</p>
-                        </div>
-                    </div>
-
-                    <div class="how-it-works__step-box">
-                        <div class="how-it-works__step-content">
-                            <span class="how-it-works__step-number">03</span>
-                            <h3 class="how-it-works__step-heading">Shoot</h3>
-                            <p class="how-it-works__step-text">We don't just take pictures—we capture emotions,
-                                stories,
-                                and memories that will last a lifetime. Our high-quality photos will make you smile
-                                every time you look at them.</p>
-                        </div>
-                    </div>
-
-                    <div class="how-it-works__step-box">
-                        <div class="how-it-works__step-content">
-                            <span class="how-it-works__step-number">04</span>
-                            <h3 class="how-it-works__step-heading">Download</h3>
-                            <p class="how-it-works__step-text">We don't just take pictures—we capture emotions,
-                                stories,
-                                and memories that will last a lifetime. Our high-quality photos will make you smile
-                                every time you look at them.</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="how-it-works__cta">
-                    <a href="#" class="how-it-works__link">Learn how it works! →</a>
+                    </div>";
+                }
+                ?>
                 </div>
             </div>
         </section>
 
-
-
-
         <section class="faq-section">
             <div class="faq-section__container">
-                <!-- Left Side - Image and Title -->
                 <div class="faq-section__left">
                     <h2 class="faq-section__title">
                         <span>Have</span>
@@ -304,115 +199,32 @@ $result = mysqli_query($conn, $query);
                         <img src="../picture/faq-image.png" alt="FAQ Illustration">
                     </div>
                 </div>
-
                 <!-- Right Side - Accordion -->
-                <div class="faq-section__right">
-                    <!-- FAQ Item 1 -->
-                    <div class="faq-section__item">
-                        <div class="faq-section_question">
-                            What types of photography do you do?
-                            <span class="arrow"><i class="fa-solid fa-angle-down"></i></span>
-                        </div>
-                        <div class="faq-section_answer">
-                            <p>Hiring a photographer is a great idea because they capture important moments with
-                                professional quality and a creative touch. Whether it's a special event, personal
-                                milestone,
-                                or business need, photographers have the skills, equipment, and expertise to produce
-                                stunning images that tell your story or enhance your brand. Plus, they handle all
-                                the
-                                details, from planning and shooting to editing, saving you time and ensuring you get
-                                beautiful, high-quality photos that you'll cherish or can use to boost your
-                                business.</p>
-                        </div>
+                    <div class="faq-section__right">
+                        <?php
+                        include '../backend/dbcon.php';
+
+                        // Fetch FAQ items from the database
+                        $query = "SELECT question, answer FROM homepage_faq WHERE is_active = 1 ORDER BY faqID ASC";
+                        $result = mysqli_query($conn, $query);
+
+                        while ($row = mysqli_fetch_assoc($result)) {
+                            echo "
+                            <div class='faq-section__item'>
+                                <div class='faq-section_question'>
+                                    {$row['question']}
+                                    <span class='arrow'><i class='fa-solid fa-angle-down'></i></span>
+                                </div>
+                                <div class='faq-section_answer'>
+                                    <p>{$row['answer']}</p>
+                                </div>
+                            </div>";
+                        }
+                        ?>
                     </div>
-
-                    <!-- FAQ Item 2 -->
-                    <div class="faq-section__item">
-                        <div class="faq-section_question">
-                            Why should I hire a ICSM Creatives ?
-                            <span class="arrow"><i class="fa-solid fa-angle-down"></i></span>
-                        </div>
-                        <div class="faq-section_answer">
-                            <p>Hiring a photographer is a great idea because they capture important moments with
-                                professional quality and a creative touch. Whether it's a special event, personal
-                                milestone,
-                                or business need, photographers have the skills, equipment, and expertise to produce
-                                stunning images that tell your story or enhance your brand. Plus, they handle all
-                                the
-                                details, from planning and shooting to editing, saving you time and ensuring you get
-                                beautiful, high-quality photos that you'll cherish or can use to boost your
-                                business.</p>
-                        </div>
-                    </div>
-
-                    <!-- FAQ Item 3 -->
-                    <div class="faq-section__item">
-                        <div class="faq-section_question">
-                            What's your cancellation/rescheduling policy?
-                            <span class="arrow"><i class="fa-solid fa-angle-down"></i></span>
-                        </div>
-                        <div class="faq-section_answer">
-                            <p>Hiring a photographer is a great idea because they capture important moments with
-                                professional quality and a creative touch. Whether it's a special event, personal
-                                milestone,
-                                or business need, photographers have the skills, equipment, and expertise to produce
-                                stunning images that tell your story or enhance your brand. Plus, they handle all
-                                the
-                                details, from planning and shooting to editing, saving you time and ensuring you get
-                                beautiful, high-quality photos that you'll cherish or can use to boost your
-                                business.
-                            </p>
-
-                        </div>
-                    </div>
-
-                    <!-- FAQ Item 4 -->
-                    <div class="faq-section__item">
-                        <div class="faq-section_question">
-                            Are my payment refundable?
-                            <span class="arrow"><i class="fa-solid fa-angle-down"></i></span>
-                        </div>
-                        <div class="faq-section_answer">
-                            <p>Hiring a photographer is a great idea because they capture important moments with
-                                professional quality and a creative touch. Whether it's a special event, personal
-                                milestone,
-                                or business need, photographers have the skills, equipment, and expertise to produce
-                                stunning images that tell your story or enhance your brand. Plus, they handle all
-                                the
-                                details, from planning and shooting to editing, saving you time and ensuring you get
-                                beautiful, high-quality photos that you'll cherish or can use to boost your
-                                business.
-                            </p>
-                        </div>
-                    </div>
-
-                    <!-- FAQ Item 5 -->
-                    <div class="faq-section__item">
-                        <div class="faq-section_question">
-                            Do you have props?
-                            <span class="arrow"><i class="fa-solid fa-angle-down"></i></span>
-                        </div>
-                        <div class="faq-section_answer">
-                            <p>Hiring a photographer is a great idea because they capture important moments with
-                                professional quality and a creative touch. Whether it's a special event, personal
-                                milestone,
-                                or business need, photographers have the skills, equipment, and expertise to produce
-                                stunning images that tell your story or enhance your brand. Plus, they handle all
-                                the
-                                details, from planning and shooting to editing, saving you time and ensuring you get
-                                beautiful, high-quality photos that you'll cherish or can use to boost your
-                                business.
-                            </p>
-
-                        </div>
-                    </div>
-
                 </div>
             </div>
         </section>
-
-
-
 
         <section class="ms-testimonials">
             <h2 class="ms-testimonials-title">What our clients say about us.</h2>
@@ -441,12 +253,6 @@ $result = mysqli_query($conn, $query);
                 <?php endwhile; ?>
             </div>
         </section>
-
-
-
-
-
-
 
         <section class="about">
             <div class="about-page">
@@ -482,8 +288,6 @@ $result = mysqli_query($conn, $query);
                 </div>
             </div>
         </section>
-
-
 
         <section class="call-to-attention">
             <div class="banner-homepage">
@@ -658,7 +462,7 @@ $result = mysqli_query($conn, $query);
         document.addEventListener('DOMContentLoaded', function () {
             const headerSection = document.querySelector('.header-section');
             const coverContent = document.querySelector('.cover-content');
-            const portfolioSection = document.querySelector('.milestone-gallery');
+            const portfolioSection = document.querySelector('.horizontal-line');
 
             function handleScroll() {
                 const coverContentRect = coverContent.getBoundingClientRect();
@@ -690,16 +494,6 @@ $result = mysqli_query($conn, $query);
         document.getElementById("register").addEventListener("click", function () {
             window.location.href = "../client/register.php";
         });
-
-
-
-
-
-
-
-
-
-
 
 
     </script>

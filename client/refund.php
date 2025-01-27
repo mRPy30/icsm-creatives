@@ -1,8 +1,12 @@
+
 <?php
+session_start();
+
 include '../backend/logout.php';
 include '../backend/dbcon.php';
+$clientID = $_SESSION['clientID']; // Replace with your session variable for logged-in client
+$bookingID = isset($_GET['bookingID']) ? $_GET['bookingID'] : null;
 $bookingID = $_GET['bookingID']; 
-
 
 $sql = "SELECT b.*, s.service_name, b.additional, b.reason, b.payment_option, e.eventName, st.staff_name
         FROM booking b
@@ -34,10 +38,12 @@ if ($booking) {
     // Handle case where no booking is found
     die("Booking not found");
 }
+
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
+    
 
 <head>
     <meta charset="UTF-8">
@@ -131,38 +137,53 @@ if ($booking) {
             </div>
             <div class="top">
                 <div class="left-details">
+                <form action="../backend/refund.php" method="POST" enctype="multipart/form-data">
+                    <input type="hidden" name="clientID" value="<?php echo htmlspecialchars($clientID); ?>">
+                    <input type="hidden" name="bookingID" value="<?php echo htmlspecialchars($bookingID); ?>">
                     <div class="detail-item">
                         <p class="label">Reason of Refund </p>
-                        <select id="" name="">
-                            <option value=""></option>
-                            <option value=""></option>
-                            <option value=""></option>
+                        <select id="refund_reason" name="reason">
+                            <option value="">Select a reason</option>
+                            <option value="incorrect_payment">Incorrect payments</option>
+                            <option value="health_emergency">Health emergencies</option>
+                            <option value="natural_disaster">Natural disasters that prevent the event from proceeding</option>
+                            <option value="other">Other</option>
                         </select>
                     </div>
+                    <div class="detail-item" id="proof_upload_container" style="display: none;">
+                            <p class="label">Upload Proof</p>
+                            <input type="file" id="proof_upload" name="proof_refund" accept="image/*">
+                        </div>
+
                     <div class="detail-item">
                         <p class="label">Refund to </p>
-                        <select id="" name="">
-                            <option value=""></option>
-                            <option value=""></option>
-                            <option value=""></option>
+                        <select name="send_to">
+                            <option value="">Select refund method</option>
+                            <option value="bank">Bank</option>
+                            <option value="gcash">GCash</option>
                         </select>
+
                     </div>
                     <div class="detail-item">
-                        <p class="label">Input your Bank Transaction No. / Gcash Number: </p>
-                        <input type="text">
+                        <p class="label">Input your Bank Number / Gcash Number:</p>
+                        <input type="text" name="send_to">
                     </div>
                     <div class="detail-item">
                         <p class="label">Account Name</p>
-                        <input type="text">
+                        <input type="text" id="account_name" name="account_name">
+                    </div>
+                    <input type="hidden" name="review" value="For Approval">
+
+                </div>
+ 
+                    <div class="right-details">
+                        <h3>How to Refund?</h3>
                     </div>
                 </div>
-                <div class="right-details">
-                    <h3>How to Refund?</h3>
-                </div>
-            </div>
-            <div class="buttons-book">
-                <button class="btn-client" id="">Submit Request</button>
-            </div>
+                    <div class="buttons-book">
+                        <button class="btn-client" id="">Submit Request</button>
+                    </div>
+                    </form>
         </section>
 
         <section class="container-credential">
@@ -176,6 +197,35 @@ if ($booking) {
 
 </body>
 <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Show/hide proof upload based on refund reason
+        const refundReasonSelect = document.getElementById('refund_reason');
+        const proofUploadContainer = document.getElementById('proof_upload_container');
+        
+        refundReasonSelect.addEventListener('change', function() {
+            if (this.value === 'health_emergency' || this.value === 'other') {
+                proofUploadContainer.style.display = 'block';
+            } else {
+                proofUploadContainer.style.display = 'none';
+                document.getElementById('proof_upload').value = ''; // Clear file input
+            }
+        });
+    });
 
-</script>
+    function validateForm() {
+        const refundReason = document.getElementById('refund_reason').value;
+        const proofUpload = document.getElementById('proof_upload');
+
+        // Check proof upload for specific reasons
+        if ((refundReason === 'health_emergency' || refundReason === 'other') && 
+            proofUpload.files.length === 0) {
+            alert('Please upload proof for this reason');
+            return false;
+        }
+
+        // Show success message
+        alert('Refund request submitted successfully!');
+        return true;
+    }
+    </script>
 </html>

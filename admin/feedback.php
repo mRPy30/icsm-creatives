@@ -100,11 +100,11 @@ $result = mysqli_query($conn, $query);
                                     <span class="rating-number">(<?php echo $row['rating']; ?>)</span>
                                 </td>                                
                                 <td>
-    <?php if ($row['status'] !== 'Posted' && $row['status'] !== 'Archived') { ?>
-        <button class="status-btn posted" onclick="updateStatus(<?php echo $row['feedbackID']; ?>, 'Posted')">Posted</button>
-        <button class="status-btn archived" onclick="updateStatus(<?php echo $row['feedbackID']; ?>, 'Archived')">Archived</button>
-    <?php } ?>
-</td>
+                                    <?php if ($row['status'] !== 'Posted' && $row['status'] !== 'Archived') { ?>
+                                        <button class="status-btn posted" onclick="updateStatus(<?php echo $row['feedbackID']; ?>, 'Posted')">Posted</button>
+                                        <button class="status-btn archived" onclick="updateStatus(<?php echo $row['feedbackID']; ?>, 'Archived')">Archived</button>
+                                    <?php } ?>
+                                </td>
                             </tr>
                         <?php } ?>
                     </tbody>

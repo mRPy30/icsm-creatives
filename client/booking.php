@@ -87,10 +87,12 @@ while ($row = $unavailableResult->fetch_assoc()) {
 $allUnavailableDates = array_merge($fullyBookedDates, $unavailableDates);
 
 // Modified dbcon.php query section
-$sql = "SELECT eventName, picture, recommended_venue, img_venue FROM event";
-$venueResult = $conn->query($sql);
+$sql = "SELECT e.eventName, e.eventID, v.locationAddress, v.img_venue, v.venueID 
+        FROM event e
+        JOIN venue v ON e.eventID = v.eventID";
+$result = $conn->query($sql);
 $venues = [];
-while ($row = $venueResult->fetch_assoc()) {
+while ($row = $result->fetch_assoc()) {
     // Convert img_venue binary data to base64
     if ($row['img_venue']) {
         $base64Image = base64_encode($row['img_venue']);
@@ -98,9 +100,12 @@ while ($row = $venueResult->fetch_assoc()) {
     } else {
         $row['img_venue'] = ''; // Default empty string if no image
     }
-    $venues[] = $row;
+    $venues[$row['eventName']][] = [
+        'locationAddress' => $row['locationAddress'],
+        'img_venue' => $row['img_venue'],
+        'venueID' => $row['venueID']
+    ];
 }
-
 
 ?>
 
@@ -131,7 +136,6 @@ while ($row = $venueResult->fetch_assoc()) {
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     
-
 </head>
 
 <body>
@@ -157,15 +161,13 @@ while ($row = $venueResult->fetch_assoc()) {
         <div class="form-group">
             <div class="left-info">
                 <label for="type_of_event">Type of Event:</label>
-                <div class="input-with-icon"> 
-                    <i class="fa-solid fa-camera"></i>
+                <div class="input-with-icon">
+                <i class="fa-solid fa-camera"></i>
                     <select id="venue-event-select" class="input-with-icon">
                         <option value="">Choose an event type</option>
-                        <?php foreach ($venues as $venue): ?>
-                            <option value="<?php echo htmlspecialchars($venue['eventName']); ?>"
-                                    data-venues="<?php echo htmlspecialchars($venue['recommended_venue']); ?>"
-                                    data-image="<?php echo htmlspecialchars($venue['img_venue']); ?>">
-                                <?php echo htmlspecialchars($venue['eventName']); ?>
+                        <?php foreach (array_keys($venues) as $eventName): ?>
+                            <option value="<?php echo htmlspecialchars($eventName); ?>">
+                                <?php echo htmlspecialchars($eventName); ?>
                             </option>
                         <?php endforeach; ?>
                     </select>
@@ -253,12 +255,12 @@ while ($row = $venueResult->fetch_assoc()) {
                                         <i class="fa-regular fa-calendar-days"></i>
                                         <input type="text" id="event_date" name="event_date" required>
                                     </div>
-                                    <br>
+                                    <h4 class="note">**Note: Make sure your event is 4 days after current date</h4>
                                     <label for="event_location">Venue Location:</label>
                                     <div class="input-with-icon">
-                                        <i class="fa-solid fa-location-dot"></i>
                                         <input type="text" id="event_location" name="event_location" value="<?php echo htmlspecialchars($event_location); ?>" required autocomplete="off">
                                     </div>
+                                    <div id="google-map-container"></div>
                                 </div>   
                                 <div class="right-info">
                                     <label for="title_event">Event Name:</label>
@@ -442,38 +444,36 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Handle event selection
     venueEventSelect.addEventListener('change', function() {
-        const selectedOption = this.options[this.selectedIndex];
-        const venues = selectedOption.dataset.venues;
-        const image = selectedOption.dataset.image;
-        
-        if (venues) {
-            const venueArray = venues.split(',').map(venue => venue.trim());
-            
-            // Clear previous venues
-            venueList.innerHTML = '';
-            
-            // Add venue cards
-            venueArray.forEach(venue => {
-                const venueCard = document.createElement('div');
-                venueCard.className = 'venue-card';
-                venueCard.innerHTML = `
-                    <img src="${image}" alt="${venue}">
-                    <div class="venue-info">
-                        <h6>${venue}</h6>
-                        <button class="copy-btn" onclick="copyVenue('${venue}')">
-                            <i class="fa-regular fa-copy"></i> Copy
-                        </button>
-                    </div>
-                `;
-                venueList.appendChild(venueCard);
-                
-                // Update map for the first venue
-                if (venueArray.indexOf(venue) === 0) {
-                    updateMap(venue);
-                }
-            });
-        }
-    });
+    const selectedEvent = this.value;
+    const venueData = <?php echo json_encode($venues); ?>;
+
+    if (selectedEvent) {
+        venueList.innerHTML = '';
+        const selectedVenues = venueData[selectedEvent];
+
+        selectedVenues.forEach(venue => {
+            const venueCard = document.createElement('div');
+            venueCard.className = 'venue-card';
+            venueCard.innerHTML = `
+                <img src="${venue.img_venue}" alt="${venue.locationAddress}">
+                <div class="venue-info">
+                    <h6>${venue.locationAddress}</h6>
+                    <button class="copy-btn" onclick="copyVenue('${venue.locationAddress}')">
+                        <i class="fa-regular fa-copy"></i> Copy
+                    </button>
+                </div>
+            `;
+            venueList.appendChild(venueCard);
+
+            // Update map for the first venue
+            if (selectedVenues.indexOf(venue) === 0) {
+                updateMap(venue.locationAddress);
+            }
+        });
+    } else {
+        venueList.innerHTML = '';
+    }
+});
     
     // Function to update map
     function updateMap(location) {
@@ -540,7 +540,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const googleMapContainer = document.createElement('div');
     googleMapContainer.id = 'google-map-container';
     googleMapContainer.style.display = 'none';
-    googleMapContainer.style.width = '100%';
+    googleMapContainer.style.width = '200%';
     googleMapContainer.style.height = '300px';
     googleMapContainer.style.marginTop = '10px';
 
@@ -683,6 +683,18 @@ document.addEventListener('DOMContentLoaded', function() {
     availableDatesButton.addEventListener('click', animateCalendarButton);
 });
 
+
+document.getElementById('event_date').addEventListener('click', function() {
+            document.getElementById('dateNote').classList.add('hidden');
+        });
+
+        // Optional: Show the note again if the input loses focus and is empty
+        document.getElementById('event_date').addEventListener('blur', function() {
+            if (!this.value) {
+                document.getElementById('dateNote').classList.remove('hidden');
+            }
+        });
+
 document.addEventListener('DOMContentLoaded', function() {
     const calendarPopup = document.getElementById('calendarPopup');
     const calendarOverlay = document.getElementById('calendarOverlay');
@@ -816,12 +828,13 @@ document.addEventListener('DOMContentLoaded', function() {
            '08:00 AM', '09:00 AM', '10:00 AM', '11:00 AM', '12:00 PM', '01:00 PM', '02:00 PM',
            '03:00 PM', '04:00 PM', '05:00 PM', '06:00 PM', '07:00 PM', '08:00 PM'
        ];
-       timeSlots.forEach(time => {
-           const option = document.createElement('option');
-           option.value = time;
-           option.textContent = time;
-           selectElement.appendChild(option);
-       });
+        timeSlots.forEach(time => {
+            const option = document.createElement('option');
+            option.value = time;
+            option.textContent = time;
+            option.style.fontWeight = 'bold';
+            selectElement.appendChild(option);
+        });
     }
 
     populateTimeOptions(eventTimeSelect);
@@ -832,7 +845,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     flatpickr(eventDateInput, {
         dateFormat: "Y-m-d",
-        minDate: new Date().setDate(new Date().getDate() + 3),
+        minDate: new Date().setDate(new Date().getDate() + 4),
         altInput: true,
         altFormat: "F j, Y",
         disable:  allUnavailableDates,
@@ -864,7 +877,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
                     if (optionHour >= bookedStartHour && optionHour < bookedEndHour) {
                         option.disabled = true;
-                        option.title = "Already booked this time"; // Add hover message
+                        option.style.color = 'rgb(234, 108, 108)';
+                        option.style.cursor = "not-allowed";
+                        option.style.fontWeight = '400';
+                        option.title = "Already booked this time"; 
                     }
                 });
             });
@@ -965,18 +981,21 @@ document.addEventListener('DOMContentLoaded', function() {
                 eventCard = `
                     <div class='event-card'>
                         <div class='event-details-disabled'>
-                            <div class="decline-reason">
+                            <div class="cancelled-reason">
                                 <h6>Cancelled ${booking.cancelled_by} || ${booking.reason}</h6>
                                 <img src='${booking.picture}' alt='Event Image'>
                             </div>
-                            <div class='details-disabled'>
+                            <div class='details-cancelled-disabled'>
                                 <h5>${booking.title_event}</h5>
                                 <p><i class='fas fa-map-marker-alt'></i> ${booking.eventLocation}</p>
                                 <p><i class='far fa-calendar'></i> ${booking.formattedDate}</p>
                                 <p><i class='far fa-clock'></i> ${booking.formattedTime}</p>
                             </div>
                         </div>
-                        ${showRefundButton ? `<div class="buttons-book"><a href="../client/refund.php?bookingID=${booking.bookingID}" class="refund-button">Request Refund</a></div>` : ''}
+                        ${showRefundButton ? `<div class="cancelled-right">
+                            <div class="buttons-book"><a href="../client/refund.php?bookingID=${booking.bookingID}" class="refund-button">Request Refund</a></div>
+                            <p>Available within 48 hours.</p>
+                        </div> ` : ''}
                     </div>
                 `;
             } else if (status === 'Declined') {

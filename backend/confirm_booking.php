@@ -25,6 +25,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $remaining_balance = $_POST['remaining_balance'];
     $payment_method = $_POST['payment_method'];
     $ref_num = '';
+    $selectedFilterName = isset($_SESSION['selected_filter']) ? $_SESSION['selected_filter'] : null;
+    $selectedThemeName = isset($_SESSION['selected_theme']) ? $_SESSION['selected_theme'] : null;
 
     $validDate = DateTime::createFromFormat('Y-m-d', $eventDate);
     if (!$validDate || $validDate->format('Y-m-d') !== $eventDate) {
@@ -85,18 +87,47 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
     }
 
+    // Retrieve filterID
+    $filterID = null;
+    if ($selectedFilterName) {
+        $filterQuery = "SELECT filterID FROM filters WHERE filter_name = ?";
+        $stmt = $conn->prepare($filterQuery);
+        $stmt->bind_param("s", $selectedFilterName);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        if ($result->num_rows > 0) {
+            $row = $result->fetch_assoc();
+            $filterID = $row['filterID'];
+        }
+    }
+
+    // Retrieve themeID
+    $themeID = null;
+    if ($selectedThemeName) {
+        $themeQuery = "SELECT themeID FROM themes WHERE theme_name = ?";
+        $stmt = $conn->prepare($themeQuery);
+        $stmt->bind_param("s", $selectedThemeName);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        if ($result->num_rows > 0) {
+            $row = $result->fetch_assoc();
+            $themeID = $row['themeID'];
+        }
+    }
+
+
      // Prepare the SQL statement with proof_payment
      $sql = "INSERT INTO booking (clientID, eventDate, event_time, eventLocation, eventID, 
      title_event, service_package, additional, pax, total_cost, proof_payment, 
-     payment_option, remaining_balance, status, ref_num, payment_method, created_at)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Pending', ?, ?, CURRENT_TIMESTAMP)";
+     payment_option, remaining_balance, status, ref_num, payment_method, filterID, themeID, created_at)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Pending', ?, ?, ?, ?, CURRENT_TIMESTAMP)";
 
 $stmt = $conn->prepare($sql);
 if ($stmt) {
- $stmt->bind_param("isssisssidssiss", 
+ $stmt->bind_param("isssisssidssissii", 
      $clientID, $eventDate, $eventTime, $eventLocation, $eventID, 
      $title_event, $service_package, $additional, $pax, $total_cost, 
-     $proof_payment, $payment_option, $remaining_balance, $ref_num, $payment_method
+     $proof_payment, $payment_option, $remaining_balance, $ref_num, $payment_method , $filterID, $themeID
  );
     
      if ($stmt->execute()) {
@@ -126,8 +157,9 @@ if ($stmt) {
              header("Location: ../client/success.php");
              exit();
          } else {
-             echo "Warning: Email could not be sent, but booking was saved.";
-         }
+            header("Location: ../client/success.php");
+            exit();         
+        }
      } else {
          echo "Error executing statement: " . $stmt->error;
      }

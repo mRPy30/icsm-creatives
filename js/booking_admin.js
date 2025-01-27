@@ -178,21 +178,21 @@ let selectedMonth = '';
                 const leftMargin = 20;
                 
                 doc.text(`Booking ID: ${booking.bookingId}`, leftMargin, yPos);
-                yPos += 8;
+                yPos += 7;
                 doc.text(`Client Name: ${booking.client_name}`, leftMargin, yPos);
-                yPos += 8;
+                yPos += 7;
                 doc.text(`Service Package: ${booking.service_name}`, leftMargin, yPos);
-                yPos += 8;
+                yPos += 7;
                 doc.text(`Event Location: ${booking.eventLocation}`, leftMargin, yPos);
-                yPos += 8;
+                yPos += 7;
                 doc.text(`Date & Time: ${booking.formattedDateTime}`, leftMargin, yPos);
-                yPos += 8;
+                yPos += 7;
                 doc.text(`Payment Option: ${booking.payment_option}`, leftMargin, yPos);
-                yPos += 8;
-                doc.text(`Remaining Balance: ${formatCurrency(booking.remaining_balance)}`, leftMargin, yPos);
+                yPos += 7;
+                doc.text(`Remaining Balance: Php.${formatCurrency(booking.remaining_balance)}`, leftMargin, yPos);
                 
                 // Add policies
-                yPos += 13;
+                yPos += 11;
                 
                 // Reschedule Policy
                 doc.setFontSize(12);
@@ -261,35 +261,28 @@ let selectedMonth = '';
                     yPos += 6;
                 });
     
-                // Add footer with background color
-                const footerHeight = 25; // Height of footer in mm
+                const footerHeight = 25; 
                 const pageHeight = doc.internal.pageSize.getHeight();
                 const pageWidth = doc.internal.pageSize.getWidth();
                 
-                // Add dark background for footer
-                doc.setFillColor(28, 28, 29); // #1C1C1D in RGB
+                doc.setFillColor(28, 28, 29); 
                 doc.rect(0, pageHeight - footerHeight, pageWidth, footerHeight, 'F');
                 
-                // Set text color to white for footer content
                 doc.setTextColor(255, 255, 255);
-                doc.setFontSize(10);
+                doc.setFontSize(9);
                 
-                // Add contact information in footer
                 const footerY = pageHeight - footerHeight + 10;
                 doc.text('Contact Us:', leftMargin, footerY);
                 doc.text('Facebook: facebook.com/icsmcreatives', leftMargin, footerY + 5);
-                doc.text('Phone: 0999999999', pageWidth/2, footerY + 5, { align: 'center' });
+                doc.text('Phone: 090662823101 - (Gycia Moran, Ceo Company)', leftMargin, footerY + 10);
                 doc.text('Email: icsmcreatives@gmail.com', pageWidth - leftMargin, footerY + 5, { align: 'right' });
                 
-                // Add generation date in footer
                 doc.setFontSize(8);
                 const currentDate = new Date().toLocaleString();
                 doc.text(`Generated on: ${currentDate}`, pageWidth - leftMargin, footerY + 10, { align: 'right' });
                 
-                // Reset text color to black for future use
                 doc.setTextColor(0, 0, 0);
     
-                // Save the PDF
                 const fileName = `booking_receipt_${booking.bookingId}.pdf`;
                 doc.save(fileName);
             };
@@ -298,11 +291,10 @@ let selectedMonth = '';
             alert('Error generating receipt. Please try again.');
         }
     }
-    // Function to update year/month filters and re-render bookings
     function filterByDate() {
         selectedYear = document.getElementById('year-select').value;
         selectedMonth = document.getElementById('month-select').value;
-        renderBookings(); // Re-render based on updated date filter
+        renderBookings(); 
     }
 
     function renderBookings() {
@@ -316,7 +308,6 @@ let selectedMonth = '';
 
         tableBody.innerHTML = ''; 
 
-    // Filter bookings based on current status, year, and month
         const filteredBookings = bookings.filter(booking => {
         const bookingDate = new Date(booking.eventDate);
         const matchesStatus = currentFilter === 'all' || booking.status.toLowerCase() === currentFilter;
@@ -326,7 +317,6 @@ let selectedMonth = '';
         return matchesStatus && matchesYear && matchesMonth;
     });
 
-    // Update booking counts
     allCount.innerText = bookings.length;
     pendingCount.innerText = bookings.filter(b => b.status.toLowerCase() === 'pending').length;
     acceptedCount.innerText = bookings.filter(b => b.status.toLowerCase() === 'accepted').length;
@@ -355,8 +345,7 @@ let selectedMonth = '';
         } else if (booking.status === 'Accepted') {
             statusCircle = '<span class="status-circle accepted-circle"></span>'
             statusButtons = `
-                <button class="download-receipt" onclick="downloadReceipt(${JSON.stringify(booking).replace(/"/g, '&quot;')})">
-                    <i class="fa-solid fa-download"></i> Download Receipt
+                <button class="download-receipt" onclick="downloadReceipt(${JSON.stringify(booking).replace(/"/g, '&quot;')})">Download Receipt
                 </button> 
                 <button class="cancelled" onclick="openCancelPopup('${booking.bookingId}')">
                 <i class="fa-solid fa-minus"></i> Cancel
@@ -367,19 +356,20 @@ let selectedMonth = '';
                 <button class="archive" onclick="archiveBooking('${booking.bookingId}')"> 
                     <i class="fa-solid fa-box-archive"></i> Archive
                 </button>`;
-        } else if (booking.status === 'Cancelled') {
-            statusCircle = '<span class="status-circle cancelled-circle"></span>';
-            statusButtons = `<div class="cancel-reason">Reason: ${booking.reason}')"</div>`;
         } else if (booking.status === 'Completed') {
             statusCircle = '<span class="status-circle completed-circle"></span>';
             statusButtons = `
                 <button class="archive" onclick="archiveBooking('${booking.bookingId}')"> 
                     <i class="fa-solid fa-box-archive"></i> Archive
                 </button>`;
-        }
+        } else if (booking.status === 'Cancelled') {
+            statusCircle = '<span class="status-circle cancelled-circle"></span>';
+            statusButtons = `
+        <div class="cancel-reason">Reason: ${booking.cancelReason}</div>`;
+        } 
 
         const receiptLink = booking.proof_payment ?
-            `<a href="javascript:void(0);" onclick="seeReceipt('${booking.bookingId}', '${booking.proof_payment}')">See Receipt</a>` :
+            `<a href="javascript:void(0);" onclick="seeReceipt('${booking.bookingId}', '${booking.proof_payment}')">See Client Payment Receipt</a>` :
             'No Receipt';
 
         const assignStaffButton = booking.assignedStaff && booking.assignedStaff.length > 0
@@ -423,13 +413,53 @@ let selectedMonth = '';
                 <td>${booking.payment_option}</td>
                 <td>${booking.payment_method}</td>
                 <td>${receiptLink}</td>
-                <td>${booking.remaining_balance}</td>
+                <td>Php.${booking.remaining_balance}</td>
                 <td>${statusButtons}</td>
                 <td>${sendSmsButton}</td>
             </tr>`;
         tableBody.insertAdjacentHTML('beforeend', row);
     });
 }
+
+
+function showRefundDetails(reason, send_to, account_name, review, refundID) {
+    const popup = document.getElementById('refundDetails');
+    popup.setAttribute('data-refund-id', refundID); // Store refund ID for reference
+
+    const content = popup.querySelector('.popup-content');
+    
+    // Create dynamic content for the refund details
+    content.innerHTML = `
+        <span class="close" onclick="closeRefundRequestModal()">&times;</span>
+        <h2>Refund Request Details</h2>
+        <p><strong>Refund Reason:</strong> ${reason || 'N/A'}</p>
+        <p><strong>Send To:</strong> ${send_to || 'N/A'}</p>
+        <p><strong>Account Name:</strong> ${account_name || 'N/A'}</p>
+        <p><strong>Review:</strong> ${review || 'N/A'}</p>
+    `;
+    
+    // Append the form with buttons below the dynamic content
+    const formHTML = `
+        <form id="refundForm" action="../backend/update_refund.php" method="POST">
+            <input type="hidden" name="refundID" value="${refundID}">
+            <input type="hidden" id="reviewInput" name="review">
+            <div class="refund-actions">
+                <button type="button" onclick="submitRefundForm('Approved Refund')">Approve</button>
+                <button type="button" onclick="submitRefundForm('Declined Refund')">Decline</button>
+            </div>
+        </form>
+    `;
+    
+    content.innerHTML += formHTML;  // Append the form to the content
+
+    popup.style.display = 'block';  // Show the popup
+}
+
+
+function closeRefundRequestModal() {
+    document.getElementById('refundDetails').style.display = 'none';
+}
+
 
 function openMessageModal(cellphone, bookingId) {
     const modal = document.getElementById('messageModal');
@@ -650,7 +680,7 @@ function generatePDF() {
                     0: { cellWidth: 25 }, // Booking ID
                     1: { cellWidth: 20 }, // Status
                     2: { cellWidth: 35 }, // Service Package
-                    3: { cellWidth: 30 }, // Client Name
+                    3: { cellWidth: 50 }, // Client Name
                     4: { cellWidth: 35 }, // Date & Time
                     5: { cellWidth: 40 }, // Location
                     6: { cellWidth: 25 }, // Payment Status
@@ -692,7 +722,7 @@ function generatePDF() {
 
 // Updated Helper function to format currency
 function formatCurrency(amount) {
-    return `₱${amount.toLocaleString('en-PH', {
+    return `Php. ${amount.toLocaleString('en-PH', {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2
     })}`;

@@ -55,6 +55,19 @@ if (isset($_POST['additional_services_data'])) {
 $_SESSION['selected_services'] = $selected_services;
 $_SESSION['selected_additional_services'] = $selected_additional_services;
 
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Store selected filter in session
+    if (isset($_POST['selected_filter'])) {
+        $_SESSION['filter_name'] = $_POST['selected_filter'];
+    }
+
+    // Store selected theme in session
+    if (isset($_POST['selected_theme'])) {
+        $_SESSION['theme_name'] = $_POST['selected_theme'];
+    }
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -123,11 +136,7 @@ $_SESSION['selected_additional_services'] = $selected_additional_services;
                         </div>
                         <form class="payment" action="../backend/confirm_booking.php" method="POST" enctype="multipart/form-data">
                             <div class="payment-btn">
-                                <button class="cart" type="button"  onclick="showCartConfirmation()">
-                                    <i class="fa-solid fa-cart-flatbed"></i>
-                                    Add to cart
-                                </button>
-
+                            
                                 <button class="edit" type="button">
                                     <i class="fa-regular fa-pen-to-square"></i>
                                     Edit Your Booking
@@ -150,10 +159,8 @@ $_SESSION['selected_additional_services'] = $selected_additional_services;
                                             <div class="detail-item">
                                                 <p class="label">Date:</p>
                                                 <?php 
-                                                // Format the date 
                                                 $original_date = $_SESSION['booking']['event_date'] ?? 'Not provided';
                                                 if ($original_date !== 'Not provided') {
-                                                    // Convert the date to a more readable format
                                                     $formatted_date = date('F d, Y', strtotime($original_date));
                                                     echo '<h6>' . htmlspecialchars($formatted_date) . '</h6>';
                                                 } else {
@@ -164,12 +171,9 @@ $_SESSION['selected_additional_services'] = $selected_additional_services;
                                             <div class="detail-item">
                                                 <p class="label">Event Time:</p>
                                                 <?php 
-                                                // Get the original event time
                                                 $original_time = $_SESSION['booking']['event_time'] ?? 'Not provided';
 
-                                                // If time is provided, calculate the end time (+4 hours)
                                                 if ($original_time !== 'Not provided') {
-                                                    // Convert original time to DateTime object
                                                     $start_time = DateTime::createFromFormat('h:i A', $original_time);
 
                                                     // Add 4 hours
@@ -196,6 +200,14 @@ $_SESSION['selected_additional_services'] = $selected_additional_services;
                                             <div class="detail-item">
                                                 <p class="label">Pax:</p>
                                                 <h6><?php echo htmlspecialchars($_SESSION['booking']['pax'] ?? 'Not provided'); ?></h6>
+                                            </div>
+                                            <div class="detail-item">
+                                                <p class="label">Filter:</p>
+                                                <h6><?php echo htmlspecialchars($_SESSION['filter_name'] ?? 'Not provided'); ?></h6>
+                                            </div>
+                                            <div class="detail-item">
+                                                <p class="label">Theme:</p>
+                                                <h6><?php echo htmlspecialchars($_SESSION['theme_name'] ?? 'Not provided'); ?></h6>
                                             </div>
                                         </div>
                                     </div>
@@ -264,7 +276,23 @@ $_SESSION['selected_additional_services'] = $selected_additional_services;
                                     </div>
                                     <div class="payment-content">
                                         <input type="hidden" name="payment_method" class="payment-method-input" value="PayPal">
-                                        <div id="paypal-button-container"></div> <!-- PayPal button will be rendered here -->
+                                        <div class="payment-content-inner">
+                                            <div class="qr-code">
+                                                <img src="../picture/paypalLogo.png">
+                                                <p><strong>Gycia Moran</strong></p>
+                                            </div>
+                                            <div class="payment-instructions">
+                                                <h4>Follow these steps:</h4>
+                                                <div class="instruction">
+                                                    <p class="step-pay"><span>Step1:</span> Scan QR Code or Go to GCash App and enter number 09999999999</p>
+                                                    <p class="step-pay"><span>Step2:</span> Upload receipt</p>
+                                                    <p class="step-pay"><span>Step3:</span> Enter Reference No.</p>
+                                                </div>
+                                                <div class="payment-form">
+                                                    <div id="paypal-button-container"></div> 
+                                                </div>
+                                            </div>
+                                        </div>
                                         <p class="security-note">**Payment - All transactions are secure and encrypted.</p>
                                     </div>
                                 </div>
@@ -306,46 +334,6 @@ $_SESSION['selected_additional_services'] = $selected_additional_services;
                                         </div>
                                     </div>
                                 </div>
-
-                                <div class="payment-section">
-                                    <div class="payment-header">
-                                        <h3>Bank Transfer BDO</h3>
-                                        <span class="arrow"><i class="fa-solid fa-angle-down"></i></span>
-                                    </div>
-                                    <div class="payment-content">
-                                        <input type="hidden" name="payment_method" class="payment-method-input" value="GCash">
-                                        <div class="payment-content-inner">
-                                            <div class="qr-code">
-                                                <img src="../picture/bdo.png" alt="QR Code">
-                                                <p><strong>Klarimel Gycia Moran</strong></p>
-                                                <p>008350162132</p>
-                                            </div>
-
-                                            <div class="payment-instructions">
-                                                <h4>Follow these steps:</h4>
-                                                <div class="instruction">
-                                                    <p class="step-pay"><span>Step1:</span> Scan QR Code or Go to BDO Online App</p>
-                                                    <p class="step-pay"><span>Step2:</span> Upload receipt</p>
-                                                    <p class="step-pay"><span>Step3:</span> Enter Transaction No.</p>
-                                                </div>
-
-                                                <div class="payment-form">
-                                                    <label>Upload Receipt</label>
-                                                    <div class="upload-field">
-                                                        <input type="text" readonly placeholder="Choose file">
-                                                        <button class="browse-btn">Browse</button>
-                                                        <input type="file" id="paymentProof"hidden>
-                                                    </div>
-                                                    <br>
-                                                    <label>Enter Transaction</label>
-                                                    <input type="text" placeholder="Enter Reference Number" name="gcash_ref" class="reference-input">
-                                                </div>
-                                                <p class="security-note">**Payment - All transactions are secure and encrypted.</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
 
                                 <div class="policy-section">
                                     <p><strong>POLICY</strong></p>
@@ -889,6 +877,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const line_height = 25;
         let current_y = details_y_start;
         
+        
         ctx.fillText(`Transaction ID: ${details.id}`, 30, current_y);
         current_y += line_height;
         
@@ -1080,30 +1069,53 @@ const styles = `
         justify-content: center;
         align-items: center;
         z-index: 1000;
+        animation: fadeIn 0.3s ease-out;
+        box-shadow: 0px 0px 400px 900px rgba(0, 0, 0, 0.28);
+        z-index: 10000;
+        
     }
     
     .success-content {
         background: white;
-        padding: 20px;
+        padding: 30px;
         border-radius: 8px;
         text-align: center;
-        max-width: 400px;
+        max-width: 500px;
+        animation: popupFade 0.3s ease-out;
     }
+
+    @keyframes popupFade {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
     
     .success-content i {
         color: #4CAF50;
-        font-size: 48px;
-        margin-bottom: 15px;
+        font-size: 60px;
+        margin-bottom: 20px;
+    }
+
+    .success-content p{
+        font: normal 400 14px/1.5 'Poppins';
+        color: #666;
     }
     
     .success-content button {
         margin-top: 15px;
-        padding: 8px 20px;
+        padding: 12px 30px;
         background: #4CAF50;
         color: white;
         border: none;
         border-radius: 4px;
         cursor: pointer;
+        font: normal 400 14px/normal 'Poppins';
+        transition: background 0.3s;
     }
     
     .success-content button:hover {

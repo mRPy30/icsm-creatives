@@ -28,33 +28,56 @@ $page = $components[2];
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" href="../picture/shortcut-logo.png" type="image/x-icon">
-    <title>Albums | Dashboard</title>
+    <title>Uploading Albums</title>
     <link rel="stylesheet" href="../css/staff.css">
     <link rel="stylesheet" href="../font-awesome-6/css/all.css">
     <link rel="stylesheet" href="../css/fonts.css">
     <style>
         /* Fixed Table Styles */
-        .table-container {
-            position: relative; /* Ensures the table stays in place */
-            z-index: 1; /* Keeps the table below the modal */
+        .folder-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
             margin-top: 20px;
-            overflow-x: auto;
         }
 
-        table {
-            width: 100%;
-            table-layout: fixed;
-            border-collapse: collapse;
+        .folder {
+            padding: 15px;
+            width: 220px;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.3s;
         }
 
-        table, th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
+        .folder:hover {
+            transform: scale(1.05);
         }
 
-        th {
-            background-color: #f2f2f2;
+        .folder i {
+            font-size: 5rem;
+            color: #BC8759; /* Green color for the icon */
+        }
+
+        .name {
+            font: normal 500 13px/normal 'Poppins';
+        }
+
+        .deadline{
+            font: normal 400 11px/normal 'Poppins';
+        }
+
+        .folder-title {
+            font-weight: 600;
+            margin-top: 10px;
+            font-size: 1.1rem;
+            color: #333;
+        }
+
+        .upload-btn {
+            color: #007bff;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
         }
 
         .upload-btn {
@@ -68,7 +91,6 @@ $page = $components[2];
             text-decoration: underline;
         }
 
-        /* Modal Styles */
         .modal {
             position: fixed;
             top: 0;
@@ -137,92 +159,68 @@ $page = $components[2];
         ?>
 
         <!-- Client Details Table -->
-        <section class="container-staff">
-            <h2>Client Details</h2>
-            <div class="table-container">
-                <table class="header-table">
-                    <thead>
-                        <tr>
-                            <th>Booked By</th>
-                            <th>Status</th>
-                            <th>Event Name</th>
-                            <th>Venue Location</th>
-                            <th>Event Date</th>
-                            <th>Deadline</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php
+        <section class="dashboard">
+            <div class="container-staff">
+                <div class="folder-container">
+                    <?php
                         // Retrieve client details from database using prepared statements
                         $sql = "
-                            SELECT b.clientID, c.name, b.eventDate, b.title_event, b.eventLocation, bs.deadline, b.status
+                            SELECT b.clientID, b.bookingId, c.name, b.title_event, bs.deadline
                             FROM booking_staff bs
                             JOIN booking b ON bs.bookingId = b.bookingId
                             JOIN client c ON b.clientID = c.clientID
                             WHERE bs.staff_ID = ?
+                            GROUP BY b.bookingId
                         ";
                         if ($stmt = $conn->prepare($sql)) {
                             $stmt->bind_param("i", $_SESSION['staff_ID']);
                             $stmt->execute();
                             $result = $stmt->get_result();
-
+                        
                             if ($result && $result->num_rows > 0) {
                                 while ($row = $result->fetch_assoc()) {
-                                    echo "<tr>";
-                                    echo "<td>" . htmlspecialchars($row['name']) . "</td>";
-                                    echo "<td>" . htmlspecialchars($row['status']) . "</td>";
-                                    echo "<td>" . htmlspecialchars($row['title_event']) . "</td>";
-                                    echo "<td>" . htmlspecialchars($row['eventLocation']) . "</td>";
-                                    echo "<td>" . htmlspecialchars($row['eventDate']) . "</td>";
-                                    echo "<td>" . htmlspecialchars($row['deadline']) . "</td>";
-                                    echo "<td>";
-                                    if (strtolower($row['status']) === 'completed') { 
-                                        echo "<a class='upload-btn' onclick='showUploadModal(" . $row['clientID'] . ")'>Upload Image</a>";
-                                    } else {
-                                        echo "Event is in progress";
-                                    }
-                                    echo "</td>";
-                                    echo "</tr>";
+                                    echo "<div class='folder' onclick='showUploadModal(" . $row['clientID'] . ", " . $row['bookingId'] . ")'>";
+                                    echo "<i class='fa-regular fa-image'></i>";
+                                    echo "<div class='folder-title'>" . htmlspecialchars($row['title_event']) . "</div>";
+                                    echo "<p class='name'>" . $row['name'] . "'s </p>";
+                                    echo "<p class='deadline'>" . $row['deadline'] . "</p>";
+                                    echo "</div>";
                                 }
                             } else {
-                                echo "<tr><td colspan='7'>No clients found</td></tr>";
+                                echo "<div>No folders found</div>";
                             }
                             $stmt->close();
                         } else {
-                            echo "<tr><td colspan='7'>Database error: Could not retrieve data</td></tr>";
+                            echo "<div>Error fetching data</div>";
                         }
                         $conn->close();
-                        ?>
-                    </tbody>
-                </table>
+                    ?>
+                </div>
             </div>
         </section>
     </main>
 
     <script>
-        function showUploadModal(clientID) {
-            const modal = document.getElementById("uploadModal");
-            const modalBody = document.getElementById("modalBody");
+        function showUploadModal(clientID, bookingId) {
+    const modal = document.getElementById("uploadModal");
+    const modalBody = document.getElementById("modalBody");
 
-            // Show modal with fade-in effect
-            modal.classList.add("show");
+    modal.classList.add("show");
 
-            // Load content for the modal via AJAX
-            fetch(`upload_image.php?client_id=${clientID}`, {
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest'
-                }
-            })
-            .then(response => response.text())
-            .then(data => {
-                modalBody.innerHTML = data;
-            })
-            .catch(error => {
-                modalBody.innerHTML = `<p>Error loading the form. Please try again later.</p>`;
-                console.error(error);
-            });
+    fetch(`upload_image.php?client_id=${clientID}&booking_id=${bookingId}`, {
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest'
         }
+    })
+    .then(response => response.text())
+    .then(data => {
+        modalBody.innerHTML = data;
+    })
+    .catch(error => {
+        modalBody.innerHTML = `<p>Error loading the form. Please try again later.</p>`;
+        console.error(error);
+    });
+}
 
         // Close modal logic
         document.querySelector(".close-btn").addEventListener("click", () => {

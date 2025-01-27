@@ -27,7 +27,7 @@ body {
 
 .dashboard {
     margin: 6% 1.5% 0 8%;
-    padding: 1.5%;
+    padding: 1.5% 1.5% 0% 1.5%;
     display: flex;
     justify-content: space-between;
 }
@@ -210,7 +210,7 @@ td a{
 }
 
 .table-container {
-    height: 38vh;
+    height: 36vh;
     overflow-y: auto;
 }
 
@@ -231,17 +231,26 @@ td a{
     background-color: #FCF6F6;
 }
 
+.inquiries{
+    width: 100%;
+    margin-bottom: 60px;
+    background-color: var(--tblColor);
+    padding: 0px 0px 50px 0px;
+    height: 47vh;
+    border-radius: 10px;
+    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+}
 
 /*****Booking & Client*****/
 
 .container-admin {
     padding: 10px 0px 20px 0px;
-    margin: 8% 0% 2% 10%;
+    margin: 8% 0% 2% 9%;
     border-radius: 5px;
     background-color: var(--tblColor);
     height: 70%;
     box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25), 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
-    width: 87%;
+    width: 89%;
 }
 
 .container-bottom {
@@ -340,6 +349,42 @@ td a{
     transition: 0.4s;
 }
 
+#refundRequestModal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4);
+}
+
+#refundRequestModal .modal-content {
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 600px;
+}
+
+#refundRequestModal .modal-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+#refundRequestModal .approve-btn {
+    background-color: green;
+    color: white;
+}
+
+#refundRequestModal .cancel-btn {
+    background-color: gray;
+    color: white;
+}
+
 .archive{
     background-color: var(--hoverDark);
     border-radius: 5px;
@@ -384,13 +429,25 @@ td a{
     color: var(--hoverDark);
 }
 
+.prod-table thead th {
+    background-color: var(--headerTble);
+    top: 0;
+    z-index: 2;
+    text-align: left;
+    padding: 10px;
+    border: 1px solid #CCCCCC;
+}
+
+.prod-table tr {
+    border: 1px solid #CCCCCC;
+}
+
 .pending-circle {
-    background-color: #ff8c00;
+    background-color: #ff8800;
 }
 
 .accepted-circle {
-    background-color: #ffde22;
-    ;
+    background-color: #f7ff19;
 }
 
 .declined-circle {
@@ -479,7 +536,6 @@ td a{
 #month-select {
     padding: 4px 15px;
     border: 1px solid #FCF6F6;
-    ;
     border-radius: 5px;
     box-sizing: border-box;
     font: normal 400 13px/normal 'Poppins';
@@ -1214,7 +1270,6 @@ td .profile-image {
     width: 100%;
     padding: 8px;
     border: 1px solid #FCF6F6;
-    ;
     border-radius: 5px;
     box-sizing: border-box;
     font: normal 400 13px/normal 'Poppins';
@@ -1955,6 +2010,12 @@ form .profile-section p {
     width: 87%;
 }
 
+.layout-admin h5{
+    text-align: center;
+    font: normal 600 23px/normal 'Poppins';
+
+}
+
 .top-analytics {
     display: flex;
     flex-direction: row;
@@ -2075,99 +2136,24 @@ form .profile-section p {
     max-height: 280px;
 }
 
+.event-location-line-graph {
+    width: 100%;
+    background-color: var(--tblColor);
+    padding: 10px;
+    border-radius: 5px;
+    background-color: var(--tblColor);
+    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25), 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+    height: 50vh;
+}
+
+#eventLocationLineGraph{
+    max-height: 320px;
+}
+
 
 /******Finance********/
 
-.finance {
-    margin: 5% 0 0 14%;
-    padding: 1.8% 3% 0% 3%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-}
 
-.mid-fin {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-}
-
-.left-finance {
-    display: flex;
-    flex-direction: column;
-    width: 50%;
-    justify-content: space-between;
-    margin-bottom: 15px;
-}
-
-.top {
-    display: flex;
-    flex-direction: row;
-    width: 102%;
-    margin-bottom: 15px;
-}
-
-.fin-box {
-    padding: 20px 20px 50px 20px;
-    margin: 0 5% 2.3% 0;
-    background: rgb(50, 50, 50);
-    background: linear-gradient(318deg, rgba(50, 50, 50, 1) 0%, rgba(28, 28, 29, 1) 45%);
-    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
-    width: 52%;
-    border-radius: 5%;
-    height: 35vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    transition: all .3s ease;
-}
-
-.fin-box:hover {
-    transform: scale(1.01);
-}
-
-.fin-box h4 {
-    font: normal 700 35px/normal 'Poppins';
-    color: #C2BE63;
-    display: flex;
-    margin-top: 5%;
-}
-
-.fin-box p {
-    font: normal 400 15px/normal 'Poppins';
-    color: #FBF4F4;
-}
-
-.bottom {
-    padding: 1% 2% 0 0;
-    display: flex;
-    justify-content: space-between;
-}
-
-.projects {
-    margin-bottom: 2.3%;
-    background-color: #FCF6F6;
-    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
-    width: 99%;
-    height: 36vh;
-    padding: 20px 0px 50px 0px;
-}
-
-.projects h4 {
-    font: normal 700 14px/normal 'Poppins';
-    color: #1c1c1c;
-    text-align: start;
-    margin: 0 0 1% 3%;
-}
-
-.right-finance {
-    display: flex;
-    flex-direction: column;
-    width: 50%;
-    justify-content: space-between;
-    margin-bottom: 15px;
-}
 
 .reports {
     padding-top: 20px;
@@ -2349,6 +2335,7 @@ td form button[name="edit"]:hover {
     display: inline-block;
     cursor: pointer;
     text-decoration: none;
+    margin: 5px 0;
 }
 
 .edit-admin:hover {
@@ -2356,7 +2343,91 @@ td form button[name="edit"]:hover {
     transition: 0.4s;
 }
 
+.service-layout{
+    padding: 10px 0px 20px 0px;
+    margin: 8% 0% 0% 10%;    
+    border-radius: 5px;
+    background-color: var(--tblColor);
+    height: 70%;
+    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25), 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+    width: 86%;
+}
 
+/*******Control*******/
+.control-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    margin: 20px;
+}
+.control-box {
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    background: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+.control-box table {
+    width: 100%;
+    border-collapse: collapse;
+}
+.control-box table th, .control-box table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+}
+.control-box table th {
+    background: #f4f4f4;
+}
+
+.status-btn {
+    border-radius: 5px;
+    font: normal 600 11px/normal 'Poppins';
+    height: auto;
+    color: #FFF;
+    border: none;
+    padding: 8px 15px;
+    text-align: center;
+    display: inline-block;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background-color 0.4s;
+}
+.status-btn.inactive {
+    background-color: #00c72e;
+}
+.status-btn.inactive:hover {
+    background-color: #00a528;
+}
+.status-btn.active {
+    background-color: var(--hoverDark);
+}
+.status-btn.active:hover {
+    background-color: rgb(62, 40, 0);
+}
+
+.control-tbl thead th {
+    background-color: var(--headerTble);
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    text-align: left;
+    padding: 10px;
+    border: 1px solid #CCCCCC;
+    border-collapse: collapse;
+    width: 100%;
+    table-layout: fixed;
+}
+
+.control-tbl tbody td {
+    text-align: left;
+    padding: 10px;
+    border: 1px solid #CCCCCC;
+}
+
+.control-tbl{
+    border-collapse: collapse;
+    font: normal 13px/normal 'Poppins';
+}
 /*****production****/
 
 .prod-box {

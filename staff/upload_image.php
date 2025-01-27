@@ -25,6 +25,9 @@ if (isset($_GET['client_id'])) {
         echo "Client not found.";
         exit;
     }
+    if (isset($_GET['booking_id'])) {
+        $bookingID = $_GET['booking_id'];
+    }
 
     // Check if the form is submitted
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -51,9 +54,9 @@ if (isset($_GET['client_id'])) {
                     // Move the uploaded file to the destination
                     if (move_uploaded_file($fileTmpPath, $fileDestination)) {
                         // Insert file path into the database
-                        $sql = "INSERT INTO gallery (clientID, image_path) VALUES (?, ?)";
+                        $sql = "INSERT INTO gallery (clientID, bookingId, image_path) VALUES (?, ?, ?)";
                         $stmt = $conn->prepare($sql);
-                        $stmt->bind_param("is", $clientID, $fileDestination);
+                        $stmt->bind_param("iis", $clientID, $bookingID, $fileDestination);
 
                         if ($stmt->execute()) {
                             // Success message
@@ -175,6 +178,7 @@ if (isset($_GET['client_id'])) {
             background: rgba(0, 0, 0, 0.6);
             justify-content: center;
             align-items: center;
+            z-index: 10000;
         }
 
         .modal-content {
@@ -187,9 +191,10 @@ if (isset($_GET['client_id'])) {
         }
 
         .modal-content p {
-            color: green;
-            font-size: 18px;
+            color: #9D7651;
+            font-size: 14px;
             font-weight: bold;
+            margin-top: 12px;
         }
 
         .close {
@@ -213,7 +218,7 @@ if (isset($_GET['client_id'])) {
         <form action="upload_image.php?client_id=<?php echo urlencode($clientID); ?>" method="post" enctype="multipart/form-data">
             <label for="client_image">Choose Image(s) (PNG, JPEG, JPG | Max: 10MB each):</label>
             <input type="file" name="client_image[]" id="client_image" accept=".png, .jpeg, .jpg" required multiple>
-            <button type="submit">Upload Image(s)</button>
+            <button type="submit"><i class="fa-solid fa-image"></i> Upload Image(s)</button>
         </form>
 
         <p>Ensure your files are within the allowed size and format.</p>

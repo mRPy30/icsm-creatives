@@ -143,8 +143,79 @@
 
     </main>
 
-
+    <div class="view-image">
+        <span class="close-btn">&times;</span>
+        <span class="nav-btn prev-btn">&#10094;</span>
+        <span class="nav-btn next-btn">&#10095;</span>
+        <img src="" alt="Viewed Image">
+    </div>
 
 </body>
+<script>
+        const viewContainer = document.querySelector('.view-image');
+        const viewImage = viewContainer.querySelector('img');
+        const closeBtn = document.querySelector('.close-btn');
+        const prevBtn = document.querySelector('.prev-btn');
+        const nextBtn = document.querySelector('.next-btn');
+        const galleryImages = document.querySelectorAll('.birthday-gallery-item img');
+        let currentIndex = 0;
 
+        // Convert NodeList to Array for easier navigation
+        const imagesArray = Array.from(galleryImages);
+
+        // Open image view
+        galleryImages.forEach((img, index) => {
+            img.addEventListener('click', () => {
+                currentIndex = index;
+                updateViewImage();
+                viewContainer.classList.add('active');
+            });
+        });
+
+        // Close image view
+        closeBtn.addEventListener('click', () => {
+            viewContainer.classList.remove('active');
+        });
+
+        // Close on click outside image
+        viewContainer.addEventListener('click', (e) => {
+            if (e.target === viewContainer) {
+                viewContainer.classList.remove('active');
+            }
+        });
+
+        // Navigate to previous image
+        prevBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            currentIndex = (currentIndex - 1 + imagesArray.length) % imagesArray.length;
+            updateViewImage();
+        });
+
+        // Navigate to next image
+        nextBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            currentIndex = (currentIndex + 1) % imagesArray.length;
+            updateViewImage();
+        });
+
+        // Update viewed image
+        function updateViewImage() {
+            const currentImg = imagesArray[currentIndex];
+            viewImage.src = currentImg.src;
+            viewImage.alt = currentImg.alt;
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (viewContainer.classList.contains('active')) {
+                if (e.key === 'ArrowLeft') {
+                    prevBtn.click();
+                } else if (e.key === 'ArrowRight') {
+                    nextBtn.click();
+                } else if (e.key === 'Escape') {
+                    closeBtn.click();
+                }
+            }
+        });
+    </script>
 </html>

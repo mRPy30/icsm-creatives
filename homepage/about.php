@@ -92,7 +92,7 @@
                             Looking forward to work with you.</p>
                     </div>
                     <div class="more-button">
-                        <a href="../homepage/about.php"><button>About Us</button></a>
+                        <a href="../homepage/event.php"><button>Hire us</button></a>
                     </div>
                 </div>
 

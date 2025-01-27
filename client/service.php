@@ -56,6 +56,28 @@ $outsource_stmt->bind_param('s', $selected_event);
 $outsource_stmt->execute();
 $outsource_result = $outsource_stmt->get_result();
 $outsource_services = $outsource_result->fetch_all(MYSQLI_ASSOC);
+
+// Fetch filter information based on the selected event
+$filter_query = "SELECT f.filter_name, f.filter_img 
+                 FROM filters f
+                 INNER JOIN event e ON f.eventID = e.eventID
+                 WHERE e.eventName = ?";
+$filter_stmt = $conn->prepare($filter_query);
+$filter_stmt->bind_param('s', $selected_event);
+$filter_stmt->execute();
+$filter_result = $filter_stmt->get_result();
+$filters = $filter_result->fetch_all(MYSQLI_ASSOC);
+
+// Fetch filter information based on the selected event
+$theme_query = "SELECT t.theme_name, t.theme_image
+                 FROM themes t
+                 INNER JOIN event e ON t.eventID = e.eventID
+                 WHERE e.eventName = ?";
+$theme_stmt = $conn->prepare($theme_query); 
+$theme_stmt->bind_param('s', $selected_event);
+$theme_stmt->execute();
+$theme_result = $theme_stmt->get_result();
+$themes = $theme_result->fetch_all(MYSQLI_ASSOC);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -144,37 +166,85 @@ $outsource_services = $outsource_result->fetch_all(MYSQLI_ASSOC);
                             </div>
 
                             <!-- Services Section -->
+                            <h2><i class="fa-solid fa-camera-retro"></i> Select your Services:</h2>
                             <div id="servicesSection">
-                                <div class="title-service">
-                                    <i class="fa-regular fa-thumbs-up"></i>
-                                    <h4>Select your Services:</h4>
-                                </div>
                                 <div id="recommendedServices" class="recommended-services">
-
+                              
                                 </div>
-                                
                             </div>
-                            <h2>Additional Services:</h2>
-                                <div class="price">
-                                    <div class="add-services">
-                                        <div class="column">
-                                            <?php
-                                            $half = ceil(count($additional_services) / 2);
-                                            $i = 0;
-                                            foreach ($additional_services as $service) {
-                                                if ($i == $half) echo '</div><div class="column">';
-                                                echo '<label class="additional-service-label" data-price="' . $service['price'] . '">';
-                                                echo htmlspecialchars($service['add_name'])  . ' (PHP ' . number_format($service['price'], 2) . ')';
-                                                echo '</label><br>';
-                                                $i++;
-                                            }
-                                            ?>
-                                        </div>
+                            
+                            <h2><i class="fa-solid fa-circle-plus"></i> Additional Services:</h2>
+                            <div class="price">
+                                <div class="add-services">
+                                    <div class="column">
+                                        <?php
+                                        $half = ceil(count($additional_services) / 2);
+                                        $i = 0;
+                                        foreach ($additional_services as $service) {
+                                            if ($i == $half) echo '</div><div class="column">';
+                                            echo '<label class="additional-service-label" data-price="' . $service['price'] . '">';
+                                            echo '<input type="checkbox" class="additional-service-checkbox"> ';
+                                            echo htmlspecialchars($service['add_name'])  . ' (PHP ' . number_format($service['price'], 2) . ')';
+                                            echo '</label><br>';
+                                            $i++;
+                                        }
+                                        ?>
                                     </div>
                                 </div>
+                            </div>
+
+                            <div class="filter-section"> 
+                                <div class="filter-options">
+                                    <h2><i class="fa-solid fa-sliders"></i> Choose your preferred filter <span>(Optional):</span></h2>
+                                    <?php if (!empty($filters)): ?>
+                                        <div class="filters">
+                                            <?php foreach ($filters as $filter): ?>
+                                                <div class="filter-item">
+                                                    <?php 
+                                                    // Encode filter_img as Base64
+                                                    $img_data = base64_encode($filter['filter_img']); 
+                                                    $img_src = "data:image/jpeg;base64,{$img_data}";
+                                                    ?>
+                                                    <img src="<?php echo htmlspecialchars($img_src); ?>" alt="<?php echo htmlspecialchars($filter['filter_name']); ?>">
+                                                    <span><?php echo htmlspecialchars($filter['filter_name']); ?></span>
+                                                </div>
+                                                <input type="hidden" name="selected_filter" id="selectedFilter">
+
+                                            <?php endforeach; ?>
+                                        </div>
+                                    <?php else: ?>
+                                        <p>No filters available for the selected event.</p>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+
+
+                            <div class="theme-section">
+                                <div class="theme-options">
+                                    <h2><i class="fa-solid fa-swatchbook"></i> Recommended Theme for your event <span>(Optional):</span></h2>
+                                    <?php if (!empty($themes)): ?>
+                                        <div class="theme">
+                                            <?php foreach ($themes as $theme): ?>
+                                                <div class="theme-item">
+                                                    <?php 
+                                                    $img_data = base64_encode($theme['theme_image']); 
+                                                    $img_src = "data:image/jpeg;base64,{$img_data}";
+                                                    ?>
+                                                    <img src="<?php echo htmlspecialchars($img_src); ?>" alt="<?php echo htmlspecialchars($theme['theme_name']); ?>">
+                                                    <span><?php echo htmlspecialchars($theme['theme_name']); ?></span>
+                                                </div>
+                                            <?php endforeach; ?>
+                                        </div>
+                                    <?php else: ?>
+                                        <p>No Theme available for the selected event.</p>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+                            <input type="hidden" name="selected_theme" id="selectedTheme">
+                            
                             <div class="discount-section">
                                 <div class="discount-options">
-                                <h2>Apply Discount</h2>
+                                <h2><i class="fa-solid fa-tag"></i> Apply Discount</h2>
 
                                     <label class="discount-checkbox">
                                         <input type="checkbox" id="packageDiscountCheckbox" style="display:none;">
@@ -201,7 +271,7 @@ $outsource_services = $outsource_result->fetch_all(MYSQLI_ASSOC);
                             </div>
                             <div class="outsource">
                                 <?php if (!empty($outsource_services)): ?>
-                                    <h2>Please contact them for your other needs</h2>
+                                    <h2><i class="fa-regular fa-address-card"></i> Please contact them for your other needs</h2>
                                     <div class="outsource-table">
                                         <table>
                                             <thead>
@@ -244,13 +314,13 @@ $outsource_services = $outsource_result->fetch_all(MYSQLI_ASSOC);
     </main>
 
     <div class="popup-overlay" id="popupOverlay"></div>
-<div class="error-popup" id="errorPopup">
-    <div class="icon">
-        <i class="fas fa-times-circle"></i>
+    <div class="error-popup" id="errorPopup">
+        <div class="icon">
+            <i class="fas fa-times-circle"></i>
+        </div>
+        <div class="message" id="popupMessage"></div>
+        <button class="ok-btn" id="closePopupBtn">OK</button>
     </div>
-    <div class="message" id="popupMessage"></div>
-    <button class="ok-btn" id="closePopupBtn">OK</button>
-</div>
 
 
 </body>
@@ -282,11 +352,94 @@ document.addEventListener('DOMContentLoaded', function() {
     // Close popup when clicking outside (optional)
     document.getElementById('popupOverlay').addEventListener('click', closeErrorPopup);
 });
+
+$(document).ready(function () {
+    // Function to fetch and display services
+    function fetchServices(budget = null) {
+        $('#recommendedServices').html(`
+            <div class="recommended-container">
+                <div class="loading-container">
+                    <div class="scaling-dots">
+                        <div></div><div></div><div></div><div></div>
+                    </div>
+                    <p>Loading...</p>
+                </div>
+            </div>
+        `);
+
+        $.ajax({
+            url: '../backend/fetch_services.php',
+            method: 'POST',
+            data: {
+                budget: budget, // Null budget for default fetch
+                selected_event: '<?php echo $selected_event; ?>'
+            },
+            success: function (data) {
+                // Introduce a 3-second delay before showing the data
+                setTimeout(() => {
+                    $('#recommendedServices').html(data);
+                }, 2000); 
+            },
+            error: function () {
+                $('#recommendedServices').html('<p>Error loading services. Please try again.</p>');
+            }
+        });
+    }
+
+    // Fetch all services on page load
+    fetchServices(); // Call without budget to load all services initially
+
+    // Add delay before dynamically fetching services based on budget input
+    let delayTimer; // To hold the timeout instance
+    $('#budget').on('input', function () {
+        const budget = $(this).val();
+        
+        // Clear the previous timer if input is still happening
+        clearTimeout(delayTimer);
+        
+        // Set a new timer to wait for 3 seconds before fetching services
+        delayTimer = setTimeout(() => {
+            fetchServices(budget); // Fetch services after the delay
+        }, 2000); // 3-second delay
+    });
+});
+
+$(document).ready(function() {
+    // Filter Selection
+    $('.filter-item').on('click', function() {
+        // Remove 'selected' class from all filter items
+        $('.filter-item img').removeClass('selected');
+        
+        // Add 'selected' class to clicked filter
+        $(this).find('img').addClass('selected');
+        
+        // Optionally, store the selected filter name
+        var selectedFilter = $(this).find('span').text();
+        $('#selectedFilter').val(selectedFilter);
+    });
+
+    // Theme Selection
+    $('.theme-item').on('click', function() {
+        // Remove 'selected' class from all theme items
+        $('.theme-item img').removeClass('selected');
+        
+        // Add 'selected' class to clicked theme
+        $(this).find('img').addClass('selected');
+        
+        // Optionally, store the selected theme name
+        var selectedTheme = $(this).find('span').text();
+        $('#selectedTheme').val(selectedTheme);
+    });
+});
+
+
+
 $(document).ready(function() {
     let selectedServices = [];
     let selectedAdditionalServices = [];
     let availableDiscounts = [];
     let appliedDiscount = null;
+
 
     // Fetch recommended services based on budget input
     $('#budget').on('input', function() {
@@ -315,7 +468,7 @@ $(document).ready(function() {
                     updateTotal();
                 }
             });
-        }, 3000);
+        }, 2000);
     });
 
 
@@ -391,7 +544,6 @@ style.textContent = `
     flex-direction: column;
     border: 1px solid #ddd;
     border-radius: 5px;
-    transition: all 0.3s ease;
     width: 35vw;
     height: 50%;
 }
@@ -456,12 +608,14 @@ document.head.appendChild(style);
 
     // Listen for additional services selection
     $(document).on('click', '.additional-service-label', function() {
-        $(this).toggleClass('selected');
-        
+        const checkbox = $(this).find('.additional-service-checkbox');
+        checkbox.prop('checked', !checkbox.prop('checked'));
+        $(this).toggleClass('selected', checkbox.prop('checked'));
+
         const price = parseFloat($(this).data('price'));
         const serviceName = $(this).text().split('(')[0].trim();
-        
-        if ($(this).hasClass('selected')) {
+
+        if (checkbox.prop('checked')) {
             selectedAdditionalServices.push({
                 name: serviceName,
                 price: price
@@ -509,7 +663,6 @@ document.head.appendChild(style);
         $('#subtotal').text(subtotal.toFixed(2));
     }
 
-    // Modify form submission to include discount information
     // Modified form submission
     $('#serviceForm').submit(function(e) {
         e.preventDefault();

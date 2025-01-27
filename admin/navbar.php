@@ -24,16 +24,14 @@ if ($result->num_rows > 0) {
 $pageTitles = array(
     "dashboard.php" => "Admin Dashboard",
     "booking.php" => "Booking Management",
-    "client.php" => "Client Management",
-    "folders.php" => "Gallery Management",
-    "gallery.php" => "Client Name Gallery",
-    "feedback.php" => "Feedback Management",
-    "details.php" => "Feedback details",
-    "analytics.php" => "Analytics / Records",
-    "services.php" => "Services Management",
+    "client.php" => "Client",
+    "feedback.php" => "Feedbacks",
+    "analytics.php" => "Reports",
+    "services.php" => "Services Controls",
     "events.php" => "Event Management",
+    "control.php" => "Website Control",
     "account.php" => "Admin account Settings",
-    "production.php" => "Production Management"
+    "production.php" => "Production Team"
 );
 
 $currentPage = basename($_SERVER['SCRIPT_NAME']); 
@@ -233,7 +231,7 @@ $pageTitle = isset($pageTitles[$currentPage]) ? $pageTitles[$currentPage] : "Adm
     button#logoutYes {
         padding: 10px 25px;
         margin: 5px;
-        background: #FF8787;
+        background: #bc8759;
         border: none;
         border-radius: 8px;
         color: #1c1c1c;
@@ -243,7 +241,7 @@ $pageTitle = isset($pageTitles[$currentPage]) ? $pageTitles[$currentPage] : "Adm
         transition: all 200ms linear;
     }
     button#logoutYes:hover{
-        background: #D25A5A;
+        background: #9d7651;
     }
 
     button#logoutNo {
@@ -279,7 +277,7 @@ $pageTitle = isset($pageTitles[$currentPage]) ? $pageTitles[$currentPage] : "Adm
         display: inline-block;
         width: 50px;
         height: 50px;
-        border: 7px solid #E1DE8F;
+        border: 7px solid #9D7651;
         border-radius: 50%;
         border-top: 5px solid transparent;
         animation: spin 1s linear infinite;
@@ -349,8 +347,8 @@ $pageTitle = isset($pageTitles[$currentPage]) ? $pageTitles[$currentPage] : "Adm
     <div id="logoutPopup" class="popup">
         <div class="popup-content">
             <p>Are you sure you want to logout?</p>
-            <button id="logoutNo">No</button>
             <button id="logoutYes">Yes</button>
+            <button id="logoutNo">No</button>
         </div>
     </div>
 

@@ -23,6 +23,27 @@ if (isset($clientID)) {
     $stmt->close();
 }
 
+if (isset($_GET['bookingID'])) {
+    $bookingID = $_GET['bookingID'];
+
+    // Query to fetch refund details for the given bookingID
+    $query = "SELECT reason, send_to, account_name, review FROM refund_tbl WHERE bookingID = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("i", $bookingID);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows > 0) {
+        $refundDetails = $result->fetch_assoc();
+        echo json_encode($refundDetails);
+    } else {
+        echo json_encode(['error' => 'No refund details found']);
+    }
+
+    exit; // Stop further script execution
+}
+
+
 // Active Page
 $directoryURI = $_SERVER['REQUEST_URI'];
 $path = parse_url($directoryURI, PHP_URL_PATH);
@@ -249,6 +270,20 @@ $page = $components[2];
                         </div>
 
                         <div class="form-group">
+                            <label for="staff-select-editor">Add Staff:</label>
+                            <select id="staff-select-editor" name="editorId">
+                               <option value="">Add Staff</option>
+                               <?php
+                               $editorQuery = "SELECT * FROM staff";
+                               $editorResult = mysqli_query($conn, $editorQuery);
+                               while ($editor = mysqli_fetch_assoc($editorResult)) {
+                                   echo "<option value='{$editor['staff_ID']}'>{$editor['staff_name']}</option>";
+                               }
+                               ?>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
                             <label for="deadline">Task Deadline:</label>
                             <input type="date" id="deadline" name="deadline">
                         </div>
@@ -260,6 +295,19 @@ $page = $components[2];
             </div>
         </div>
 
+        <div id="refundDetails" class="popup-admin" style="display: none;">
+            <div class="popup-content">
+                <span class="close" onclick="closeRefundRequestModal()">&times;</span>
+                <h2>Refund Request Details</h2>
+
+                <input type="hidden" id="refundID">
+                <div class="popup-actions">
+                    <button id="approvedRefund" onclick="approvedRefund()" class="btn btn-success">Approved</button>
+                    <button id="declineRefund" onclick="declineRefund()" class="btn btn-danger">Declined</button>
+                </div>
+            </div>
+        </div>
+
         <div id="messageModal" class="popup-admin" style="display: none;">
     <span class="close-btn" onclick="closeMessageModal()">&times;</span>
     <h3>Send Message to Client</h3>
@@ -267,11 +315,19 @@ $page = $components[2];
         <input type="hidden" name="bookingId" id="bookingId">
         <div class="form-group">
             <label for="cellphone-number">Client Contact Number:</label>
-            <input type="tel" id="cellphone-number" pattern="[0-9]+" name="cellphone-number" autocomplete="off" required>
+            <input type="tel" id="cellphone-number" name="cellphone-number" autocomplete="off" required>
         </div>
         <div class="form-group">
-            <label for="message-text">Message:</label>
-            <textarea id="message-text" name="message" rows="4" required></textarea>
+            <label for="message-text">Compose Message:</label>
+            <textarea id="message-text" name="message" rows="4"></textarea>
+            <label for="message-text">Remind Message:</label>
+            <select id="message-text" name="message">
+                <option value="" selected disabled>Select a reminders</option>
+                <option>Hi client! your booking is Accepted! For more inquiries please visit our official website https://icsmcreatives.online/</option>
+                <option>Hi client! we're sorry, your booking request is Declined. For more inquiries please visit our official website https://icsmcreatives.online/</option>
+                <option>Hi client! your booking request is Cancelled. For more inquiries please visit our official website https://icsmcreatives.online/</option>
+                <option>Hi client! We remind your booking is up to date. For more inquiries please visit our official website https://icsmcreatives.online/</option>
+            </select>
         </div>
         <button type="submit" name="send_sms" class="submit-btn">Send Message</button>
     </form>
@@ -324,6 +380,9 @@ $page = $components[2];
         <button class="btn-save-event" onclick="cancelBooking()">Submit</button>
     </div>
 </div>
+
+
+
         
         <div id="receiptModal">
             <div class="modal-receipt">

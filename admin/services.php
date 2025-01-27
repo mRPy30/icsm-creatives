@@ -74,7 +74,8 @@ if ($resultOutsource->num_rows > 0) {
     ?>  
 <body>
     
-    <section class="container-admin">
+    <section class="service-layout">
+        
         <div class="top-book">
             <h4>Service Ratings</h4> 
             <button class="btn-admin" onclick="openAddServiceModal()"> <i class="fa-solid fa-plus"></i> Add New Service</button>

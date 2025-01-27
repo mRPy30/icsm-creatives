@@ -522,8 +522,7 @@
 
 
 .how-it-works__step-text {
-    font-size: 14px;
-    line-height: 1.6;
+    font: normal 600 11px / 1.8 'Poppins';
     color: #666;
 }
 
@@ -1073,7 +1072,7 @@
 
 .view-image .close-btn {
     position: fixed;
-    top: 50px;
+    top: 60px;
     right: 30px;
     color: #fff;
     font-size: 35px;
@@ -1629,6 +1628,7 @@
     text-align: center;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
+    cursor: pointer;
 }
 
 .event-card:hover {
@@ -1644,12 +1644,12 @@
 
 .event-card h3 {
     margin-top: 15px;
-    font: normal 800 20px/normal 'Poppins';
+    font: normal 800 22px/normal 'Poppins';
     color: #9D7651;
 }
 
 .event-card p{
-    font: normal 400 14px/normal 'Poppins';
+    font: normal 400 13px/normal 'Poppins';
     margin: 0 13px 5px 13px;
 }
 
@@ -2909,7 +2909,6 @@
     color: #866043;
     font:  normal bold 17px/ normal 'poppins';
     padding: 5px;
-    letter-spacing: 1px;
 }
 
 

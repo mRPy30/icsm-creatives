@@ -11,8 +11,8 @@ $components = explode('/', $path);
 $page = $components[2];
 
 // Fetch all booking details from the database, joining with the client table using the clientID foreign key
-$sql = "SELECT b.bookingId, b.eventDate, b.eventTime, b.eventLocation, b.type_of_event, b.title_event, b.paymentAmount, b.description, CONCAT(c.firstName, ' ', c.lastName) AS clientName, b.status FROM booking AS b
-        LEFT JOIN client AS c ON b.clientID = c.id";
+$sql = "SELECT b.bookingId, b.eventDate, b.event_Time, b.eventLocation, b.title_event, b.description, c.name AS clientName, b.status FROM booking AS b
+        LEFT JOIN client AS c ON b.clientID = c.clientID";
 $result = $conn->query($sql);
 
 // Check if there's a result
@@ -61,8 +61,8 @@ if ($result->num_rows > 0) {
         include '../staff/navbar.php';
     ?>   
     
-    <section class="booking-box">
-        <div class="table-booking">
+    <section class="dashboard">
+        <div class="pendings">
             <h4>Booking Details</h4>
             <table class="header-table">
                 <thead>
@@ -74,12 +74,6 @@ if ($result->num_rows > 0) {
                         <th>Packages</th>
                         <th>Status</th>
                     </tr>
-                </thead>
-            </table>
-
-            <!-- Data Table -->
-            <div class="data-table-container">
-                <table class="data-table booking">
                     <tbody>
                     <?php foreach ($bookingData as $booking): ?>
                 <tr>
@@ -87,7 +81,6 @@ if ($result->num_rows > 0) {
                     <td><?php echo $booking['title_event']; ?></td>
                     <td><?php echo $booking['eventLocation']; ?></td>
                     <td><?php echo date('F d Y', strtotime($booking['eventDate'])); ?></td>
-                    <td><?php echo $booking['type_of_event']; ?></td>
                     <td>
                         <?php if ($booking['status'] == 'Accepted' || $booking['status'] == 'Declined'): ?>
                             <?php echo $booking['status']; ?>

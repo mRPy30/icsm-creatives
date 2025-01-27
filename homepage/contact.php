@@ -1,3 +1,78 @@
+<?php
+include '../backend/dbcon.php';
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
+require '../vendor/autoload.php';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $name = $_POST['name'];
+    $email = $_POST['email'];
+    $cellphone = $_POST['cellphone'];
+    $message = $_POST['message'];
+
+    // Save to database
+    $sql = "INSERT INTO inquiries (name, email, cellphone, message) VALUES (?, ?, ?, ?)";
+    $stmt = $conn->prepare($sql);
+    if ($stmt) {
+        $stmt->bind_param("ssss", $name, $email, $cellphone, $message);
+        if ($stmt->execute()) {
+            // Prepare email
+            $mail = new PHPMailer(true);
+            try {
+                // Server settings
+                $mail->isSMTP();
+                $mail->Host = 'smtp.gmail.com';
+                $mail->SMTPAuth = true;
+                $mail->Username = 'icsm230510@gmail.com'; // Your SMTP username
+                $mail->Password = 'ptls kdfd prcs mngd';   // Your SMTP password
+                $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
+                $mail->Port = 465;
+
+                // Recipients
+                $mail->setFrom('icsm230510@gmail.com', 'ICSM Creatives'); // Sender
+                $mail->addAddress('icsmcreatives@gmail.com'); // Recipient (company)
+                $mail->addReplyTo($email, $name); // Reply-To (user)
+
+                // Email content
+                $mail->isHTML(true);
+                $mail->Subject = 'New Contact Inquiry from ' . $name;
+                $mail->Body = "
+                    <h2>New Inquiry Received</h2>
+                    <p><strong>Name:</strong> $name</p>
+                    <p><strong>Email:</strong> $email</p>
+                    <p><strong>Phone:</strong> $cellphone</p>
+                    <p><strong>Message:</strong><br>$message</p>
+                ";
+                $mail->AltBody = "New Inquiry Received\n\nName: $name\nEmail: $email\nPhone: $cellphone\nMessage: $message";
+
+                // Send email
+                $mail->send();
+                echo "<script>
+                    alert('Your inquiry was successfully sent!');
+                    window.location.href = '../homepage/contact.php';
+                </script>";
+                exit();
+            } catch (Exception $e) {
+                error_log("Mail Error: " . $mail->ErrorInfo);
+                echo "<script>
+                    alert('Error: Email could not be sent.');
+                    window.location.href = '../homepage/contact.php';
+                </script>";
+            }
+        } else {
+            echo "Error saving inquiry: " . $stmt->error;
+        }
+        $stmt->close();
+    } else {
+        echo "Error preparing statement: " . $conn->error;
+    }
+}
+
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -15,9 +90,6 @@
 
     <!---CSS--->
     <link rel="stylesheet" href="../css/homepage.css">
-
-    <!--CSS FRAMEWORK-->
-
 
     <!--ICON LINKS-->
     <script src="https://kit.fontawesome.com/11a4f2cc62.js" crossorigin="anonymous"></script>
@@ -61,7 +133,7 @@
             </div>
             <div class="contact-fillup">
                 <h2>Contact:</h2>
-                <form action="send_email.php" method="post">
+                <form action="contact.php" method="post">
                     <label for="name">Name: <span class="required-asterisk">*</span></label>
                     <input type="text" id="name" name="name" placeholder="First Name, Last Name" required>
 
@@ -69,7 +141,7 @@
                     <input type="email" id="email" name="email" placeholder="Email" required>
 
                     <label for="phone">Phone Number: <span class="required-asterisk">*</span></label>
-                    <input type="tel" id="phone" name="phone" placeholder="Phone Number" required>
+                    <input type="tel" id="phone" name="cellphone" placeholder="Phone Number" required>
 
                     <label for="message">Message: <span class="required-asterisk">*</span></label>
                     <textarea id="message" name="message" placeholder="Message" required></textarea>

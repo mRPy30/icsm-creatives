@@ -48,7 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         if ($conn->query($sql) === TRUE) {
             echo "Registration successful!";
-            header("Location: ../client/login.php");
+            header("Location: ../client/booking.php");
             exit();
         } else {
             echo "Error: " . $sql . "<br>" . $conn->error;
